@@ -1,4 +1,4 @@
-#include "memory.hpp"
+#include "gb_memory.hpp"
 
 
 static constexpr u16 ROM_S 	    = 0x0000;
@@ -31,7 +31,7 @@ static constexpr u16 HRAM_E 	= 0xFFFE;
 static constexpr u16 IE_REG 	= 0xFFFF;
 
 
-u8 Memory::read(u16 at) {
+u8 Memory::read(u16 at) const {
     if (at >= ROM_S && at <= ROM_E) 	    
         return rom_banks[at - ROM_S];
     
@@ -41,11 +41,8 @@ u8 Memory::read(u16 at) {
     if (at >= EXRAM_S && at <= EXRAM_E) 
         return exram[at - EXRAM_S];
     
-    if (at >= WRAM_S && at <= WRAM_E) 	
-        return wram[at - WRAM_S];
-
-    if (at >= ECHO_S && at <= ECHO_E) 	
-        return wram[at - ECHO_S];
+    if (at >= WRAM_S && at <= ECHO_E) 	
+        return wram[(at & ECHO_E) - WRAM_S];
 
     if (at >= OAM_S && at <= OAM_E) 	
         return oam[at - OAM_S];
@@ -59,8 +56,7 @@ u8 Memory::read(u16 at) {
     if (at >= HRAM_S && at <= HRAM_E) 	
         return hram[at - HRAM_S];
 
-    if (at == IE_REG) 	
-        return ie_reg;
+    return ie_reg;
 }
 
 
@@ -68,30 +64,30 @@ void Memory::write(u16 at, u8 data) {
     if (at >= ROM_S && at <= ROM_E) 	    
         rom_banks[at - ROM_S] = data;
     
-    if (at >= VRAM_S && at <= VRAM_E) 	
+    else if (at >= VRAM_S && at <= VRAM_E) 	
         vram[at - VRAM_S] = data;
 
-    if (at >= EXRAM_S && at <= EXRAM_E) 
+    else if (at >= EXRAM_S && at <= EXRAM_E) 
         exram[at - EXRAM_S] = data;
     
-    if (at >= WRAM_S && at <= WRAM_E) 	
+    else if (at >= WRAM_S && at <= WRAM_E) 	
         wram[at - WRAM_S] = data;
 
-    if (at >= ECHO_S && at <= ECHO_E) 	
+    else if (at >= ECHO_S && at <= ECHO_E) 	
         wram[at - ECHO_S] = data;
 
-    if (at >= OAM_S && at <= OAM_E) 	
+    else if (at >= OAM_S && at <= OAM_E) 	
         oam[at - OAM_S] = data;
 
-    if (at >= FORBID_S && at <= FORBID_E)
+    else if (at >= FORBID_S && at <= FORBID_E)
         return;
 
-    if (at >= IO_S && at <= IO_E) 	
+    else if (at >= IO_S && at <= IO_E) 	
         io_reg[at - IO_S] = data;
 
-    if (at >= HRAM_S && at <= HRAM_E) 	
+    else if (at >= HRAM_S && at <= HRAM_E) 	
         hram[at - HRAM_S] = data;
 
-    if (at == IE_REG) 	
+    else if (at == IE_REG) 	
         ie_reg = data;
 }

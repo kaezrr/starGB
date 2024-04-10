@@ -25,7 +25,7 @@ private:
     bool oam_lock{};
 
 public:
-    u8 read(u16 at);
+    u8 read(u16 at) const;
     void write(u16 at, u8 data);
 
 };
