@@ -1,6 +1,7 @@
 #pragma once
 
 #include "gb_memory.hpp"
+#include<bit>
 
 union Registers {
     u16 full;
@@ -9,14 +10,7 @@ union Registers {
 
 struct Opcode {
     u8 byte;
-
-    inline u8 get_family()  const { return byte >> 6; }
-    inline u8 get_bit54()   const { return (byte & 0b00110000) >> 4; }
-    inline u8 get_bit43()   const { return (byte & 0b00011000) >> 3; }
-    inline u8 get_bit543()  const { return (byte & 0b00111000) >> 3; }
-    inline u8 get_bit3210() const { return (byte & 0b00001111); }
-    inline u8 get_bit210()  const { return (byte & 0b00000111); }
-
+    inline u8 bits(u8 mask) const { return (byte & mask) >> std::countr_zero(mask); }
     Opcode(u8 op) : byte{ op } {}
 };
 
@@ -55,7 +49,9 @@ public:
     u8 block1();
     u8 block2();
     u8 block3();
+    u8 blockCB();
 
-    bool get_flag(Flags::Flag flag);
+    bool check_cond(u8 r) const;
+    bool get_flag(Flags::Flag flag) const;
     void set_flag(Flags::Flag flag, bool on);
 };

@@ -84,11 +84,21 @@ u16 CPU::get_nextu16() {
     return (msb << 8) | lsb;
 }
 
-bool CPU::get_flag(Flags::Flag flag) {
+bool CPU::get_flag(Flags::Flag flag) const {
     return AF.lo & flag;
 }
 
 void CPU::set_flag(Flags::Flag flag, bool on) {
     if (on) AF.lo |= flag;
     else    AF.lo &= ~flag;
+}
+
+bool CPU::check_cond(u8 r) const {
+    switch (r) {
+    case 0: return !get_flag(Flags::Z);
+    case 1: return  get_flag(Flags::Z);
+    case 2: return !get_flag(Flags::C);
+    case 3: return  get_flag(Flags::C);
+    }
+    return false;
 }
