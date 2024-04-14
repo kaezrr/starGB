@@ -1,5 +1,8 @@
 #include "gb_cpu.hpp"
 
+inline u8 Opcode::bits(u8 mask) const { 
+    return (byte & mask) >> std::countr_zero(mask);
+}
 
 u8 CPU::read_r8(u8 r) const {
     switch (r) {

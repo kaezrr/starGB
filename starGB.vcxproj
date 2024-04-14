@@ -137,8 +137,9 @@
     <ClInclude Include="gb_memory.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="gb_cpu_decoder.cpp" />
+    <ClCompile Include="gb_cpu_decoder.hpp" />
     <ClCompile Include="gb_cpu_helper.cpp" />
+    <ClCompile Include="gb_decoder_blocks.cpp" />
     <ClCompile Include="gb_main.cpp" />
     <ClCompile Include="gb_memory.cpp" />
   </ItemGroup>

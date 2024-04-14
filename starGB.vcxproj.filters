@@ -32,8 +32,11 @@
     <ClCompile Include="gb_cpu_helper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="gb_cpu_decoder.cpp">
+    <ClCompile Include="gb_decoder_blocks.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gb_cpu_decoder.hpp">
+      <Filter>Header Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
