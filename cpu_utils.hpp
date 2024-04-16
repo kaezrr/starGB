@@ -1,6 +1,6 @@
 #pragma once
-
-#include "gb_cpu.hpp"
+#include "memory.hpp"
+#include <bit>
 
 namespace Masks {
     enum Mask {
@@ -20,6 +20,25 @@ namespace Masks {
     };
 }
 
+enum Flag {
+    Z = 0x80,
+    N = 0x40,
+    H = 0x20,
+    C = 0x10,
+};
+
+union Registers {
+    u16 full;
+    struct { u8 lo, hi; };
+};
+
+struct Opcode {
+    u8 byte{};
+    inline u8 bits(u8 mask) const {
+        return (byte & mask) >> std::countr_zero(mask);
+    }
+};
+
 inline bool CFLAG_ADD(u32 a, u32 b, u32 res, u32 mask) {
     return ((a & b) | (a & ~res) | (b & ~res) | mask);
 }
@@ -28,33 +47,3 @@ inline bool CFLAG_SUB(u32 a, u32 b, u32 res, u32 mask) {
     return CFLAG_ADD(res, b, a, mask);
 }
 
-
-u8 CPU::decode_opcode() {
-    switch (opcode.byte) { // check for invalid opcodes or CB prefixed instructions
-    case 0xDB:
-    case 0xDD:
-    case 0xE3:
-    case 0xE4:
-    case 0xEB:
-    case 0xEC:
-    case 0xED:
-    case 0xF4:
-    case 0xFC:
-    case 0xFD:
-        hard_lock = true; return 4;
-    case 0xCB: 
-        return blockCB();
-    }
-
-    switch (opcode.bits(Masks::b76)) {
-    case 0x0:
-        return block0();
-    case 0x1:
-        return block1();
-    case 0x2:
-        return block2();
-    case 0x3:
-        return block3();
-    }
-    return 4;
-}

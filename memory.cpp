@@ -1,4 +1,4 @@
-#include "gb_memory.hpp"
+#include "memory.hpp"
 
 
 static constexpr u16 ROM_S 	    = 0x0000;

@@ -15,28 +15,31 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="gb_memory.hpp">
+    <ClInclude Include="memory.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="gb_cpu.hpp">
+    <ClInclude Include="sm83.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cpu_utils.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="gb_memory.cpp">
+    <ClCompile Include="memory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="gb_main.cpp">
+    <ClCompile Include="sm83.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="gb_cpu_helper.cpp">
+    <ClCompile Include="op_decoder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="gb_decoder_blocks.cpp">
+    <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="gb_cpu_decoder.hpp">
-      <Filter>Header Files</Filter>
+    <ClCompile Include="instructions.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

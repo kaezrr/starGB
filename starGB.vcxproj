@@ -133,15 +133,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="gb_cpu.hpp" />
-    <ClInclude Include="gb_memory.hpp" />
+    <ClInclude Include="cpu_utils.hpp" />
+    <ClInclude Include="sm83.hpp" />
+    <ClInclude Include="memory.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="gb_cpu_decoder.hpp" />
-    <ClCompile Include="gb_cpu_helper.cpp" />
-    <ClCompile Include="gb_decoder_blocks.cpp" />
-    <ClCompile Include="gb_main.cpp" />
-    <ClCompile Include="gb_memory.cpp" />
+    <ClCompile Include="instructions.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="sm83.cpp" />
+    <ClCompile Include="op_decoder.cpp" />
+    <ClCompile Include="memory.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
