@@ -1,13 +1,15 @@
 #pragma once
-
 #include "cpu_utils.hpp"
 
 struct CPU {
     Opcode op{};
-    u8 t_cycles{};
-    bool hard_lock{};
-    Registers AF{}, BC{}, DE{}, HL{}, SP{}, PC{};
     Memory& memory;
+    Registers AF{}, BC{}, DE{}, HL{}, SP{}, PC{};
+
+    // Flags
+    bool hard_lock{};
+    bool IME{};
+    bool pending_ime{};
 
     CPU(Memory& mem) : memory{ mem } {};
 
@@ -78,4 +80,51 @@ struct CPU {
     void xor_a_r8();
     void or_a_r8();
     void cp_a_r8();
+
+    void add_a_imm8();
+    void adc_a_imm8();
+    void sub_a_imm8();
+    void sbc_a_imm8();
+    void and_a_imm8();
+    void xor_a_imm8();
+    void or_a_imm8();
+    void cp_a_imm8();
+
+    void ldh_c_a();
+    void ldh_imm8_a();
+    void ld_imm16_a();
+    void ldh_a_c();
+    void ldh_a_imm8();
+    void ld_a_imm16();
+    void add_sp_imm8();
+    void ld_hl_sp_plus_imm8();
+    void ld_sp_hl();
+    void di();
+    void ei();
+
+    void ret();
+    void reti();
+    void jp_imm16();
+    void jp_hl();
+    void call_imm16();
+
+    void ret_cond();
+    void jp_cond_imm16();
+    void call_cond_imm16();
+    void rst_tgt3();
+    void pop_r16stk();
+    void push_r16stk();
+
+    void rlc_r8();
+    void rrc_r8();
+    void rl_r8();
+    void rr_r8();
+    void sla_r8();
+    void sra_r8();
+    void swap_r8();
+    void srl_r8();
+
+    void bit_b3_r8();
+    void res_b3_r8();
+    void set_b3_r8();
 };

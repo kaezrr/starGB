@@ -1,12 +1,10 @@
 #include "sm83.hpp"
 
 u8 CPU::read_mem(u16 at) {
-    t_cycles += 4;
     return memory.read(at);
 }
 
 void CPU::write_mem(u16 at, u8 data) {
-    t_cycles += 4;
     memory.write(at, data);
 }
 
@@ -80,7 +78,7 @@ void CPU::write_r16mem(u8 r, u8 data) {
 }
 
 void CPU::fetch_opcode() {
-    t_cycles = 4;
+    if (pending_ime) { IME = true; pending_ime = false; }
     op.byte = get_nextu8();
 }
 
@@ -89,8 +87,8 @@ u8 CPU::get_nextu8() {
 }
 
 u16 CPU::get_nextu16() {
-    u16 lsb = read_mem(PC.full++);
-    u16 msb = read_mem(PC.full++);
+    u16 lsb = get_nextu8();
+    u16 msb = get_nextu8();
     return (msb << 8) | lsb;
 }
 
@@ -106,12 +104,15 @@ void CPU::set_flag(Flag flag, bool on) {
 bool CPU::check_cond(u8 r) {
     bool cond{};
     switch (r) {
-    case 0: cond = !get_flag(Z); break;
-    case 1: cond =  get_flag(Z); break;
-    case 2: cond = !get_flag(C); break;
-    case 3: cond =  get_flag(C); break;
+    case 0: cond = !get_flag(Z);
+        break;
+    case 1: cond =  get_flag(Z); 
+        break;
+    case 2: cond = !get_flag(C); 
+        break;
+    case 3: cond =  get_flag(C); 
+        break;
     }
-    if (cond) t_cycles += 4;
     return cond;
 }
 
