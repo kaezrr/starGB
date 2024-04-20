@@ -40,7 +40,7 @@ struct Opcode {
 };
 
 inline bool CFLAG_ADD(u32 a, u32 b, u32 res, u32 mask) {
-    return ((a & b) | (a & ~res) | (b & ~res) | mask);
+    return (((a & b) | (a & ~res) | (b & ~res)) & mask);
 }
 
 inline bool CFLAG_SUB(u32 a, u32 b, u32 res, u32 mask) {

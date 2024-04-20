@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\sm83_files">
+      <UniqueIdentifier>{87c64994-171b-4d88-9bd2-322cbb3ad4fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\helper_files">
+      <UniqueIdentifier>{201e9e87-dbc7-4376-bac6-7c4a71f6e2df}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="memory.hpp">
@@ -24,22 +30,37 @@
     <ClInclude Include="cpu_utils.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="gameboy.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="debug.hpp">
+      <Filter>Header Files\helper_files</Filter>
+    </ClInclude>
+    <ClInclude Include="json_tests.hpp">
+      <Filter>Header Files\helper_files</Filter>
+    </ClInclude>
+    <ClInclude Include="timer.hpp">
+      <Filter>Header Files\helper_files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="memory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="sm83.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="op_decoder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="instructions.cpp">
+    <ClCompile Include="debug.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="instructions.cpp">
+      <Filter>Source Files\sm83_files</Filter>
+    </ClCompile>
+    <ClCompile Include="op_decoder.cpp">
+      <Filter>Source Files\sm83_files</Filter>
+    </ClCompile>
+    <ClCompile Include="sm83.cpp">
+      <Filter>Source Files\sm83_files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

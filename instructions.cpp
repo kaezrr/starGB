@@ -15,7 +15,7 @@ void CPU::rlca() {
     set_flag(N, false);
     set_flag(H, false);
     set_flag(C, AF.hi & 0x80);
-    AF.hi = (AF.hi << 1) + AF.hi & 0x80;
+    AF.hi = (AF.hi << 1) + get_flag(C);
 }
 
 void CPU::rrca() {
@@ -79,6 +79,7 @@ void CPU::ccf() {
 
 void CPU::jr_imm8() {
     auto imm8 = static_cast<s8>(get_nextu8());
+    debug.log();
     PC.full += imm8;
 }
 
@@ -101,10 +102,12 @@ void CPU::ld_imm16_sp() {
 }
 
 void CPU::inc_r16() {
+    debug.log();
     write_r16(op.bits(Masks::b54), read_r16(op.bits(Masks::b54), false) + 1, false);
 }
 
 void CPU::dec_r16() {
+    debug.log();
     write_r16(op.bits(Masks::b54), read_r16(op.bits(Masks::b54), false) - 1, false);
 }
 
@@ -114,24 +117,25 @@ void CPU::add_hl_r16() {
     set_flag(N, false);
     set_flag(H, CFLAG_ADD(HL.full, reg, res, Masks::hf16));
     set_flag(C, CFLAG_ADD(HL.full, reg, res, Masks::cf16));
+    debug.log();
     HL.full = res;
 }
 
 void CPU::inc_r8() {
     u8 reg = read_r8(op.bits(Masks::b543));
     u8 res = reg + 1;
-    set_flag(Z, !reg);
-    set_flag(N, CFLAG_ADD(reg, 1, res, Masks::hf8));
-    set_flag(H, CFLAG_ADD(reg, 1, res, Masks::cf8));
+    set_flag(Z, !res);
+    set_flag(N, false);
+    set_flag(H, CFLAG_ADD(reg, 1, res, Masks::hf8));
     write_r8(op.bits(Masks::b543), res);
 }
 
 void CPU::dec_r8() {
     u8 reg = read_r8(op.bits(Masks::b543));
     u8 res = reg - 1;
-    set_flag(Z, !reg);
-    set_flag(N, CFLAG_SUB(reg, 1, res, Masks::hf8));
-    set_flag(H, CFLAG_SUB(reg, 1, res, Masks::cf8));
+    set_flag(Z, !res);
+    set_flag(N, true);
+    set_flag(H, CFLAG_SUB(reg, 1, res, Masks::hf8));
     write_r8(op.bits(Masks::b543), res);
 }
 
@@ -152,7 +156,7 @@ void CPU::ld_r8_r8() {
 void CPU::add_a_r8() {
     auto r8 = read_r8(op.bits(Masks::b210));
     u32 res = AF.hi + r8;
-    set_flag(Z, !res);
+    set_flag(Z, !static_cast<u8>(res));
     set_flag(N, false);
     set_flag(H, CFLAG_ADD(AF.hi, r8, res, Masks::hf8));
     set_flag(C, CFLAG_ADD(AF.hi, r8, res, Masks::cf8));
@@ -162,7 +166,7 @@ void CPU::add_a_r8() {
 void CPU::adc_a_r8() {
     auto r8 = read_r8(op.bits(Masks::b210));
     u32 res = AF.hi + r8 + get_flag(C);
-    set_flag(Z, !res);
+    set_flag(Z, !static_cast<u8>(res));
     set_flag(N, false);
     set_flag(H, CFLAG_ADD(AF.hi, r8, res, Masks::hf8));
     set_flag(C, CFLAG_ADD(AF.hi, r8, res, Masks::cf8));
@@ -172,7 +176,7 @@ void CPU::adc_a_r8() {
 void CPU::sub_a_r8() {
     auto r8 = read_r8(op.bits(Masks::b210));
     u32 res = AF.hi - r8;
-    set_flag(Z, !res);
+    set_flag(Z, !static_cast<u8>(res));
     set_flag(N, true);
     set_flag(H, CFLAG_SUB(AF.hi, r8, res, Masks::hf8));
     set_flag(C, CFLAG_SUB(AF.hi, r8, res, Masks::cf8));
@@ -182,7 +186,7 @@ void CPU::sub_a_r8() {
 void CPU::sbc_a_r8() {
     auto r8 = read_r8(op.bits(Masks::b210));
     u32 res = AF.hi - r8 - get_flag(C);
-    set_flag(Z, !res);
+    set_flag(Z, !static_cast<u8>(res));
     set_flag(N, true);
     set_flag(H, CFLAG_SUB(AF.hi, r8, res, Masks::hf8));
     set_flag(C, CFLAG_SUB(AF.hi, r8, res, Masks::cf8));
@@ -216,7 +220,7 @@ void CPU::or_a_r8() {
 void CPU::cp_a_r8() {
     auto r8 = read_r8(op.bits(Masks::b210));
     u32 res = AF.hi - r8;
-    set_flag(Z, !res);
+    set_flag(Z, !static_cast<u8>(res));
     set_flag(N, true);
     set_flag(H, CFLAG_SUB(AF.hi, r8, res, Masks::hf8));
     set_flag(C, CFLAG_SUB(AF.hi, r8, res, Masks::cf8));
@@ -225,7 +229,7 @@ void CPU::cp_a_r8() {
 void CPU::add_a_imm8(){
     auto imm8 = get_nextu8();
     u32 res = AF.hi + imm8;
-    set_flag(Z, !res);
+    set_flag(Z, !static_cast<u8>(res));
     set_flag(N, false);
     set_flag(H, CFLAG_ADD(AF.hi, imm8, res, Masks::hf8));
     set_flag(C, CFLAG_ADD(AF.hi, imm8, res, Masks::cf8));
@@ -235,7 +239,7 @@ void CPU::add_a_imm8(){
 void CPU::adc_a_imm8(){
     auto imm8 = get_nextu8();
     u32 res = AF.hi + imm8 + get_flag(C);
-    set_flag(Z, !res);
+    set_flag(Z, !static_cast<u8>(res));
     set_flag(N, false);
     set_flag(H, CFLAG_ADD(AF.hi, imm8, res, Masks::hf8));
     set_flag(C, CFLAG_ADD(AF.hi, imm8, res, Masks::cf8));
@@ -245,7 +249,7 @@ void CPU::adc_a_imm8(){
 void CPU::sub_a_imm8(){
     auto imm8 = get_nextu8();
     u32 res = AF.hi - imm8;
-    set_flag(Z, !res);
+    set_flag(Z, !static_cast<u8>(res));
     set_flag(N, true);
     set_flag(H, CFLAG_SUB(AF.hi, imm8, res, Masks::hf8));
     set_flag(C, CFLAG_SUB(AF.hi, imm8, res, Masks::cf8));
@@ -256,7 +260,7 @@ void CPU::sub_a_imm8(){
 void CPU::sbc_a_imm8(){
     auto imm8 = get_nextu8();
     u32 res = AF.hi - imm8 - get_flag(C);
-    set_flag(Z, !res);
+    set_flag(Z, !static_cast<u8>(res));
     set_flag(N, true);
     set_flag(H, CFLAG_SUB(AF.hi, imm8, res, Masks::hf8));
     set_flag(C, CFLAG_SUB(AF.hi, imm8, res, Masks::cf8));
@@ -291,7 +295,7 @@ void CPU::or_a_imm8(){
 void CPU::cp_a_imm8(){
     auto imm8 = get_nextu8();
     u32 res = AF.hi - imm8;
-    set_flag(Z, !res);
+    set_flag(Z, !static_cast<u8>(res));
     set_flag(N, true);
     set_flag(H, CFLAG_SUB(AF.hi, imm8, res, Masks::hf8));
     set_flag(C, CFLAG_SUB(AF.hi, imm8, res, Masks::cf8));
@@ -308,7 +312,7 @@ void CPU::ldh_imm8_a(){
 
 void CPU::ld_imm16_a(){
     auto imm16 = get_nextu16();
-    write_mem(0xFF00 | imm16, AF.hi);
+    write_mem(imm16, AF.hi);
 }
 
 void CPU::ldh_a_c(){
@@ -322,7 +326,7 @@ void CPU::ldh_a_imm8(){
 
 void CPU::ld_a_imm16(){
     auto imm16 = get_nextu16();
-    AF.hi = read_mem(0xFF00 | imm16);
+    AF.hi = read_mem(imm16);
 }
 
 void CPU::add_sp_imm8(){
@@ -332,11 +336,14 @@ void CPU::add_sp_imm8(){
     set_flag(N, false);
     set_flag(H, CFLAG_ADD(SP.full, imm8, res, Masks::hf8));
     set_flag(C, CFLAG_ADD(SP.full, imm8, res, Masks::cf8));
+    debug.log();
+    debug.log();
     SP.full = static_cast<u16>(res);
 }
 
 void CPU::ld_hl_sp_plus_imm8(){
     auto imm8 = static_cast<s8>(get_nextu8());
+    debug.log();
     u32 res = SP.full + imm8;
     set_flag(Z, false);
     set_flag(N, false);
@@ -346,6 +353,7 @@ void CPU::ld_hl_sp_plus_imm8(){
 }
 
 void CPU::ld_sp_hl(){
+    debug.log();
     SP.full = HL.full;
 }
 
@@ -360,16 +368,19 @@ void CPU::ei(){
 void CPU::ret(){
     PC.lo = read_mem(SP.full++);
     PC.hi = read_mem(SP.full++);
+    debug.log();
 }
 
 void CPU::reti(){
     PC.lo = read_mem(SP.full++);
     PC.hi = read_mem(SP.full++);
+    debug.log();
     IME = true;
 }
 
 void CPU::jp_imm16(){
     auto imm16 = get_nextu16();
+    debug.log();
     PC.full = imm16;
 }
 
@@ -379,15 +390,17 @@ void CPU::jp_hl(){
 
 void CPU::call_imm16(){
     auto imm16 = get_nextu16();
+    debug.log();
     write_mem(--SP.full, PC.hi);
     write_mem(--SP.full, PC.lo);
     PC.full = imm16;
 }
 
 void CPU::ret_cond(){
-    if (!check_cond(op.bits(Masks::b43))) return;
+    if (!check_cond(op.bits(Masks::b43))) { debug.log(); return; }
     PC.lo = read_mem(SP.full++);
     PC.hi = read_mem(SP.full++);
+    debug.log();
 }
 
 void CPU::jp_cond_imm16(){
@@ -405,6 +418,7 @@ void CPU::call_cond_imm16(){
 }
 
 void CPU::rst_tgt3(){
+    debug.log();
     u8 tgt = op.bits(Masks::b543) << 3;
     write_mem(--SP.full, PC.hi);
     write_mem(--SP.full, PC.lo);
@@ -421,13 +435,14 @@ void CPU::push_r16stk(){
     u16 reg = read_r16(op.bits(Masks::b54), true);
     u8 msb = static_cast<u8>((reg & 0xFF00) >> 8);
     u8 lsb = static_cast<u8>((reg & 0x00FF) >> 0);
+    debug.log();
     write_mem(--SP.full, msb);
     write_mem(--SP.full, lsb);
 }
 
 void CPU::rlc_r8(){
     auto reg = read_r8(op.bits(Masks::b210));
-    u8 res = (reg << 1) + reg & 0x80;
+    u8 res = (reg << 1) + ((reg & 0x80) >> 7);
     set_flag(Z, !res);
     set_flag(N, false);
     set_flag(H, false);
@@ -486,7 +501,7 @@ void CPU::sra_r8(){
 }
 
 void CPU::swap_r8(){
-    auto reg = read_r8(Masks::b210);
+    auto reg = read_r8(op.bits(Masks::b210));
     u8 res = (reg >> 4) | (reg << 4);
     set_flag(Z, !res);
     set_flag(N, false);

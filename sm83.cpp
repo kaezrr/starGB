@@ -1,10 +1,13 @@
 #include "sm83.hpp"
 
 u8 CPU::read_mem(u16 at) {
-    return memory.read(at);
+    auto data = memory.read(at);
+    debug.log(at, data, true);
+    return data;
 }
 
 void CPU::write_mem(u16 at, u8 data) {
+    debug.log(at, data, false);
     memory.write(at, data);
 }
 
@@ -63,7 +66,7 @@ void CPU::write_r16(u8 r, u16 data, bool stk) {
     case 1: DE.full = data; break;
     case 2: HL.full = data; break;
     case 3: 
-        if (stk) AF.full = data;
+        if (stk) AF.full = data & 0xFFF0;
         else SP.full = data; break;
     }
 }
@@ -113,6 +116,7 @@ bool CPU::check_cond(u8 r) {
     case 3: cond =  get_flag(C); 
         break;
     }
+    if (cond) debug.log();
     return cond;
 }
 

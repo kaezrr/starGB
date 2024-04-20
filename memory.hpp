@@ -13,9 +13,11 @@ using s16 = int16_t;
 using u32 = uint32_t;
 using s32 = int32_t;
 
+#define DEBUG
 
 class Memory {
 private:
+#ifndef DEBUG
     array<u8, 32768> rom_banks{};
     array<u8, 8192>  vram{};
     array<u8, 8192>  exram{};
@@ -26,9 +28,15 @@ private:
 
     u8 ie_reg{};
     bool oam_lock{};
+#endif // !DEBUG
+#ifdef DEBUG
+    array<u8, 65536> test_memory{};
+#endif // DEBUG
+
+
 
 public:
     u8 read(u16 at) const;
     void write(u16 at, u8 data);
-
+    void reset();
 };

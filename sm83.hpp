@@ -1,9 +1,11 @@
 #pragma once
 #include "cpu_utils.hpp"
+#include "debug.hpp"
 
 struct CPU {
     Opcode op{};
     Memory& memory;
+    Debugger& debug;
     Registers AF{}, BC{}, DE{}, HL{}, SP{}, PC{};
 
     // Flags
@@ -11,7 +13,7 @@ struct CPU {
     bool IME{};
     bool pending_ime{};
 
-    CPU(Memory& mem) : memory{ mem } {};
+    CPU(Memory& mem, Debugger& deb) : memory{ mem }, debug{ deb } {};
 
     void fetch_opcode();
     void decode_opcode();
