@@ -1,22 +1,25 @@
 #pragma once
 #include "cpu_utils.hpp"
 #include "debug.hpp"
+#include "timer.hpp"
 
 struct CPU {
     Opcode op{};
-    Memory& memory;
-    Debugger& debug;
+    Memory* memory;
+    Timer* timer;
+    Debugger* debug;
     Registers AF{}, BC{}, DE{}, HL{}, SP{}, PC{};
+
+    CPU(Memory* memory_ptr, Timer* timer_ptr, Debugger* debug_ptr = nullptr);
 
     // Flags
     bool hard_lock{};
-    bool IME{};
     bool pending_ime{};
-
-    CPU(Memory& mem, Debugger& deb) : memory{ mem }, debug{ deb } {};
+    bool IME{};
 
     void fetch_opcode();
     void decode_opcode();
+    void tick_others(Log log=Log::null, u16 at=0, u8 data=0);
 
     u8 read_mem(u16 at);
     void write_mem(u16 at, u8 data);

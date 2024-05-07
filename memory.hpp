@@ -2,38 +2,40 @@
 
 #include<cstddef>
 #include<cstdint>
+#include<algorithm>
 #include<vector>
-#include<array>
 
-using std::array;
-using u8 = uint8_t;
-using s8 = int8_t;
+using std::vector;
+using u8  = uint8_t;
+using s8  = int8_t;
 using u16 = uint16_t;
 using s16 = int16_t;
 using u32 = uint32_t;
 using s32 = int32_t;
 
-#define DEBUG
+//#define TEST
+
+constexpr auto DIV  = 0xFF04;
+constexpr auto TIMA = 0xFF05;
+constexpr auto TMA  = 0xFF06;
+constexpr auto TAC  = 0xFF07;
 
 class Memory {
 private:
-#ifndef DEBUG
-    array<u8, 32768> rom_banks{};
-    array<u8, 8192>  vram{};
-    array<u8, 8192>  exram{};
-    array<u8, 8192>  wram{};
-    array<u8, 160>   oam{};
-    array<u8, 128>   io_reg{};
-    array<u8, 127>   hram{};
+#ifndef TEST
+    vector<u8> rom_banks    = vector<u8>(32768);
+    vector<u8> vram         = vector<u8>(8192);
+    vector<u8> exram        = vector<u8>(8192);
+    vector<u8> wram         = vector<u8>(8192);
+    vector<u8> oam          = vector<u8>(160);
+    vector<u8> io_reg       = vector<u8>(128);
+    vector<u8> hram         = vector<u8>(127);
 
     u8 ie_reg{};
     bool oam_lock{};
-#endif // !DEBUG
-#ifdef DEBUG
-    array<u8, 65536> test_memory{};
-#endif // DEBUG
-
-
+#else 
+    vector<u8> test_memory  = vector<u8>(65536);
+#endif
 
 public:
     u8 read(u16 at) const;

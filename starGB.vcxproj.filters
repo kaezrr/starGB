@@ -13,11 +13,11 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source Files\sm83_files">
-      <UniqueIdentifier>{87c64994-171b-4d88-9bd2-322cbb3ad4fe}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\helper_files">
       <UniqueIdentifier>{201e9e87-dbc7-4376-bac6-7c4a71f6e2df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\sm83_src">
+      <UniqueIdentifier>{87c64994-171b-4d88-9bd2-322cbb3ad4fe}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -25,9 +25,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="sm83.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cpu_utils.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="gameboy.hpp">
@@ -39,8 +36,11 @@
     <ClInclude Include="json_tests.hpp">
       <Filter>Header Files\helper_files</Filter>
     </ClInclude>
-    <ClInclude Include="timer.hpp">
+    <ClInclude Include="cpu_utils.hpp">
       <Filter>Header Files\helper_files</Filter>
+    </ClInclude>
+    <ClInclude Include="timer.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -54,13 +54,16 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="instructions.cpp">
-      <Filter>Source Files\sm83_files</Filter>
+      <Filter>Source Files\sm83_src</Filter>
     </ClCompile>
     <ClCompile Include="op_decoder.cpp">
-      <Filter>Source Files\sm83_files</Filter>
+      <Filter>Source Files\sm83_src</Filter>
     </ClCompile>
     <ClCompile Include="sm83.cpp">
-      <Filter>Source Files\sm83_files</Filter>
+      <Filter>Source Files\sm83_src</Filter>
+    </ClCompile>
+    <ClCompile Include="timer.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

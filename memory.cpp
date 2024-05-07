@@ -1,6 +1,6 @@
 #include "memory.hpp"
 
-#ifndef DEBUG
+#ifndef TEST
 static constexpr u16 ROM_S 	    = 0x0000;
 static constexpr u16 ROM_E 	    = 0x7FFF;
 
@@ -29,11 +29,11 @@ static constexpr u16 HRAM_S 	= 0xFF80;
 static constexpr u16 HRAM_E 	= 0xFFFE;
 
 static constexpr u16 IE_REG 	= 0xFFFF;
-#endif // !DEBUG
+#endif // !TEST
 
 
 u8 Memory::read(u16 at) const {
-#ifndef DEBUG
+#ifndef TEST
     if (at >= ROM_S && at <= ROM_E) 	    
         return rom_banks[at - ROM_S];
     
@@ -59,15 +59,14 @@ u8 Memory::read(u16 at) const {
         return hram[at - HRAM_S];
 
     return ie_reg;
-#endif // !DEBUG
-#ifdef DEBUG
+#else
     return test_memory[at];
 #endif
 }
 
 
 void Memory::write(u16 at, u8 data) {
-#ifndef DEBUG
+#ifndef TEST
     if (at >= ROM_S && at <= ROM_E) 	    
         rom_banks[at - ROM_S] = data;
     
@@ -89,33 +88,33 @@ void Memory::write(u16 at, u8 data) {
     else if (at >= FORBID_S && at <= FORBID_E)
         return;
 
-    else if (at >= IO_S && at <= IO_E) 	
-        io_reg[at - IO_S] = data;
+    else if (at >= IO_S && at <= IO_E)
+        io_reg[at - IO_S] = (at != DIV) ? data : 0x00;
 
     else if (at >= HRAM_S && at <= HRAM_E) 	
         hram[at - HRAM_S] = data;
 
     else if (at == IE_REG) 	
         ie_reg = data;
-#endif // !DEBUG
-#ifdef DEBUG
+#else
     test_memory[at] = data;
 #endif
 }
 
 void Memory::reset() {
-#ifndef DEBUG
-    rom_banks.fill(0);
-    vram.fill(0);
-    exram.fill(0);
-    wram.fill(0);
-    oam.fill(0);
-    io_reg.fill(0);
-    hram.fill(0);
+#define reset(arr) std::fill(arr.begin(), arr.end(), static_cast<u8>(0));
+
+#ifndef TEST
+    reset(rom_banks);
+    reset(exram);
+    reset(wram);
+    reset(oam);
+    reset(io_reg);
+    reset(hram);
+
     ie_reg = 0;
     oam_lock = 0;
-#endif // !DEBUG
-#ifdef DEBUG
-    test_memory.fill(0);
+#else
+    reset(test_memory);
 #endif
 }

@@ -2,12 +2,12 @@
 
 #include "memory.hpp"
 #include "sm83.hpp"
-#include "debug.hpp"
+#include "timer.hpp"
 
 struct GameBoy {
     Memory memory{};
-    Debugger debugger{};
-    CPU sm83{ memory, debugger };
+    Timer timer{ &memory };
+    CPU sm83{ &memory, &timer };
 
     void run_instruction() {
         sm83.fetch_opcode();

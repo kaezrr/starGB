@@ -1,23 +1,13 @@
 #pragma once
-#include <chrono> // for std::chrono functions
+#include "memory.hpp"
 
-class Timer
-{
-private:
-	// Type aliases to make accessing nested type easier
-	using Clock = std::chrono::steady_clock;
-	using Second = std::chrono::duration<double, std::ratio<1> >;
+struct Timer {
+    Memory* memory;
+    int cycles_threshold{};
+    int curr_cycles{};
+    bool tima_enable{};
 
-	std::chrono::time_point<Clock> m_beg{ Clock::now() };
-
-public:
-	void reset()
-	{
-		m_beg = Clock::now();
-	}
-
-	double elapsed() const
-	{
-		return std::chrono::duration_cast<Second>(Clock::now() - m_beg).count();
-	}
+    Timer(Memory* mem);
+    void update_timers();
+    void tick();
 };

@@ -1,14 +1,22 @@
 #include "sm83.hpp"
 
+CPU::CPU(Memory* memory_ptr, Timer* timer_ptr, Debugger* debug_ptr)
+    : memory{ memory_ptr }, debug{ debug_ptr }, timer{ timer_ptr } {};
+
+void CPU::tick_others(Log log, u16 at, u8 data) {
+    timer->tick();
+    if (debug != nullptr) debug->log(log, at, data);
+}
+
 u8 CPU::read_mem(u16 at) {
-    auto data = memory.read(at);
-    debug.log(at, data, true);
+    auto data = memory->read(at);
+    tick_others(Log::read, at, data);
     return data;
 }
 
 void CPU::write_mem(u16 at, u8 data) {
-    debug.log(at, data, false);
-    memory.write(at, data);
+    tick_others(Log::write, at, data);
+    memory->write(at, data);
 }
 
 u8 CPU::read_r8(u8 r) {
@@ -81,7 +89,11 @@ void CPU::write_r16mem(u8 r, u8 data) {
 }
 
 void CPU::fetch_opcode() {
-    if (pending_ime) { IME = true; pending_ime = false; }
+    if (IME == false) { 
+        IME = pending_ime; 
+        pending_ime = false;
+    }
+
     op.byte = get_nextu8();
 }
 
@@ -116,7 +128,8 @@ bool CPU::check_cond(u8 r) {
     case 3: cond =  get_flag(C); 
         break;
     }
-    if (cond) debug.log();
+    if (cond) tick_others();
+
     return cond;
 }
 
