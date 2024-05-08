@@ -1,5 +1,5 @@
 #pragma once
-#include "memory.hpp"
+#include "constants.hpp"
 #include <bit>
 
 namespace Masks {

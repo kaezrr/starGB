@@ -1,37 +1,5 @@
 #include "memory.hpp"
 
-#ifndef TEST
-static constexpr u16 ROM_S 	    = 0x0000;
-static constexpr u16 ROM_E 	    = 0x7FFF;
-
-static constexpr u16 VRAM_S 	= 0x8000;
-static constexpr u16 VRAM_E 	= 0x9FFF;
-
-static constexpr u16 EXRAM_S 	= 0xA000;
-static constexpr u16 EXRAM_E 	= 0xBFFF;
-
-static constexpr u16 WRAM_S 	= 0xC000;
-static constexpr u16 WRAM_E 	= 0xDFFF;
-
-static constexpr u16 ECHO_S 	= 0xE000;
-static constexpr u16 ECHO_E 	= 0xFDFF;
-
-static constexpr u16 OAM_S 	    = 0xFE00;
-static constexpr u16 OAM_E 	    = 0xFE9F;
-
-static constexpr u16 FORBID_S 	= 0xFEA0;
-static constexpr u16 FORBID_E 	= 0xFEFF;
-
-static constexpr u16 IO_S 	    = 0xFF00;
-static constexpr u16 IO_E 	    = 0xFF7F;
-
-static constexpr u16 HRAM_S 	= 0xFF80;
-static constexpr u16 HRAM_E 	= 0xFFFE;
-
-static constexpr u16 IE_REG 	= 0xFFFF;
-#endif // !TEST
-
-
 u8 Memory::read(u16 at) const {
 #ifndef TEST
     if (at >= ROM_S && at <= ROM_E) 	    

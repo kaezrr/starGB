@@ -24,9 +24,6 @@
     <ClInclude Include="memory.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="sm83.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="gameboy.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -42,6 +39,12 @@
     <ClInclude Include="timer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="sm83.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="constants.hpp">
+      <Filter>Header Files\helper_files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="memory.cpp">
@@ -53,17 +56,17 @@
     <ClCompile Include="debug.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="instructions.cpp">
+    <ClCompile Include="timer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sm83.cpp">
       <Filter>Source Files\sm83_src</Filter>
     </ClCompile>
     <ClCompile Include="op_decoder.cpp">
       <Filter>Source Files\sm83_src</Filter>
     </ClCompile>
-    <ClCompile Include="sm83.cpp">
+    <ClCompile Include="instructions.cpp">
       <Filter>Source Files\sm83_src</Filter>
-    </ClCompile>
-    <ClCompile Include="timer.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

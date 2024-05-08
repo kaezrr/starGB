@@ -1,7 +1,8 @@
 #include "sm83.hpp"
 
 CPU::CPU(Memory* memory_ptr, Timer* timer_ptr, Debugger* debug_ptr)
-    : memory{ memory_ptr }, debug{ debug_ptr }, timer{ timer_ptr } {};
+    : memory{ memory_ptr },  timer{ timer_ptr }, debug{ debug_ptr } {};
+
 
 void CPU::tick_others(Log log, u16 at, u8 data) {
     timer->tick();
@@ -131,6 +132,41 @@ bool CPU::check_cond(u8 r) {
     if (cond) tick_others();
 
     return cond;
+}
+
+void CPU::handle_interrupts() {
+    u8 enable       = memory->read(IE);
+    u8 flag         = memory->read(IF);
+    u8 interrupts   = flag & enable;
+
+    // check for interrupts
+    if (!interrupts || !IME) return;
+    u8 priority_bit = (1 << std::countr_zero(interrupts));
+
+    // disable further interrupt handling
+    IME = false;
+    memory->write(IF, flag & ~priority_bit);
+
+    tick_others();
+    tick_others();
+
+    // push PC onto stack
+    write_mem(--SP.full, PC.hi);
+    write_mem(--SP.full, PC.lo);
+
+    tick_others();
+    switch (priority_bit) {
+    case VBLANK:
+        PC.full = 0x40; return;
+    case LCD:
+        PC.full = 0x48; return;
+    case TIMER:
+        PC.full = 0x50; return;
+    case SERIAL:
+        PC.full = 0x58; return;
+    case JOYPAD:
+        PC.full = 0x60; return;
+    }
 }
 
 

@@ -28,6 +28,10 @@ void Timer::tick() {
 
     if (!tima_enable) return;
     u16 tima = memory->read(TIMA) + 1;
-    if (tima > 0xFF) tima = memory->read(TMA); // TODO: schedule interrupt
+    if (tima > 0xFF) {
+        tima = memory->read(TMA); 
+        auto flag = memory->read(IF);
+        memory->write(IF, flag | TIMER); // Request timer interrupt
+    }
     memory->write(TIMA, static_cast<u8>(tima));
 }

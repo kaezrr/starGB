@@ -141,21 +141,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="constants.hpp" />
     <ClInclude Include="cpu_utils.hpp" />
     <ClInclude Include="debug.hpp" />
     <ClInclude Include="gameboy.hpp" />
     <ClInclude Include="json_tests.hpp" />
-    <ClInclude Include="sm83.hpp" />
     <ClInclude Include="memory.hpp" />
+    <ClInclude Include="sm83.hpp" />
     <ClInclude Include="timer.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="debug.cpp" />
     <ClCompile Include="instructions.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="sm83.cpp" />
-    <ClCompile Include="op_decoder.cpp" />
     <ClCompile Include="memory.cpp" />
+    <ClCompile Include="op_decoder.cpp" />
+    <ClCompile Include="sm83.cpp" />
     <ClCompile Include="timer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

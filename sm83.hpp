@@ -1,5 +1,8 @@
 #pragma once
+
+#include "constants.hpp"
 #include "cpu_utils.hpp"
+#include "memory.hpp"
 #include "debug.hpp"
 #include "timer.hpp"
 
@@ -19,6 +22,7 @@ struct CPU {
 
     void fetch_opcode();
     void decode_opcode();
+    void handle_interrupts();
     void tick_others(Log log=Log::null, u16 at=0, u8 data=0);
 
     u8 read_mem(u16 at);

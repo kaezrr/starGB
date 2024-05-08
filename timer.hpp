@@ -1,4 +1,5 @@
 #pragma once
+#include "constants.hpp"
 #include "memory.hpp"
 
 struct Timer {
