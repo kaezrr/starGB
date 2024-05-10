@@ -45,6 +45,9 @@
     <ClInclude Include="constants.hpp">
       <Filter>Header Files\helper_files</Filter>
     </ClInclude>
+    <ClInclude Include="ppu.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="memory.cpp">
@@ -67,6 +70,9 @@
     </ClCompile>
     <ClCompile Include="instructions.cpp">
       <Filter>Source Files\sm83_src</Filter>
+    </ClCompile>
+    <ClCompile Include="ppu.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

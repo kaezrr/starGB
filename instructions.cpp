@@ -2,12 +2,15 @@
 
 // Instructions
 void CPU::nop() {
+    return;
 }
 
 void CPU::stop() {
+    return;
 }
 
 void CPU::halt() {
+    halt_mode = true;
 }
 
 void CPU::rlca() {

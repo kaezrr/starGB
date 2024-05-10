@@ -90,6 +90,7 @@ void CPU::write_r16mem(u8 r, u8 data) {
 }
 
 void CPU::fetch_opcode() {
+    if (halt_mode) return;
     if (IME == false) { 
         IME = pending_ime; 
         pending_ime = false;
@@ -140,7 +141,9 @@ void CPU::handle_interrupts() {
     u8 interrupts   = flag & enable;
 
     // check for interrupts
+    if (interrupts) halt_mode = false;
     if (!interrupts || !IME) return;
+
     u8 priority_bit = (1 << std::countr_zero(interrupts));
 
     // disable further interrupt handling

@@ -1,6 +1,7 @@
 #include "sm83.hpp"
 
 void CPU::decode_opcode() {
+    if (halt_mode) return;
     switch (op.byte) { // check for invalid ops or CB prefixed instructions
     case 0xD3:
     case 0xDB:

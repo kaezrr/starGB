@@ -4,12 +4,14 @@
 #include "sm83.hpp"
 #include "timer.hpp"
 #include "debug.hpp"
+#include "ppu.hpp"
 
 struct GameBoy {
-    Memory memory{};
-    Timer timer{ &memory };
+    Memory   memory{};
     Debugger debugger{};
-    CPU sm83{ &memory, &timer, &debugger };
+    Timer    timer{ &memory };
+    PPU      ppu{ &memory };
+    CPU      sm83{ &memory, &timer, &debugger };
 
     void run_instruction() {
         sm83.fetch_opcode();

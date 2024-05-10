@@ -16,9 +16,10 @@ struct CPU {
     CPU(Memory* memory_ptr, Timer* timer_ptr, Debugger* debug_ptr = nullptr);
 
     // Flags
+    bool IME{};
+    bool halt_mode{};
     bool hard_lock{};
     bool pending_ime{};
-    bool IME{};
 
     void fetch_opcode();
     void decode_opcode();

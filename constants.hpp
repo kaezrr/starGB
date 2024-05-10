@@ -9,6 +9,10 @@ using s16   = int16_t;
 using u32   = uint32_t;
 using s32   = int32_t;
 
+constexpr auto PIXEL_SIZE       = 10;
+constexpr auto SCREEN_WIDTH     = 160;
+constexpr auto SCREEN_HEIGHT    = 144;
+
 // Memory components addresses 
 constexpr u16 ROM_S     = 0x0000;
 constexpr u16 ROM_E     = 0x7FFF;
@@ -46,3 +50,17 @@ constexpr u16 LCD       = 0x02;
 constexpr u16 TIMER     = 0x04;
 constexpr u16 SERIAL    = 0x08;
 constexpr u16 JOYPAD    = 0x10;
+
+// PPU registers
+constexpr u16 LCDC      = 0xFF40;
+constexpr u16 STAT      = 0xFF41;
+constexpr u16 SCY       = 0xFF42;
+constexpr u16 SCX       = 0xFF43;
+constexpr u16 LY        = 0xFF44;
+constexpr u16 LYC       = 0xFF45;
+constexpr u16 DMA       = 0xFF46;
+constexpr u16 BGP       = 0xFF47;
+constexpr u16 OBP0      = 0xFF48;
+constexpr u16 OBP1      = 0xFF49;
+constexpr u16 WY        = 0xFF4A;
+constexpr u16 WX        = 0xFF4B;
