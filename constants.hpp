@@ -64,3 +64,6 @@ constexpr u16 OBP0      = 0xFF48;
 constexpr u16 OBP1      = 0xFF49;
 constexpr u16 WY        = 0xFF4A;
 constexpr u16 WX        = 0xFF4B;
+
+constexpr u16 TILE_MAP1 = 0x9800;
+constexpr u16 TILE_MAP2 = 0x9C00;

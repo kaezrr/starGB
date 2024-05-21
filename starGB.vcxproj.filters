@@ -19,11 +19,11 @@
     <Filter Include="Source Files\sm83_src">
       <UniqueIdentifier>{87c64994-171b-4d88-9bd2-322cbb3ad4fe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\cpu">
+      <UniqueIdentifier>{72381171-d723-495c-ba2b-7a268195d33e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="memory.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="gameboy.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -33,19 +33,22 @@
     <ClInclude Include="json_tests.hpp">
       <Filter>Header Files\helper_files</Filter>
     </ClInclude>
-    <ClInclude Include="cpu_utils.hpp">
-      <Filter>Header Files\helper_files</Filter>
-    </ClInclude>
-    <ClInclude Include="timer.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="sm83.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="constants.hpp">
       <Filter>Header Files\helper_files</Filter>
     </ClInclude>
+    <ClInclude Include="cpu_utils.hpp">
+      <Filter>Header Files\cpu</Filter>
+    </ClInclude>
+    <ClInclude Include="sm83.hpp">
+      <Filter>Header Files\cpu</Filter>
+    </ClInclude>
+    <ClInclude Include="memory.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="ppu.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="timer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
