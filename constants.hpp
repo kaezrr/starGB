@@ -67,3 +67,8 @@ constexpr u16 WX        = 0xFF4B;
 
 constexpr u16 TILE_MAP1 = 0x9800;
 constexpr u16 TILE_MAP2 = 0x9C00;
+
+constexpr u16 GB_PALETTE_0 = 0xE0F8D0;
+constexpr u16 GB_PALETTE_1 = 0x88C070;
+constexpr u16 GB_PALETTE_2 = 0x346856;
+constexpr u16 GB_PALETTE_3 = 0x081820;
