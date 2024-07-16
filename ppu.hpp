@@ -14,17 +14,20 @@ struct Sprite {
     Sprite(u16 at, Memory& mem);
 };
 
-enum class Mode {
+enum class PPU_State {
     HBLANK,
     VBLANK,
     OAM_SCAN,
     DRAWING,
 };
 
-enum class Fetcher {
-    state1,
-    state2,
+enum class Fetcher_State {
+    READ_TILE_ID,
+    READ_TILE_DATA0,
+    READ_TILE_DATA1,
+    PUSH_TO_FIFO,
 };
+
 
 struct PPU {
 private:
@@ -32,18 +35,20 @@ private:
     u32 queue_sp{};
     u16 queue_bg{};
 
-    int bg_count{ 0 }, dots{ 0 }, x_pos{ 0 };
-    int curr_sprite_location{ OAM_S };
-    int window_line_counter{};
+    u16 bg_count{ 0 }, dots{ 0 }, x_pos{ 0 };
+    u16 curr_sprite_location{ OAM_S };
+    u16 window_line_counter{};
 
     u16 bg_data{};
     u32 sp_data{};
-    u8 bg_tile_no{};
-    u8 sp_tile_no{};
+    u16 bg_tile_no{};
+    u16 sp_tile_no{};
 
-    Mode mode{ Mode::OAM_SCAN };
+    PPU_State mode{ PPU_State::OAM_SCAN };
+    Fetcher_State fstate{ Fetcher_State::READ_TILE_ID };
+
     vector<Sprite> sprite_buffer;
-    vector<u16> colors{ GB_PALETTE_0, GB_PALETTE_1, GB_PALETTE_2, GB_PALETTE_3 };
+    vector<u32> colors{ GB_PALETTE_0, GB_PALETTE_1, GB_PALETTE_2, GB_PALETTE_3 };
     vector<vector<u32>> display = vector<vector<u32>>(144, vector<u32>(160));
 
     bool wy_cond{}, wx_cond{};
