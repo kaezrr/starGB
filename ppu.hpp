@@ -1,5 +1,8 @@
+#pragma once
+
 #include "constants.hpp"
 #include "memory.hpp"
+#include <SDL.h>
 
 struct Sprite {
     u8 posY{};
@@ -49,12 +52,14 @@ private:
 
     vector<Sprite> sprite_buffer;
     vector<u32> colors{ GB_PALETTE_0, GB_PALETTE_1, GB_PALETTE_2, GB_PALETTE_3 };
-    vector<vector<u32>> display = vector<vector<u32>>(144, vector<u32>(160));
+    array<u32, SCREEN_HEIGHT* SCREEN_WIDTH> display{};
 
     bool wy_cond{}, wx_cond{};
+	SDL_Renderer* renderer{};
+    SDL_Texture* texture{};
 
 public:
-    PPU(Memory* mem_ptr);
+    PPU(Memory* mem_ptr, SDL_Renderer* rend, SDL_Texture* text);
     
     void tick();
     void add_sprite(u16 at);
@@ -75,4 +80,6 @@ public:
     void sp_fetch_tile_data(bool state);
     void sp_push_to_fifo();
     void push_to_display();
+
+    void load_texture();
 };

@@ -1,5 +1,6 @@
 #pragma once
 #include <cstdint>
+#include <cstddef>
 
 // Type aliases
 using u8    = uint8_t;
@@ -8,8 +9,9 @@ using u16   = uint16_t;
 using s16   = int16_t;
 using u32   = uint32_t;
 using s32   = int32_t;
+using size_t = std::size_t;
 
-constexpr auto PIXEL_SIZE       = 10;
+constexpr auto PIXEL_SIZE       = 3;
 constexpr auto SCREEN_WIDTH     = 160;
 constexpr auto SCREEN_HEIGHT    = 144;
 
@@ -72,3 +74,5 @@ constexpr u32 GB_PALETTE_0 = 0xE0F8D0;
 constexpr u32 GB_PALETTE_1 = 0x88C070;
 constexpr u32 GB_PALETTE_2 = 0x346856;
 constexpr u32 GB_PALETTE_3 = 0x081820;
+
+constexpr u16 P1 = 0xFF00;

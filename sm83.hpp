@@ -3,17 +3,19 @@
 #include "constants.hpp"
 #include "cpu_utils.hpp"
 #include "memory.hpp"
-#include "debug.hpp"
 #include "timer.hpp"
+#include "ppu.hpp"
 
 struct CPU {
     Opcode op{};
-    Memory* memory;
-    Timer* timer;
-    Debugger* debug;
+    Memory* memory{};
+    Timer* timer{};
+    PPU* ppu{};
     Registers AF{}, BC{}, DE{}, HL{}, SP{}, PC{};
 
-    CPU(Memory* memory_ptr, Timer* timer_ptr, Debugger* debug_ptr = nullptr);
+    int elapsed_cycles{ 0 };
+
+    CPU(Memory* memory_ptr, Timer* timer_ptr, PPU* ppu_ptr);
 
     // Flags
     bool IME{};
@@ -24,7 +26,7 @@ struct CPU {
     void fetch_opcode();
     void decode_opcode();
     void handle_interrupts();
-    void tick_others(Log log=Log::null, u16 at=0, u8 data=0);
+    void tick_others();
 
     u8 read_mem(u16 at);
     void write_mem(u16 at, u8 data);

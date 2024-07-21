@@ -1,22 +1,23 @@
 #include "sm83.hpp"
 
-CPU::CPU(Memory* memory_ptr, Timer* timer_ptr, Debugger* debug_ptr)
-    : memory{ memory_ptr },  timer{ timer_ptr }, debug{ debug_ptr } {};
+CPU::CPU(Memory* memory_ptr, Timer* timer_ptr, PPU* ppu_ptr)
+    : memory{ memory_ptr }, timer{ timer_ptr }, ppu{ ppu_ptr } {};
 
 
-void CPU::tick_others(Log log, u16 at, u8 data) {
+void CPU::tick_others() {
+    elapsed_cycles++;
     timer->tick();
-    if (debug != nullptr) debug->log(log, at, data);
+    ppu->tick();
 }
 
 u8 CPU::read_mem(u16 at) {
     auto data = memory->read(at);
-    tick_others(Log::read, at, data);
+    tick_others();
     return data;
 }
 
 void CPU::write_mem(u16 at, u8 data) {
-    tick_others(Log::write, at, data);
+    tick_others();
     memory->write(at, data);
 }
 

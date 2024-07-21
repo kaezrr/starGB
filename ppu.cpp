@@ -13,7 +13,8 @@ Sprite::Sprite(u16 at, Memory& mem) {
 }
 
 
-PPU::PPU(Memory* mem_ptr) : memory{mem_ptr} {
+PPU::PPU(Memory* mem_ptr, SDL_Renderer* rend, SDL_Texture* text) 
+    : memory{ mem_ptr }, renderer{ rend }, texture{ text } {
     sprite_buffer.reserve(10);
 }
 
@@ -52,6 +53,7 @@ void PPU::tick() {
         drawing();
         break;
     }
+    update_mode();
 }
 
 void PPU::drawing() {
@@ -100,7 +102,10 @@ void PPU::hblank() {
     increment_ly();
     // Update Mode
     mode = (memory->read(LY) < 144) ? PPU_State::OAM_SCAN : PPU_State::VBLANK;
-    if (mode == PPU_State::VBLANK) window_line_counter = 0;
+    if (mode == PPU_State::VBLANK) {
+        window_line_counter = 0;
+        load_texture();
+    }
 }
 
 void PPU::vblank() {
@@ -227,5 +232,16 @@ void PPU::push_to_display() {
         select = (sp_pixel >> 2) & 0x3;
         palette = (sp_pixel & 0x2) ? OBP1 : OBP0;
     }
-    display[memory->read(LY)][x_pos++] = colors[(memory->read(palette) >> (select * 2)) & 0x3];
+    display[memory->read(LY) * SCREEN_HEIGHT + x_pos++] = colors[(memory->read(palette) >> (select * 2)) & 0x3];
+}
+
+
+void PPU::load_texture() {
+    int pitch = SCREEN_WIDTH * SCREEN_HEIGHT;
+    u32* pixels{};
+	SDL_LockTexture(texture, nullptr, reinterpret_cast<void**>(pixels), &pitch);
+    pixels = display.data();
+    SDL_UnlockTexture(texture);
+    SDL_RenderCopy(renderer, texture, nullptr, nullptr);
+    SDL_RenderPresent(renderer);
 }

@@ -2,12 +2,13 @@
 
 #include<algorithm>
 #include<vector>
+#include<array>
 #include "constants.hpp"
 
 using std::vector;
+using std::array;
 
-class Memory {
-private:
+struct Memory {
 #ifndef TEST
     vector<u8> rom_banks    = vector<u8>(0x8000);
     vector<u8> vram         = vector<u8>(0x2000);
@@ -23,7 +24,6 @@ private:
     vector<u8> test_memory  = vector<u8>(0x10000);
 #endif
 
-public:
     u8 read(u16 at) const;
     void write(u16 at, u8 data);
     void reset();

@@ -151,12 +151,14 @@
     <ClInclude Include="gameboy.hpp" />
     <ClInclude Include="json_tests.hpp" />
     <ClInclude Include="memory.hpp" />
+    <ClInclude Include="mnemonic.hpp" />
     <ClInclude Include="ppu.hpp" />
     <ClInclude Include="sm83.hpp" />
     <ClInclude Include="timer.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="debug.cpp" />
+    <ClCompile Include="gameboy.cpp" />
     <ClCompile Include="instructions.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="memory.cpp" />
