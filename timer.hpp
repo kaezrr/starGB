@@ -4,11 +4,11 @@
 
 struct Timer {
     Memory* memory;
-    int cycles_threshold{};
-    int curr_cycles{};
-    bool tima_enable{};
+    u8 overflow_cycles{};
+    bool prev_result{}, pending_overflow{};
 
     Timer(Memory* mem);
-    void update_timers();
     void tick();
+    void t_tick();
+    void overflow();
 };

@@ -10,12 +10,17 @@
 #include <fstream>
 #include <SDL.h>
 
+//#define LOG
+
 struct GameBoy {
     PPU      ppu;
     Memory   memory{};
-    Debugger debugger{};
     Timer    timer{ &memory };
     CPU      sm83{ &memory, &timer, &ppu };
+
+#ifdef LOG
+    Debugger debugger{};
+#endif // DEBUG
 
     bool enabled{};
 

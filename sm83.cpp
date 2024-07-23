@@ -7,7 +7,7 @@ CPU::CPU(Memory* memory_ptr, Timer* timer_ptr, PPU* ppu_ptr)
 void CPU::tick_others() {
     elapsed_cycles++;
     timer->tick();
-    ppu->tick();
+    //ppu->tick();
 }
 
 u8 CPU::read_mem(u16 at) {

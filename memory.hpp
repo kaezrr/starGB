@@ -19,7 +19,8 @@ struct Memory {
     vector<u8> hram         = vector<u8>(0x007F);
 
     u8 ie_reg{};
-    bool oam_lock{};
+    u16 sys_clock{};
+    bool oam_lock{}, tima_watch{}, tima_write{};
 #else 
     vector<u8> test_memory  = vector<u8>(0x10000);
 #endif

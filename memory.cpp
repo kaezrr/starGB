@@ -20,8 +20,10 @@ u8 Memory::read(u16 at) const {
     if (at >= FORBID_S && at <= FORBID_E)
         return (oam_lock) ? 0xFF : 0x00;
 
-    if (at >= IO_S && at <= IO_E) 	
+    if (at >= IO_S && at <= IO_E) {
+        if (at == DIV) return (sys_clock >> 8);
         return io_reg[at - IO_S];
+    }
 
     if (at >= HRAM_S && at <= HRAM_E)
         return hram[at - HRAM_S];
@@ -35,6 +37,8 @@ u8 Memory::read(u16 at) const {
 
 void Memory::write(u16 at, u8 data) {
 #ifndef TEST
+    if (tima_watch && !tima_write) tima_write = (at == TIMA);
+
     if (at >= ROM_S && at <= ROM_E) 	    
         rom_banks[at - ROM_S] = data;
     
@@ -56,8 +60,10 @@ void Memory::write(u16 at, u8 data) {
     else if (at >= FORBID_S && at <= FORBID_E)
         return;
 
-    else if (at >= IO_S && at <= IO_E)
-        io_reg[at - IO_S] = (at != DIV) ? data : 0x00;
+    else if (at >= IO_S && at <= IO_E) {
+        if (at == DIV) sys_clock = 0;
+        else io_reg[at - IO_S] = data;
+    }
 
     else if (at >= HRAM_S && at <= HRAM_E) 	
         hram[at - HRAM_S] = data;

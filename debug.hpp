@@ -5,6 +5,7 @@
 #include <string>
 #include <format>
 #include <fstream>
+#include <algorithm>
 #include "sm83.hpp"
 #include "memory.hpp"
 
@@ -15,4 +16,5 @@ struct Debugger {
 
     void write_text_log(const CPU& sm83, const Memory& mem);
     void print_cpu_mem(const CPU& sm83, const Memory& mem);
+    void write_match_log(const CPU& sm83, const Memory& mem);
 };

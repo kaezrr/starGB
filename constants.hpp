@@ -75,4 +75,6 @@ constexpr u32 GB_PALETTE_1 = 0x88C070;
 constexpr u32 GB_PALETTE_2 = 0x346856;
 constexpr u32 GB_PALETTE_3 = 0x081820;
 
-constexpr u16 P1 = 0xFF00;
+// Serial Data Transfer registers
+constexpr u16 SB = 0xFF01;
+constexpr u16 SC = 0xFF02;

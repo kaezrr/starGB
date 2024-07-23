@@ -365,3 +365,5 @@ FodyWeavers.xsd
 roms/
 
 json_tests/
+
+log_dump.txt

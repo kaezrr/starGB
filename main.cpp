@@ -6,6 +6,8 @@
 #include <iostream>
 #include "gameboy.hpp"
 
+#define LOG
+
 int main(int, char*[]) {
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
 
@@ -18,7 +20,7 @@ int main(int, char*[]) {
 
     static GameBoy GB{ renderer, texture };
 
-    GB.load_game("roms/mario.gb");
+    GB.load_game("roms/02-interrupts.gb");
     GB.start();
 
     SDL_DestroyTexture(texture);
