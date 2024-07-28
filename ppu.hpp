@@ -3,6 +3,7 @@
 #include "constants.hpp"
 #include "memory.hpp"
 #include <SDL.h>
+#include <queue>
 
 struct Sprite {
     u8 posY{};
@@ -14,7 +15,7 @@ struct Sprite {
     bool flipX{};
     bool palette{};
 
-    Sprite(u16 at, Memory& mem);
+    Sprite(u16 at, Memory* mem);
 };
 
 enum class PPU_State {
@@ -40,7 +41,7 @@ private:
 
     u16 bg_count{ 0 }, dots{ 0 }, x_pos{ 0 };
     u16 curr_sprite_location{ OAM_S };
-    u16 window_line_counter{};
+    u16 window_line_counter{ 0 };
 
     u16 bg_data{};
     u32 sp_data{};
@@ -51,8 +52,8 @@ private:
     Fetcher_State fstate{ Fetcher_State::READ_TILE_ID };
 
     vector<Sprite> sprite_buffer;
-    vector<u32> colors{ GB_PALETTE_0, GB_PALETTE_1, GB_PALETTE_2, GB_PALETTE_3 };
-    array<u32, SCREEN_HEIGHT* SCREEN_WIDTH> display{};
+    array<u32, 4> colors{ GB_PALETTE_0, GB_PALETTE_1, GB_PALETTE_2, GB_PALETTE_3 };
+    array<u32, SCREEN_HEIGHT * SCREEN_WIDTH> display{};
 
     bool wy_cond{}, wx_cond{};
 	SDL_Renderer* renderer{};
@@ -64,8 +65,7 @@ public:
     void tick();
     void add_sprite(u16 at);
     bool display_window();
-    void update_lyc();
-    void update_mode();
+    void update_stat();
     void increment_ly();
 
     void oam_scan();
@@ -75,7 +75,7 @@ public:
 
     void bg_fetch_tile_no();
     void bg_fetch_tile_data(bool state);
-    void bg_push_to_fifo();
+    bool bg_push_to_fifo();
     bool sp_fetch_tile_no();
     void sp_fetch_tile_data(bool state);
     void sp_push_to_fifo();

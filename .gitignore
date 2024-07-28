@@ -363,7 +363,6 @@ MigrationBackup/
 FodyWeavers.xsd
 
 roms/
-
 json_tests/
-
 log_dump.txt
+vram.txt

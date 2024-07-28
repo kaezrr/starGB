@@ -1,13 +1,13 @@
 #include "sm83.hpp"
+#include <iostream>
 
 CPU::CPU(Memory* memory_ptr, Timer* timer_ptr, PPU* ppu_ptr)
     : memory{ memory_ptr }, timer{ timer_ptr }, ppu{ ppu_ptr } {};
 
-
 void CPU::tick_others() {
     elapsed_cycles++;
     timer->tick();
-    //ppu->tick();
+    ppu->tick();
 }
 
 u8 CPU::read_mem(u16 at) {
@@ -91,7 +91,7 @@ void CPU::write_r16mem(u8 r, u8 data) {
 }
 
 void CPU::fetch_opcode() {
-    if (halt_mode) return;
+    if (halt_mode) return tick_others();
     if (IME == false) { 
         IME = pending_ime; 
         pending_ime = false;
