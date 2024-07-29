@@ -35,6 +35,7 @@ enum class Fetcher_State {
 
 struct PPU {
 private:
+
     Memory* memory{};
     u32 queue_sp{};
     u16 queue_bg{};
@@ -55,7 +56,7 @@ private:
     array<u32, 4> colors{ GB_PALETTE_0, GB_PALETTE_1, GB_PALETTE_2, GB_PALETTE_3 };
     array<u32, SCREEN_HEIGHT * SCREEN_WIDTH> display{};
 
-    bool wy_cond{}, wx_cond{};
+    bool wy_cond{}, wx_cond{}, delay{};
 	SDL_Renderer* renderer{};
     SDL_Texture* texture{};
 

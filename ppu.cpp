@@ -11,8 +11,8 @@ bool PPU::display_window() {
 
 void PPU::update_stat() {
     u8 stat = memory->read(STAT);
-    u8 mask1 = 0xFB & ((memory->read(LY) == memory->read(LYC)) << 1);
-    u8 mask2 = 0xFC & static_cast<u8>(mode);
+    u8 mask1 = 0xFB | ((memory->read(LY) == memory->read(LYC)) << 2);
+    u8 mask2 = 0xFC | static_cast<u8>(mode);
     memory->write(STAT, stat & mask1 & mask2);
 }
 
@@ -50,7 +50,10 @@ void PPU::drawing() {
         fstate = Fetcher_State::PUSH_TO_FIFO;
         break;
     case Fetcher_State::PUSH_TO_FIFO:
-        if (bg_push_to_fifo()) 
+        if (delay) { // initial fifo load 
+            fstate = Fetcher_State::READ_TILE_ID;
+            delay = false; return;
+        } else if (bg_push_to_fifo()) 
             fstate = Fetcher_State::READ_TILE_ID;
         break;
     }
@@ -68,6 +71,7 @@ void PPU::oam_scan() {
     if (dots < 80) return;
     x_pos = 0;
     mode = PPU_State::DRAWING;
+    delay = true;
 }
 
 void PPU::hblank() {

@@ -59,4 +59,5 @@ void GameBoy::no_boot_rom() {
 	sm83.PC.full = 0x0100;
 	sm83.SP.full = 0xFFFE;
 	memory.write(STAT, 0x80);
+	memory.write(BGP, 0xE4);
 }
