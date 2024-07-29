@@ -78,3 +78,6 @@ constexpr u32 GB_PALETTE_3 = 0x081820;
 // Serial Data Transfer registers
 constexpr u16 SB = 0xFF01;
 constexpr u16 SC = 0xFF02;
+
+// Joypad
+constexpr u16 JOYP = 0xFF00;

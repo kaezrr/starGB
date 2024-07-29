@@ -16,7 +16,7 @@ int main(int, char*[]) {
     SDL_Texture* texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB888,
         SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-    //SDL_SetWindowAlwaysOnTop(window, SDL_TRUE);
+    SDL_SetWindowAlwaysOnTop(window, SDL_TRUE);
 
     static GameBoy GB{ renderer, texture };
 

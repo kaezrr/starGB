@@ -1,4 +1,5 @@
 #include "ppu.hpp"
+#include <iostream>
 
 void PPU::bg_fetch_tile_no() {
     u16 ly = memory->read(LY);
@@ -27,6 +28,6 @@ void PPU::bg_fetch_tile_data(bool state) {
 
 bool PPU::bg_push_to_fifo() {
     if (bg_count) return false;
-    queue_bg = bg_data; bg_count = 8;
+    queue_bg = bg_data; bg_count = 8; bg_data = 0;
     return true;
 }

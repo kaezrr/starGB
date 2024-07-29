@@ -1,4 +1,5 @@
 #include "ppu.hpp"
+#include <iostream>
 
 PPU::PPU(Memory* mem_ptr, SDL_Renderer* rend, SDL_Texture* text) 
     : memory{ mem_ptr }, renderer{ rend }, texture{ text } {
@@ -50,10 +51,7 @@ void PPU::drawing() {
         fstate = Fetcher_State::PUSH_TO_FIFO;
         break;
     case Fetcher_State::PUSH_TO_FIFO:
-        if (delay) { // initial fifo load 
-            fstate = Fetcher_State::READ_TILE_ID;
-            delay = false; return;
-        } else if (bg_push_to_fifo()) 
+        if (bg_push_to_fifo()) 
             fstate = Fetcher_State::READ_TILE_ID;
         break;
     }
@@ -103,7 +101,8 @@ void PPU::push_to_display() {
     u8 bg_pixel = (u8)(queue_bg >> 14); // pop 2 bits from the front
     queue_bg <<= 2; --bg_count;
     u16 select = bg_pixel, palette = BGP; // select appropriate color from palette
-    display[memory->read(LY) * SCREEN_WIDTH + x_pos++] = colors[(memory->read(palette) >> (select * 2)) & 0x3];
+    u32 col = colors[(memory->read(palette) >> (select * 2)) & 0x3];
+    display[memory->read(LY) * SCREEN_WIDTH + x_pos++] = col;
 }
 
 void PPU::load_texture() {
