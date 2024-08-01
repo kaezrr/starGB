@@ -3,7 +3,6 @@
 #include "constants.hpp"
 #include "memory.hpp"
 #include <SDL.h>
-#include <queue>
 
 struct Sprite {
     u8 posY{};
@@ -40,9 +39,8 @@ private:
     u32 queue_sp{};
     u16 queue_bg{};
 
-    u16 bg_count{ 0 }, dots{ 0 }, x_pos{ 0 };
-    u16 curr_sprite_location{ OAM_S };
-    u16 window_line_counter{ 0 };
+    u16 bg_count{ 0 }, dots{ 0 }, x_pos{ 0 }, tile_index{ 0 };
+    u16 curr_sprite_location{ OAM_S }, window_line_counter{ 0 };
 
     u16 bg_data{};
     u32 sp_data{};
@@ -62,6 +60,15 @@ private:
 
 public:
     PPU(Memory* mem_ptr, SDL_Renderer* rend, SDL_Texture* text);
+
+    void load_texture();
+    inline size_t pixel_pos(int x, int y);
+
+    inline u8 ly();
+    inline u8 wy();
+    inline u8 wx();
+    inline u8 scx();
+    inline u8 scy();
     
     void tick();
     void add_sprite(u16 at);
@@ -82,5 +89,4 @@ public:
     void sp_push_to_fifo();
     void push_to_display();
 
-    void load_texture();
 };

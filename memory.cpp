@@ -1,7 +1,9 @@
 #include "memory.hpp"
 
 u8 Memory::read(u16 at) const {
-#ifndef TEST
+    if (at < 0x100 && execute_boot)
+        return boot_rom[at];
+
     if (at >= ROM_S && at <= ROM_E) 	    
         return rom_banks[at - ROM_S];
 
@@ -23,21 +25,23 @@ u8 Memory::read(u16 at) const {
     if (at >= IO_S && at <= IO_E) {
         if (at == DIV) 
             return (sys_clock >> 8); // DIV register is the upper 8 bits of the system clock
+        if (at == JOYP) 
+            return 0xFF;
         return io_reg[at - IO_S];
     }
 
     if (at >= HRAM_S && at <= HRAM_E)
         return hram[at - HRAM_S];
     return ie_reg;
-#else
-    return test_memory[at];
-#endif
 }
 
 
 void Memory::write(u16 at, u8 data) {
-#ifndef TEST
-    if (tima_watch && !tima_write) tima_write = (at == TIMA);
+    if (execute_boot && at == 0xFF50)
+        execute_boot = false;
+
+    if (tima_watch && !tima_write) 
+        tima_write = (at == TIMA);
 
     if (at >= ROM_S && at <= ROM_E) 	    
         rom_banks[at - ROM_S] = data;
@@ -77,16 +81,12 @@ void Memory::write(u16 at, u8 data) {
 
     else if (at == IE_REG) 	
         ie_reg = data;
-#else
-    test_memory[at] = data;
-#endif
 }
 
 void Memory::reset() {
 #define reset(arr) std::fill(arr.begin(), arr.end(), static_cast<u8>(0));
-
-#ifndef TEST
     reset(rom_banks);
+    reset(boot_rom);
     reset(exram);
     reset(wram);
     reset(oam);
@@ -95,7 +95,7 @@ void Memory::reset() {
 
     ie_reg = 0;
     oam_lock = 0;
-#else
-    reset(test_memory);
-#endif
+    tima_watch = 0;
+    tima_write = 0;
+    execute_boot = 0;
 }

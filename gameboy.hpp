@@ -5,6 +5,7 @@
 #include "timer.hpp"
 #include "debug.hpp"
 #include "ppu.hpp"
+
 #include <iostream>
 #include <chrono>
 #include <fstream>
@@ -30,6 +31,7 @@ struct GameBoy {
     void start();
     void no_boot_rom();
     void load_game(const string& path);
+    void load_boot(const string& path);
 };
 
 // delta function to measure elapsed time

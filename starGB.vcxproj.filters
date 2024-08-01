@@ -45,13 +45,13 @@
     <ClInclude Include="memory.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ppu.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="timer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mnemonic.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ppu.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -84,9 +84,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ppu_sp.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ppu_bg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
