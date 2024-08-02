@@ -25,8 +25,9 @@ void GameBoy::start() {
 				break;
 			}
 		}
-		while (sm83.elapsed_cycles < 70224)   // 70224 cycles per frame ~ 4.19MHz
+		while (sm83.elapsed_cycles < 70224) {   // 70224 cycles per frame ~ 4.19MHz
 			run_instruction();
+		}
 
 		auto delay = 16 - since(start).count(); 		
 		if (delay <= 0) continue;

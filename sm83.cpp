@@ -1,5 +1,4 @@
 #include "sm83.hpp"
-#include <iostream>
 
 CPU::CPU(Memory* memory_ptr, Timer* timer_ptr, PPU* ppu_ptr)
     : memory{ memory_ptr }, timer{ timer_ptr }, ppu{ ppu_ptr } {};

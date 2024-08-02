@@ -1,15 +1,15 @@
 #pragma once
 
-#include "memory.hpp"
-#include "sm83.hpp"
-#include "timer.hpp"
-#include "debug.hpp"
-#include "ppu.hpp"
-
-#include <iostream>
+#include <SDL.h>
 #include <chrono>
 #include <fstream>
-#include <SDL.h>
+#include <iostream>
+
+#include "ppu.hpp"
+#include "sm83.hpp"
+#include "debug.hpp"
+#include "timer.hpp"
+#include "memory.hpp"
 
 //#define LOG
 
@@ -18,13 +18,10 @@ struct GameBoy {
     Memory   memory{};
     Timer    timer{ &memory };
     CPU      sm83{ &memory, &timer, &ppu };
-
+    bool enabled{};
 #ifdef LOG
     Debugger debugger{};
 #endif // DEBUG
-
-    bool enabled{};
-
     GameBoy(SDL_Renderer* renderer, SDL_Texture* texture);
 
     void run_instruction();
@@ -40,7 +37,6 @@ template <
     class clock_t = std::chrono::steady_clock,
     class duration_t = std::chrono::milliseconds
 >
-auto since(std::chrono::time_point<clock_t, duration_t> const& start)
-{
+auto since(std::chrono::time_point<clock_t, duration_t> const& start) {
     return std::chrono::duration_cast<result_t>(clock_t::now() - start);
 }

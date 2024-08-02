@@ -1,8 +1,9 @@
 #pragma once
 
-#include<algorithm>
-#include<vector>
 #include<array>
+#include<vector>
+#include<algorithm>
+
 #include "constants.hpp"
 
 using std::vector;
@@ -23,7 +24,8 @@ struct Memory {
     bool oam_lock{}, execute_boot{}; 
     bool tima_watch{}, tima_write{};
 
+    void reset();
     u8 read(u16 at) const;
     void write(u16 at, u8 data);
-    void reset();
+    static void update_read_only(u8& original, u8 data, u8 mask);
 };

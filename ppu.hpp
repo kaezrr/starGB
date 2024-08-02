@@ -1,8 +1,8 @@
 #pragma once
 
-#include "constants.hpp"
-#include "memory.hpp"
 #include <SDL.h>
+#include "memory.hpp"
+#include "constants.hpp"
 
 struct Sprite {
     u8 posY{};
@@ -69,6 +69,9 @@ public:
     inline u8 wx();
     inline u8 scx();
     inline u8 scy();
+    inline u8 lyc();
+    inline u8 lcdc();
+    inline u8 stat();
     
     void tick();
     void add_sprite(u16 at);
@@ -88,5 +91,4 @@ public:
     void sp_fetch_tile_data(bool state);
     void sp_push_to_fifo();
     void push_to_display();
-
 };

@@ -25,8 +25,10 @@ u8 Memory::read(u16 at) const {
     if (at >= IO_S && at <= IO_E) {
         if (at == DIV) 
             return (sys_clock >> 8); // DIV register is the upper 8 bits of the system clock
+
         if (at == JOYP) 
             return 0xFF;
+
         return io_reg[at - IO_S];
     }
 
@@ -42,9 +44,6 @@ void Memory::write(u16 at, u8 data) {
 
     if (tima_watch && !tima_write) 
         tima_write = (at == TIMA);
-
-    if (at >= ROM_S && at <= ROM_E) 	    
-        rom_banks[at - ROM_S] = data;
 
     else if (at >= VRAM_S && at <= VRAM_E) 	
         vram[at - VRAM_S] = data;
@@ -65,15 +64,18 @@ void Memory::write(u16 at, u8 data) {
         return;
 
     else if (at >= IO_S && at <= IO_E) {
-        if (at == DIV) 
+        if (at == DIV) {
             sys_clock = 0; // writing to system clock resets it
-        if (at == JOYP) {
-            if (data == 0x30) 
-                io_reg[at - IO_S] = 0x3F; 
-            else 
-                io_reg[at - IO_S] |= (data & 0xF0); // make lower nibble read-only
-        } else 
+
+        } else if (at == JOYP) {
+            update_read_only(io_reg[at - IO_S], data, 0x0F);
+
+        } else if (at == STAT) {
+            update_read_only(io_reg[at - IO_S], data | 0x80, 0x07);
+
+        } else {
             io_reg[at - IO_S] = data;
+        }
     }
 
     else if (at >= HRAM_S && at <= HRAM_E) 	
@@ -92,10 +94,15 @@ void Memory::reset() {
     reset(oam);
     reset(io_reg);
     reset(hram);
-
     ie_reg = 0;
     oam_lock = 0;
     tima_watch = 0;
     tima_write = 0;
     execute_boot = 0;
 }
+
+// Updates original with data except the read-only bits specified by the mask
+void Memory::update_read_only(u8& original, u8 data, u8 mask) {
+    original = (original & mask) | (data & ~mask);
+}
+
