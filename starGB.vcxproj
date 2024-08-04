@@ -164,6 +164,7 @@
     <ClCompile Include="memory.cpp" />
     <ClCompile Include="op_decoder.cpp" />
     <ClCompile Include="ppu.cpp" />
+    <ClCompile Include="ppu_bg.cpp" />
     <ClCompile Include="ppu_sp.cpp" />
     <ClCompile Include="sm83.cpp" />
     <ClCompile Include="timer.cpp" />

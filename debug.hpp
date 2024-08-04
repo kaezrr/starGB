@@ -18,4 +18,5 @@ struct Debugger {
     void print_cpu_mem(const CPU& sm83, const Memory& mem);
     void write_match_log(const CPU& sm83, const Memory& mem);
     void log_vram(const Memory& mem);
+    void log_oam(const Memory& mem); 
 };

@@ -2,26 +2,27 @@
 
 Sprite::Sprite(u16 at, Memory* mem) {
     if (at < OAM_S || at > OAM_E) return;
-    posY            = mem->read(at + 0);
-    posX            = mem->read(at + 1);
-    tile_id         = mem->read(at + 2);
-    u8 flag         = mem->read(at + 3);
+    posY            = mem->oam[at + 0 - OAM_S];
+    posX            = mem->oam[at + 1 - OAM_S];
+    tile_id         = mem->oam[at + 2 - OAM_S];
+    u8 flag         = mem->oam[at + 3 - OAM_S];
     obj_priority    = flag & 0x80;
     flipY           = flag & 0x40;
     flipX           = flag & 0x20;
     palette         = flag & 0x10;
 }
 
-void PPU::add_sprite(u16 at) {
+void PPU::add_sprite() {
     if (sprite_buffer.size() >= 10) return;
-    int ly_check = memory->read(LY) + 16;
-    int s_height = (memory->read(LCDC) & 0x04) ? 16 : 8;
-    int posy = memory->read(at + 0);
-    int posx = memory->read(at + 1);
+    int ly_check = ly() + 16;
+    int s_height = (lcdc() & 0x04) ? 16 : 8;
+    int posy = oam(curr_sprite_location + 0);
+    int posx = oam(curr_sprite_location + 1);
 
     // Add sprite if the below conditions apply
     if (posx > 0 && ly_check >= posy && ly_check < posy + s_height)
-        sprite_buffer.emplace_back(at, memory);
+        sprite_buffer.emplace_back(curr_sprite_location, memory);
+    curr_sprite_location += 4;
 }
 
 bool PPU::sp_fetch_tile_no() {
@@ -55,6 +56,6 @@ void PPU::sp_fetch_tile_data(bool state) {
 void PPU::sp_push_to_fifo() {
     u32 mask = ~queue_sp & (~queue_sp << 1) & 0x88888888;
     mask = (mask << 1) - (mask >> 3);
-    queue_sp |= sp_data & mask;
+    queue_sp |= sp_data & mask; sp_count = 8;
 }
 

@@ -46,3 +46,15 @@ void Debugger::log_vram(const Memory& mem) {
         vram << '\n';
     }
 }
+
+void Debugger::log_oam(const Memory& mem) {
+    std::ofstream oam{ "oam.txt" };
+    for (u16 i = OAM_S; i <= OAM_E; i += 0x10) {
+        oam << std::format("{:04x}:", i);
+        for (u16 j = i; j < i + 16; j++) {
+            oam << std::format(" {:02x}", mem.read(j));
+        }
+        oam << '\n';
+    }
+}
+
