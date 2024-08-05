@@ -57,6 +57,9 @@
     <ClInclude Include="timer.hpp">
       <Filter>Header Files\cpu</Filter>
     </ClInclude>
+    <ClInclude Include="fetcher.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="memory.cpp">
@@ -83,14 +86,11 @@
     <ClCompile Include="ppu.cpp">
       <Filter>Source Files\ppu_src</Filter>
     </ClCompile>
-    <ClCompile Include="ppu_bg.cpp">
-      <Filter>Source Files\ppu_src</Filter>
-    </ClCompile>
-    <ClCompile Include="ppu_sp.cpp">
-      <Filter>Source Files\ppu_src</Filter>
-    </ClCompile>
     <ClCompile Include="timer.cpp">
       <Filter>Source Files\sm83_src</Filter>
+    </ClCompile>
+    <ClCompile Include="fetcher.cpp">
+      <Filter>Source Files\ppu_src</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

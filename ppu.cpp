@@ -2,23 +2,19 @@
 #include <iostream>
 
 PPU::PPU(Memory* mem_ptr, SDL_Renderer* rend, SDL_Texture* text) 
-    : memory{ mem_ptr }, renderer{ rend }, texture{ text } {
-    sprite_buffer.reserve(10);
+    : memory{ mem_ptr }, renderer{ rend }, texture{ text }, fetcher{ mem_ptr } {
 }
 
 void PPU::increment_ly() { 
     ++memory->io_reg[LY - IO_S]; 
+    fetcher.inc_windowline();
+    if (ly() == wy()) fetcher.wy_cond = true;
     if (stat() & 0x40 && ly() == lyc()) req_interrupt(LCD);
-    window_line_counter += increment_window; increment_window = false;
 }
 
 void PPU::update_stat() {
     u8 data = ((ly() == lyc()) << 2) | static_cast<u8>(mode);
     Memory::update_read_only(memory->io_reg[STAT - IO_S], data, 0xF8);
-}
-
-bool PPU::display_window() {
-    return (x_pos >= wx() - 7) && wy_cond && (lcdc() & 0x20);
 }
 
 void PPU::load_texture() {
@@ -31,7 +27,6 @@ void PPU::load_texture() {
     SDL_RenderPresent(renderer);
 }
 
-
 void PPU::tick() { // tick for 4 t-cycles
     if (!(lcdc() & 0x80)) return;
     switch (mode) {
@@ -39,48 +34,22 @@ void PPU::tick() { // tick for 4 t-cycles
         break;
     case PPU_State::VBLANK: vblank();
         break;
-    case PPU_State::OAM_SCAN: oam_scan();
+    case PPU_State::OAM_SCAN: oam_scan(); oam_scan();
         break;
     case PPU_State::DRAWING: drawing(); drawing();
         break;
     }
-    if (ly() == wy()) wy_cond = true;
     update_stat();
 }
 
 void PPU::drawing() {
     dots += 2;
-    switch (fstate) {
-    case Fetcher_State::READ_TILE_ID: 
-        bg_fetch_tile_no();
-        fstate = Fetcher_State::READ_TILE_DATA0;
-        break;
-
-    case Fetcher_State::READ_TILE_DATA0: 
-        bg_fetch_tile_data(false);
-        fstate = Fetcher_State::READ_TILE_DATA1;
-        break;
-
-    case Fetcher_State::READ_TILE_DATA1:
-        bg_fetch_tile_data(true);
-        fstate = Fetcher_State::PUSH_TO_FIFO;
-        break;
-
-    case Fetcher_State::PUSH_TO_FIFO:
-        if (delay) {
-            fstate = Fetcher_State::READ_TILE_ID;
-            delay = false; bg_data = 0;
-        } else if (bg_push_to_fifo()) {
-            fstate = Fetcher_State::READ_TILE_ID;
-            tile_index += 8;
-        }
-        break;
-    }
+    fetcher.bg_tick();
 
     push_to_display();
     push_to_display();
-    if (x_pos >= 160) {
-        fstate = Fetcher_State::READ_TILE_ID;
+    if (fetcher.x_pos >= 160) {
+        fetcher.bg_state = Fetcher_State::READ_TILE_ID;
         mode = PPU_State::HBLANK;
         if (stat() & 0x08) req_interrupt(LCD);
     }
@@ -88,48 +57,81 @@ void PPU::drawing() {
 
 void PPU::oam_scan() {
     add_sprite();
-    add_sprite();
-    dots += 4;
+    dots += 2;
     if (dots < 80) return;
 
-    // Reset all fetcher properties
+    scx_discard = true;
     mode = PPU_State::DRAWING;
-    x_pos = 0; tile_index = 0;
-    bg_data = 0; bg_count = 0;
-    queue_bg = 0; queue_sp = 0;
-    delay = true; scx_discard = true;
-    fetch_window = false;
 }
 
 void PPU::hblank() {
     dots += 4;
     if (dots < 456) return;
+
     dots = 0; 
     increment_ly();
     if (ly() == 144) {
         load_texture();
-        window_line_counter = 0;
         mode = PPU_State::VBLANK;
         req_interrupt(VBLANK);
         if (stat() & 0x10) req_interrupt(LCD);
     } else {
+        fetcher.new_line();
         mode = PPU_State::OAM_SCAN;
         if (stat() & 0x20) req_interrupt(LCD);
         curr_sprite_location = OAM_S;
-        sprite_buffer.clear();
     }
 }
 
 void PPU::vblank() {
     dots += 4;
     if (dots < 456) return;
+
     dots = 0; 
     increment_ly();
     if (ly() == 153) { // Next frame
-        memory->io_reg[LY - IO_S] = 0;
-        wy_cond = false; mode = PPU_State::OAM_SCAN;
-        if (stat() & 0x20) req_interrupt(LCD);
+        reset_ly(); fetcher.new_frame();
+        mode = PPU_State::OAM_SCAN;
         curr_sprite_location = OAM_S;
-        sprite_buffer.clear();
+        if (stat() & 0x20) req_interrupt(LCD);
     }
 }
+
+void PPU::push_to_display() {
+    if (!fetcher.bg_count) return;
+    if (scx_discard) {
+        fetcher.queue_bg <<= 2 * (scx() % 8);
+        scx_discard = false; dots += scx() % 8;
+    }
+    u16 bg_pixel = (lcdc() & 1) ? (fetcher.queue_bg >> 14) : 0; // pop 2 bits from the fifo
+    fetcher.queue_bg <<= 2; --fetcher.bg_count;
+    u16 select = bg_pixel, palette = bgp(); // select appropriate color from palette
+
+    if (fetcher.sp_count) {
+        u16 sp_pixel = (fetcher.queue_sp >> 28);
+        fetcher.queue_sp <<= 4; --fetcher.sp_count;
+        if ((sp_pixel >> 2) && !((sp_pixel & 1) && bg_pixel)) {
+            select = (lcdc() & 2) ? sp_pixel >> 2 : 0;
+            palette = (sp_pixel & 2) ? obp1() : obp0();
+        }
+    }
+
+    u32 col = colors[(palette >> (select * 2)) & 0x3];
+    display[pixel_pos(ly(), fetcher.x_pos++)] = col;
+    fetcher.check_window();
+}
+
+void PPU::add_sprite() {
+    if (fetcher.sprite_buffer.size() >= 10) return;
+    int ly_check = ly() + 16;
+    int s_height = (lcdc() & 0x04) ? 16 : 8;
+    int posy = oam(curr_sprite_location + 0);
+    int posx = oam(curr_sprite_location + 1);
+
+    // Add sprite if the below conditions apply
+    if (posx > 0 && ly_check >= posy && ly_check < posy + s_height)
+        fetcher.sprite_buffer.emplace_back(curr_sprite_location, memory);
+    curr_sprite_location += 4;
+}
+
+

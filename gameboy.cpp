@@ -25,6 +25,7 @@ void GameBoy::start() {
 				break;
 			}
 		}
+		
 		while (sm83.elapsed_cycles < 70224) {   // 70224 cycles per frame ~ 4.19MHz
 			run_instruction();
 		}

@@ -148,6 +148,7 @@
     <ClInclude Include="constants.hpp" />
     <ClInclude Include="cpu_utils.hpp" />
     <ClInclude Include="debug.hpp" />
+    <ClInclude Include="fetcher.hpp" />
     <ClInclude Include="gameboy.hpp" />
     <ClInclude Include="json_tests.hpp" />
     <ClInclude Include="memory.hpp" />
@@ -158,14 +159,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="debug.cpp" />
+    <ClCompile Include="fetcher.cpp" />
     <ClCompile Include="gameboy.cpp" />
     <ClCompile Include="instructions.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="memory.cpp" />
     <ClCompile Include="op_decoder.cpp" />
     <ClCompile Include="ppu.cpp" />
-    <ClCompile Include="ppu_bg.cpp" />
-    <ClCompile Include="ppu_sp.cpp" />
     <ClCompile Include="sm83.cpp" />
     <ClCompile Include="timer.cpp" />
   </ItemGroup>
