@@ -150,7 +150,6 @@
     <ClInclude Include="debug.hpp" />
     <ClInclude Include="fetcher.hpp" />
     <ClInclude Include="gameboy.hpp" />
-    <ClInclude Include="json_tests.hpp" />
     <ClInclude Include="memory.hpp" />
     <ClInclude Include="mnemonic.hpp" />
     <ClInclude Include="ppu.hpp" />

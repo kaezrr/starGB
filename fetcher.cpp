@@ -148,6 +148,9 @@ void Fetcher::sp_tick() {
 }
 
 void Fetcher::bg_tick() {
+    if ((lcdc() & 2) && check_sprite())
+        bg_state = Fetcher_State::PAUSED;
+
     switch (bg_state) {
     case Fetcher_State::READ_TILE_ID: 
         bg_fetch_tile_no();

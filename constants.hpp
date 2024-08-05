@@ -71,10 +71,10 @@ constexpr u16 TILE_MAP1 = 0x9800;
 constexpr u16 TILE_MAP2 = 0x9C00;
 
 // Emulator color palette
-constexpr u32 GB_PALETTE_0 = 0xE0F8D0;
-constexpr u32 GB_PALETTE_1 = 0x88C070;
-constexpr u32 GB_PALETTE_2 = 0x346856;
-constexpr u32 GB_PALETTE_3 = 0x081820;
+constexpr u32 GB_PALETTE_0 = 0xFFFFFF;
+constexpr u32 GB_PALETTE_1 = 0xAAAAAA;
+constexpr u32 GB_PALETTE_2 = 0x555555;
+constexpr u32 GB_PALETTE_3 = 0x000000;
 
 // Serial Data Transfer registers
 constexpr u16 SB = 0xFF01;

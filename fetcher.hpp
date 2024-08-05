@@ -1,4 +1,5 @@
 #pragma once
+
 #include "memory.hpp"
 #include "constants.hpp"
 
@@ -15,15 +16,11 @@ enum class Fetcher_State {
 };
 
 struct Sprite {
-    u8 posY{};
-    u8 posX{};
-    u8 tile_id{};
+    u8 posY{}, posX{}, tile_id{};
 
     bool obj_priority{};
-    bool flipY{};
-    bool flipX{};
-    bool palette{};
-    bool used{};
+    bool flipY{}, flipX{};
+    bool palette{}, used{};
 
     Sprite(u16 at, Memory* mem);
 };
@@ -38,7 +35,6 @@ struct Fetcher {
     u16 bg_tile_no{}, sp_tile_no{}, bg_count{}, sp_count{};
 
     vector<Sprite> sprite_buffer;
-
     u16 tile_index{}, window_line_counter{}, x_pos{};
     bool wy_cond{}, delay{}, fetch_window{}, increment_window{};
 

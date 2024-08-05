@@ -25,15 +25,15 @@
     <Filter Include="Source Files\ppu_src">
       <UniqueIdentifier>{e29c39b1-bee6-448b-b677-43348c230797}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\graphics">
+      <UniqueIdentifier>{21d268e4-b4df-4a88-8622-c812c84212c6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gameboy.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="debug.hpp">
-      <Filter>Header Files\helper_files</Filter>
-    </ClInclude>
-    <ClInclude Include="json_tests.hpp">
       <Filter>Header Files\helper_files</Filter>
     </ClInclude>
     <ClInclude Include="constants.hpp">
@@ -48,9 +48,6 @@
     <ClInclude Include="memory.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ppu.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="mnemonic.hpp">
       <Filter>Header Files\helper_files</Filter>
     </ClInclude>
@@ -58,7 +55,10 @@
       <Filter>Header Files\cpu</Filter>
     </ClInclude>
     <ClInclude Include="fetcher.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="ppu.hpp">
+      <Filter>Header Files\graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
