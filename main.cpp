@@ -18,7 +18,7 @@ int main(int, char*[]) {
 
     static GameBoy GB{ renderer, texture };
 
-    //GB.load_boot("roms/dmg_boot.bin");
+    GB.load_boot("roms/dmg_boot.bin");
     GB.load_game("roms/dmg-acid2.gb");
     //GB.load_game("roms/tetris.gb");
     GB.start();

@@ -55,7 +55,7 @@ bool Fetcher::check_sprite() {
 void Fetcher::sp_fetch_tile_no() {
     for (auto& sp : sprite_buffer) {
         if (sp.used || sp.posX > tile_index + 8) continue;
-        sp_tile_no = sp.tile_id;
+        sp_tile_no = sp.tile_id; flipx = sp.flipX; flipy = sp.flipY;
         u16 attr = (int)sp.obj_priority | ((int)sp.palette << 1);
         sp_data = attr * 0x11111111; sp.used = true;
         break;
@@ -64,15 +64,12 @@ void Fetcher::sp_fetch_tile_no() {
 
 void Fetcher::sp_fetch_tile_data(bool state) {
     u16 addr = 0x8000 + (sp_tile_no * 16);
-    u16 offs = ((ly() + scy()) % 8) * 2;
-    if (!state) {
-        u8 lsb = vram(addr + offs);
-        for (u8 i = 0; i < 8; ++i)
-            sp_data |= (lsb & (1 << i)) << (i * 3 + 2);
-    } else {
-        u8 msb = vram(addr + offs + 1);
-        for (u8 i = 0; i < 8; ++i)
-            sp_data |= (msb & (1 << i)) << (i * 3 + 3);
+    u16 tile_line = (ly() + scy()) % 8;
+    if (flipy) tile_line = 7 - tile_line;
+    u8 data = vram(addr + (tile_line * 2) + state);
+    for (u8 i = 0; i < 8; ++i) {
+        int shift = flipx ? 7 - i : i;
+        sp_data |= ((data & (1 << shift)) >> shift) << (i * 4 + 2 + state);
     }
 }
 
@@ -81,6 +78,7 @@ void Fetcher::sp_push_to_fifo() {
     mask = (mask << 1) - (mask >> 3);
     queue_sp |= sp_data & mask;
     sp_count = 8; sp_data = 0;
+    flipx = flipy = false;
 }
 
 
@@ -107,15 +105,9 @@ void Fetcher::bg_fetch_tile_data(bool state) {
     if (fetch_window && (lcdc() & 0x20)) offs = (window_line_counter % 8) * 2;
     else offs = ((ly() + scy()) % 8) * 2;
 
-    if (!state) {
-        u8 lsb = vram(addr + offs);
-        for (u8 i = 0; i < 8; ++i)
-            bg_data |= (lsb & (1 << i)) << i;
-    } else {
-        u8 msb = vram(addr + offs + 1);
-        for (u8 i = 0; i < 8; ++i)
-            bg_data |= (msb & (1 << i)) << (i + 1);
-    }
+    u8 data = vram(addr + offs + state);
+    for (u8 i = 0; i < 8; ++i)
+        bg_data |= ((data & (1 << i)) >> i) << (i * 2 + state);
 }
 
 bool Fetcher::bg_push_to_fifo() {
@@ -182,4 +174,3 @@ void Fetcher::bg_tick() {
         return;
     }
 }
-

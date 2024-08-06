@@ -36,7 +36,8 @@ struct Fetcher {
 
     vector<Sprite> sprite_buffer;
     u16 tile_index{}, window_line_counter{}, x_pos{};
-    bool wy_cond{}, delay{}, fetch_window{}, increment_window{};
+    bool wy_cond{}, delay{}, flipx{}, flipy{};
+    bool fetch_window{}, increment_window{};
 
     Fetcher(Memory* mem);
 
