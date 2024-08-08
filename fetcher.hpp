@@ -18,9 +18,9 @@ enum class Fetcher_State {
 struct Sprite {
     u8 posY{}, posX{}, tile_id{};
 
-    bool obj_priority{};
-    bool flipY{}, flipX{};
-    bool palette{}, used{};
+    u8 obj_priority{};
+    u8 flipY{}, flipX{};
+    u8 palette{}, used{};
 
     Sprite(u16 at, Memory* mem);
 };
@@ -34,8 +34,8 @@ struct Fetcher {
     u16 queue_bg{}, bg_data{};
     u16 bg_tile_no{}, sp_tile_no{}, bg_count{}, sp_count{};
 
-    vector<Sprite> sprite_buffer;
-    u16 tile_index{}, window_line_counter{}, x_pos{};
+    vector<Sprite> sprite_buffer; int x_pos{};
+    u16 tile_index{}, window_line_counter{};
     bool wy_cond{}, delay{}, flipx{}, flipy{};
     bool fetch_window{}, increment_window{};
 
@@ -58,7 +58,7 @@ struct Fetcher {
     void sp_fetch_tile_data(bool state);
     void sp_push_to_fifo();
 
-    void bg_tick();
+    bool bg_tick();
     void sp_tick();
     void new_line();
     void new_frame();

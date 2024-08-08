@@ -1,5 +1,4 @@
 #include "ppu.hpp"
-#include <iostream>
 
 PPU::PPU(Memory* mem_ptr, SDL_Renderer* rend, SDL_Texture* text) 
     : memory{ mem_ptr }, renderer{ rend }, texture{ text }, fetcher{ mem_ptr } {
@@ -44,10 +43,10 @@ void PPU::tick() { // tick for 4 t-cycles
 
 void PPU::drawing() {
     dots += 2;
-    fetcher.bg_tick();
+    if(!fetcher.bg_tick()) return;
 
-    push_to_display();
-    push_to_display();
+    if(push_to_display()) return;
+    if(push_to_display()) return;
     if (fetcher.x_pos >= 160) {
         fetcher.bg_state = Fetcher_State::READ_TILE_ID;
         mode = PPU_State::HBLANK;
@@ -97,8 +96,8 @@ void PPU::vblank() {
     }
 }
 
-void PPU::push_to_display() {
-    if (!fetcher.bg_count) return;
+bool PPU::push_to_display() {
+    if (!fetcher.bg_count) return false;
     if (scx_discard) {
         fetcher.queue_bg <<= 2 * (scx() % 8);
         scx_discard = false; dots += scx() % 8;
@@ -110,15 +109,17 @@ void PPU::push_to_display() {
     if (fetcher.sp_count) {
         u16 sp_pixel = (fetcher.queue_sp >> 28);
         fetcher.queue_sp <<= 4; --fetcher.sp_count;
-        if ((sp_pixel >> 2) && !((sp_pixel & 1) && bg_pixel)) {
-            select = (lcdc() & 2) ? sp_pixel >> 2 : 0;
+        if ((lcdc() & 2) && (sp_pixel >> 2) && !((sp_pixel & 1) && bg_pixel)) {
+            select = sp_pixel >> 2;
             palette = (sp_pixel & 2) ? obp1() : obp0();
         }
     }
 
     u32 col = colors[(palette >> (select * 2)) & 0x3];
-    display[pixel_pos(ly(), fetcher.x_pos++)] = col;
-    fetcher.check_window();
+    if (fetcher.x_pos >= 0 && fetcher.x_pos < 160) 
+        display[pixel_pos(ly(), fetcher.x_pos)] = col;
+    ++fetcher.x_pos; fetcher.check_window();
+    return fetcher.check_sprite();
 }
 
 void PPU::add_sprite() {

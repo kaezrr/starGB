@@ -57,5 +57,5 @@ struct PPU {
     void vblank();
 
     void load_texture();
-    void push_to_display();
+    bool push_to_display();
 };

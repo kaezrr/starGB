@@ -6,20 +6,20 @@ Sprite::Sprite(u16 at, Memory* mem) {
     posX            = mem->oam[at + 1 - OAM_S];
     tile_id         = mem->oam[at + 2 - OAM_S];
     u8 flag         = mem->oam[at + 3 - OAM_S];
-    obj_priority    = flag & 0x80;
-    flipY           = flag & 0x40;
-    flipX           = flag & 0x20;
-    palette         = flag & 0x10;
+    obj_priority    = (flag & 0x80) >> 7;
+    flipY           = (flag & 0x40) >> 6;
+    flipX           = (flag & 0x20) >> 5;
+    palette         = (flag & 0x10) >> 4;
     used = false;
 }
 
 Fetcher::Fetcher(Memory* mem) : memory{ mem } {
-    sprite_buffer.reserve(10);
+    sprite_buffer.reserve(10); new_frame();
 }
 
 void Fetcher::new_line() {
     sprite_buffer.clear();
-    tile_index = 0; x_pos = 0;
+    tile_index = 0; x_pos = -8;
     queue_bg = 0; bg_data = 0; bg_count = 0;
     queue_sp = 0; sp_data = 0; sp_count = 0;
     delay = true; fetch_window = false;
@@ -47,17 +47,26 @@ void Fetcher::inc_windowline() {
 }
 
 bool Fetcher::check_sprite() {
-    for (auto& e : sprite_buffer) 
-        if (!e.used && e.posX <= tile_index + 8) return true;
+    if (!(lcdc() & 2)) return false;
+    for (auto& e : sprite_buffer) {
+        if (e.used || e.posX > x_pos + 8) continue;
+        bg_state = Fetcher_State::PAUSED; 
+        return true;
+    }
     return false;
 }
 
 void Fetcher::sp_fetch_tile_no() {
     for (auto& sp : sprite_buffer) {
-        if (sp.used || sp.posX > tile_index + 8) continue;
+        if (sp.used || sp.posX > x_pos + 8) continue;
         sp_tile_no = sp.tile_id; flipx = sp.flipX; flipy = sp.flipY;
-        u16 attr = (int)sp.obj_priority | ((int)sp.palette << 1);
+        u16 attr = sp.obj_priority | (sp.palette << 1);
         sp_data = attr * 0x11111111; sp.used = true;
+        if (lcdc() & 4) {
+            sp_tile_no &= ~1;
+            sp_tile_no += (ly() + 16 - sp.posY >= 8);
+            sp_tile_no ^= sp.flipY;
+        }
         break;
     }
 }
@@ -139,10 +148,7 @@ void Fetcher::sp_tick() {
     }
 }
 
-void Fetcher::bg_tick() {
-    if ((lcdc() & 2) && check_sprite())
-        bg_state = Fetcher_State::PAUSED;
-
+bool Fetcher::bg_tick() {
     switch (bg_state) {
     case Fetcher_State::READ_TILE_ID: 
         bg_fetch_tile_no();
@@ -160,17 +166,16 @@ void Fetcher::bg_tick() {
         break;
 
     case Fetcher_State::PUSH_TO_FIFO:
-        if (delay) {
+        if (bg_push_to_fifo()) {
             bg_state = Fetcher_State::READ_TILE_ID;
-            delay = false; bg_data = 0;
-        } else if (bg_push_to_fifo()) {
-            bg_state = Fetcher_State::READ_TILE_ID;
-            tile_index += 8;
+            tile_index += (x_pos < 0) ? 0 : 8;
+            if (check_sprite()) return false;
         }
         break;
 
     case Fetcher_State::PAUSED:
         sp_tick();
-        return;
+        return false;
     }
+    return true;
 }
