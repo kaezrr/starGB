@@ -18,6 +18,7 @@ struct Memory {
     vector<u8> oam          = vector<u8>(0x00A0);
     vector<u8> io_reg       = vector<u8>(0x0080);
     vector<u8> hram         = vector<u8>(0x007F);
+    u8 input_buffer{};
 
     u8 ie_reg{};
     u16 sys_clock{};

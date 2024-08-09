@@ -13,12 +13,25 @@
 
 //#define LOG
 
+enum Button {
+    RIGHT,
+    LEFT,
+    UP,
+    DOWN,
+    A,
+    B,
+    SELECT,
+    START,
+};
+
 struct GameBoy {
     PPU      ppu;
     Memory   memory{};
     Timer    timer{ &memory };
     CPU      sm83{ &memory, &timer, &ppu };
     bool enabled{};
+
+
 #ifdef LOG
     Debugger debugger{};
 #endif // DEBUG
@@ -29,6 +42,8 @@ struct GameBoy {
     void no_boot_rom();
     void load_game(const string& path);
     void load_boot(const string& path);
+    void set_button_on(const SDL_Scancode& sym);
+    void set_button_off(const SDL_Scancode& sym);
 };
 
 // delta function to measure elapsed time

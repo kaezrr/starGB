@@ -1,6 +1,9 @@
 #include "memory.hpp"
 
 u8 Memory::read(u16 at) const {
+    if (at == SB)
+        return 0xFF;
+
     if (at < 0x100 && execute_boot)
         return boot_rom[at];
 
@@ -26,8 +29,21 @@ u8 Memory::read(u16 at) const {
         if (at == DIV) 
             return (sys_clock >> 8); // DIV register is the upper 8 bits of the system clock
 
-        if (at == JOYP) 
-            return 0xFF;
+        if (at == JOYP) {
+            u8 reg = io_reg[at - IO_S] & 0xF0;
+            u8 select = (~(input_buffer >> 4)) & 0xF ;
+            u8 dpad = (~input_buffer) & 0xF;
+            switch ((reg >> 4) & 3) {
+            case 0:
+                return reg | (select & dpad);
+            case 1:
+                return reg | (select);
+            case 2:
+                return reg | (dpad);
+            case 3:
+                return reg | 0xF;
+            }
+        }
 
         return io_reg[at - IO_S];
     }
@@ -39,6 +55,13 @@ u8 Memory::read(u16 at) const {
 
 
 void Memory::write(u16 at, u8 data) {
+    if (at == DMA) {
+        u16 src = data << 8;
+        for (u16 i = 0; i < 0xA0; ++i) {
+            oam[i] = read(src + i);
+        }
+    }
+
     if (execute_boot && at == 0xFF50)
         execute_boot = false;
 
@@ -66,9 +89,6 @@ void Memory::write(u16 at, u8 data) {
     else if (at >= IO_S && at <= IO_E) {
         if (at == DIV) {
             sys_clock = 0; // writing to system clock resets it
-
-        } else if (at == JOYP) {
-            update_read_only(io_reg[at - IO_S], data, 0x0F);
 
         } else if (at == STAT) {
             update_read_only(io_reg[at - IO_S], data | 0x80, 0x07);

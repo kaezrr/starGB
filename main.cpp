@@ -14,13 +14,12 @@ int main(int, char*[]) {
     SDL_Texture* texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB888,
         SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-    //SDL_SetWindowAlwaysOnTop(window, SDL_TRUE);
+    SDL_SetWindowAlwaysOnTop(window, SDL_TRUE);
 
     static GameBoy GB{ renderer, texture };
 
     GB.load_boot("roms/dmg_boot.bin");
-    GB.load_game("roms/dmg-acid2.gb");
-    //GB.load_game("roms/tetris.gb");
+    GB.load_game("roms/mario.gb");
     GB.start();
 
     SDL_DestroyTexture(texture);

@@ -10,4 +10,5 @@ struct Timer {
     Timer(Memory* mem);
     void tick();
     void overflow();
+    void req_timer_intr();
 };

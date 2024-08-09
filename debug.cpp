@@ -36,25 +36,14 @@ void Debugger::write_match_log(const CPU& sm83, const Memory& mem) {
     file << str;
 }
 
-void Debugger::log_vram(const Memory& mem) {
-    std::ofstream vram{ "vram.txt" };
-    for (u16 i = VRAM_S; i <= VRAM_E; i += 0x10) {
-        vram << std::format("{:04x}:", i);
+void Debugger::memory_dump(const Memory& mem, u16 start, u16 end) {
+    std::ofstream memo{ "memory_dump.txt" };
+    for (u16 i = start; i <= end; i += 0x10) {
+        memo << std::format("{:04x}:", i);
         for (u16 j = i; j < i + 16; j++) {
-            vram << std::format(" {:02x}", mem.read(j));
+            memo << std::format(" {:02x}", mem.read(j));
         }
-        vram << '\n';
-    }
-}
-
-void Debugger::log_oam(const Memory& mem) {
-    std::ofstream oam{ "oam.txt" };
-    for (u16 i = OAM_S; i <= OAM_E; i += 0x10) {
-        oam << std::format("{:04x}:", i);
-        for (u16 j = i; j < i + 16; j++) {
-            oam << std::format(" {:02x}", mem.read(j));
-        }
-        oam << '\n';
+        memo << '\n';
     }
 }
 

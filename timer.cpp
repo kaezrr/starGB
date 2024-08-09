@@ -1,4 +1,6 @@
 #include "timer.hpp"
+#include <iostream>
+#include <format>
 
 Timer::Timer(Memory* mem) : memory{ mem } { }
 
@@ -21,7 +23,7 @@ void Timer::tick() {
     }
     // increment TAC on falling edge
     if (prev_edge && !curr_edge) {
-        u16 tima_inc = memory->read(TIMA) + 1;
+        u16 tima_inc = memory->io_reg[TIMA - IO_S] + 1;
         if (tima_inc > 0xFF) {
             pending_overflow = true;
             memory->tima_watch = true;
@@ -36,14 +38,16 @@ void Timer::overflow() {
     if (++overflow_cycles <= 1) {
         if (!memory->tima_write) return;
     } else {
-        u8 flag = memory->read(IF); 
-        u16 tma = memory->read(TMA);
-        memory->write(IF, flag | TIMER);            // call timer interrupt
-        memory->write(TIMA, static_cast<u8>(tma));  // set TIMA to TMA
+        req_timer_intr();
+        memory->io_reg[TIMA - IO_S] = memory->io_reg[TMA - IO_S];  
     }
     // Reset TIMA overflow stuff
     overflow_cycles = 0;
     pending_overflow = false;
     memory->tima_watch = false;
     memory->tima_write = false;
+}
+
+void Timer::req_timer_intr() {
+    memory->io_reg[IF - IO_S] |= TIMER;
 }

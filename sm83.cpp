@@ -1,4 +1,5 @@
 #include "sm83.hpp"
+#include <iostream>
 
 CPU::CPU(Memory* memory_ptr, Timer* timer_ptr, PPU* ppu_ptr)
     : memory{ memory_ptr }, timer{ timer_ptr }, ppu{ ppu_ptr } {};
@@ -156,6 +157,8 @@ void CPU::handle_interrupts() {
     // push PC onto stack
     write_mem(--SP.full, PC.hi);
     write_mem(--SP.full, PC.lo);
+
+    std::cout << std::hex << "INT, PC: " << (int)PC.full << '\n';
 
     tick_others();
     switch (priority_bit) {

@@ -17,6 +17,5 @@ struct Debugger {
     void write_text_log(const CPU& sm83, const Memory& mem);
     void print_cpu_mem(const CPU& sm83, const Memory& mem);
     void write_match_log(const CPU& sm83, const Memory& mem);
-    void log_vram(const Memory& mem);
-    void log_oam(const Memory& mem); 
+    void memory_dump(const Memory& mem, u16 start, u16 end);
 };

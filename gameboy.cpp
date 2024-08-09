@@ -1,4 +1,6 @@
 #include "gameboy.hpp"
+#include <iostream>
+#include <format>
 
 GameBoy::GameBoy(SDL_Renderer* renderer, SDL_Texture* texture)
 	: ppu{ &memory, renderer, texture } { }
@@ -23,12 +25,18 @@ void GameBoy::start() {
 			case SDL_QUIT:
 				enabled = false;
 				break;
+			case SDL_KEYDOWN:
+				set_button_on(event.key.keysym.scancode);
+				break;
+			case SDL_KEYUP:
+				set_button_off(event.key.keysym.scancode);
+				break;
 			}
 		}
 		
-		while (sm83.elapsed_cycles < 70224) {   // 70224 cycles per frame ~ 4.19MHz
+		while (sm83.elapsed_cycles < 17556) {   // 17556 cycles per frame ~ 4.19MHz
 			run_instruction();
-		}
+        }
 
 		auto delay = 16 - since(start).count(); 		
 		if (delay <= 0) continue;
@@ -76,6 +84,62 @@ void GameBoy::no_boot_rom() {
 	sm83.HL.full = 0x014D;
 	sm83.PC.full = 0x0100;
 	sm83.SP.full = 0xFFFE;
-	memory.write(STAT, 0x80);
-	memory.write(JOYP, 0x30);
+}
+
+void GameBoy::set_button_on(const SDL_Scancode& code) {
+	switch (code) {
+	case SDL_SCANCODE_UP:
+		memory.input_buffer |= (1 << UP);
+		break;
+	case SDL_SCANCODE_DOWN:
+		memory.input_buffer |= (1 << DOWN);
+		break;
+	case SDL_SCANCODE_LEFT:
+		memory.input_buffer |= (1 << LEFT);
+		break;
+	case SDL_SCANCODE_RIGHT:
+		memory.input_buffer |= (1 << RIGHT);
+		break;
+	case SDL_SCANCODE_S:
+		memory.input_buffer |= (1 << A);
+		break;
+	case SDL_SCANCODE_A:
+		memory.input_buffer |= (1 << B);
+		break;
+	case SDL_SCANCODE_RETURN:
+		memory.input_buffer |= (1 << START);
+		break;
+	case SDL_SCANCODE_LSHIFT:
+		memory.input_buffer |= (1 << SELECT);
+		break;
+	}
+}
+
+void GameBoy::set_button_off(const SDL_Scancode& code) {
+	switch (code) {
+	case SDL_SCANCODE_UP:
+		memory.input_buffer &= ~(1 << UP);
+		break;
+	case SDL_SCANCODE_DOWN:
+		memory.input_buffer &= ~(1 << DOWN);
+		break;
+	case SDL_SCANCODE_LEFT:
+		memory.input_buffer &= ~(1 << LEFT);
+		break;
+	case SDL_SCANCODE_RIGHT:
+		memory.input_buffer &= ~(1 << RIGHT);
+		break;
+	case SDL_SCANCODE_S:
+		memory.input_buffer &= ~(1 << A);
+		break;
+	case SDL_SCANCODE_A:
+		memory.input_buffer &= ~(1 << B);
+		break;
+	case SDL_SCANCODE_RETURN:
+		memory.input_buffer &= ~(1 << START);
+		break;
+	case SDL_SCANCODE_LSHIFT:
+		memory.input_buffer &= ~(1 << SELECT);
+		break;
+	}
 }

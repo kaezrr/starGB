@@ -70,15 +70,15 @@ constexpr u16 WX        = 0xFF4B;
 constexpr u16 TILE_MAP1 = 0x9800;
 constexpr u16 TILE_MAP2 = 0x9C00;
 
-// Emulator color palette
-constexpr u32 GB_PALETTE_0 = 0xFAFBF6;
-constexpr u32 GB_PALETTE_1 = 0xC6B7BE;
-constexpr u32 GB_PALETTE_2 = 0x565A75;
-constexpr u32 GB_PALETTE_3 = 0x0F0F1B;
-
 // Serial Data Transfer registers
 constexpr u16 SB = 0xFF01;
 constexpr u16 SC = 0xFF02;
 
 // Joypad
 constexpr u16 JOYP = 0xFF00;
+
+// Emulator color palette
+constexpr u32 GB_PALETTE_0 = 0xA1EF8C;
+constexpr u32 GB_PALETTE_1 = 0x3FAC95;
+constexpr u32 GB_PALETTE_2 = 0x446176;
+constexpr u32 GB_PALETTE_3 = 0x2C2137;
