@@ -5,6 +5,15 @@
 GameBoy::GameBoy(SDL_Renderer* renderer, SDL_Texture* texture)
 	: ppu{ &memory, renderer, texture } { }
 
+void GameBoy::no_boot_rom() {
+	sm83.AF.full = 0x01B0;
+	sm83.BC.full = 0x0013;
+	sm83.DE.full = 0x00D8;
+	sm83.HL.full = 0x014D;
+	sm83.PC.full = 0x0100;
+	sm83.SP.full = 0xFFFE;
+}
+
 void GameBoy::run_instruction() {
 	sm83.fetch_opcode();
 	sm83.decode_opcode();
@@ -37,6 +46,7 @@ void GameBoy::start() {
 		while (sm83.elapsed_cycles < 17556) {   // 17556 cycles per frame ~ 4.19MHz
 			run_instruction();
         }
+        std::cout << std::hex << (int)memory.read(LCDC) << '\n';
 
 		auto delay = 16 - since(start).count(); 		
 		if (delay <= 0) continue;
@@ -75,15 +85,6 @@ void GameBoy::load_boot(const string& path) {
 	}
 	program.read(reinterpret_cast<char*>(&memory.boot_rom[0]), rom_size);
 	memory.execute_boot = true;
-}
-
-void GameBoy::no_boot_rom() {
-	sm83.AF.full = 0x01B0;
-	sm83.BC.full = 0x0013;
-	sm83.DE.full = 0x00D8;
-	sm83.HL.full = 0x014D;
-	sm83.PC.full = 0x0100;
-	sm83.SP.full = 0xFFFE;
 }
 
 void GameBoy::set_button_on(const SDL_Scancode& code) {

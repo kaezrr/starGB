@@ -379,8 +379,6 @@ void CPU::ret(){
 void CPU::reti(){
     PC.lo = read_mem(SP.full++);
     PC.hi = read_mem(SP.full++);
-
-    std::cout << std::hex << "RET, PC: " << (int)PC.full << '\n';
     tick_others();
     IME = true;
 }

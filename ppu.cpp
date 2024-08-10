@@ -27,7 +27,7 @@ void PPU::load_texture() {
 }
 
 void PPU::tick() { // tick for 4 t-cycles
-    if (!(lcdc() & 0x80)) return;
+    //if (!(lcdc() & 0x80)) return;
     switch (mode) {
     case PPU_State::HBLANK: hblank();
         break;

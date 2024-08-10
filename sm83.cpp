@@ -158,19 +158,22 @@ void CPU::handle_interrupts() {
     write_mem(--SP.full, PC.hi);
     write_mem(--SP.full, PC.lo);
 
-    std::cout << std::hex << "INT, PC: " << (int)PC.full << '\n';
-
     tick_others();
     switch (priority_bit) {
     case VBLANK:
+        //std::cout << "VBLANK\n";
         PC.full = 0x40; return;
     case LCD:
+        //std::cout << "LCD\n";
         PC.full = 0x48; return;
     case TIMER:
+        //std::cout << "TIMER\n";
         PC.full = 0x50; return;
     case SERIAL:
+        //std::cout << "SERIAL\n";
         PC.full = 0x58; return;
     case JOYPAD:
+        //std::cout << "JOYPAD\n";
         PC.full = 0x60; return;
     }
 }

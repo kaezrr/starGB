@@ -1,29 +1,32 @@
 #include "debug.hpp"
 #include "mnemonic.hpp"
 
-
-void Debugger::write_text_log(const CPU& sm83, const Memory& mem) {
-    file << std::format("[{:05d}] [{:04x}] [{:02x} {:02x} {:02x}] ", (int)sm83.elapsed_cycles, (int)sm83.PC.full,
+// Print disassembly
+void Debugger::write_text_log(const CPU& sm83, const Memory& mem, bool term = false) {
+    std::ostream& out = term ? std::cout : file;
+    out << std::format("[{:05d}] [{:04x}] [{:02x} {:02x} {:02x}] ", (int)sm83.elapsed_cycles, (int)sm83.PC.full,
         (int)mem.read(sm83.PC.full), (int)mem.read(sm83.PC.full + 1), (int)mem.read(sm83.PC.full + 2));
-    file << get_op(mem.read(sm83.PC.full)) << '\n';
+    out << get_op(mem.read(sm83.PC.full)) << '\n';
 
     if (sm83.PC.full == 0xCB) {
-    file << std::format("[{:05d}] [{:04x}] [{:02x} {:02x} {:02x}] ", (int)sm83.elapsed_cycles, (int)sm83.PC.full + 1,
+    out << std::format("[{:05d}] [{:04x}] [{:02x} {:02x} {:02x}] ", (int)sm83.elapsed_cycles, (int)sm83.PC.full + 1,
         (int)mem.read(sm83.PC.full+1), (int)mem.read(sm83.PC.full + 2), (int)mem.read(sm83.PC.full + 3));
-    file << get_cb(mem.read(sm83.PC.full + 1)) << '\n';
+    out << get_cb(mem.read(sm83.PC.full + 1)) << '\n';
     }
 
-    print_cpu_mem(sm83, mem);
+    print_cpu_mem(sm83, mem, out);
 }
 
-void Debugger::print_cpu_mem(const CPU& sm83, const Memory& mem) {
-    file << std::format( "[AF: ${:04x} BC: ${:04x} DE: ${:04x} ",
+// Print cpu state, important registers
+void Debugger::print_cpu_mem(const CPU& sm83, const Memory& mem, std::ostream& out) {
+    out << std::format( "[AF: ${:04x} BC: ${:04x} DE: ${:04x} ",
         (int)sm83.AF.full, (int)sm83.BC.full, (int)sm83.DE.full);
-    file << std::format("HL: ${:04x} SP: ${:04x} PC: ${:04x}\nLY: ${:02x} STAT: ${:02x} ",
+    out << std::format("HL: ${:04x} SP: ${:04x} PC: ${:04x}\nLY: ${:02x} STAT: ${:02x} ",
         (int)sm83.HL.full, (int)sm83.SP.full, (int)sm83.PC.full, (int)mem.read(LY), (int) mem.read(STAT));
-    file << std::format("IE: ${:02x} IF: ${:02x}]\n\n", (int)mem.read(IE), (int)mem.read(IF));
+    out << std::format("IE: ${:02x} IF: ${:02x}]\n\n", (int)mem.read(IE), (int)mem.read(IF));
 }
 
+// Something really fucked up happened here
 void Debugger::write_match_log(const CPU& sm83, const Memory& mem) {
     auto str = std::format("A: {:02x} F: {:02x} B: {:02x} C: {:02x} D: {:02x} E: {:02x} ",
         (int)sm83.AF.hi, (int)sm83.AF.lo, (int)sm83.BC.hi, (int)sm83.BC.lo, (int)sm83.DE.hi, (int)sm83.DE.lo);
@@ -36,6 +39,7 @@ void Debugger::write_match_log(const CPU& sm83, const Memory& mem) {
     file << str;
 }
 
+// Dump memory to a text file
 void Debugger::memory_dump(const Memory& mem, u16 start, u16 end) {
     std::ofstream memo{ "memory_dump.txt" };
     for (u16 i = start; i <= end; i += 0x10) {

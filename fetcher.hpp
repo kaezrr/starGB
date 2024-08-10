@@ -22,6 +22,7 @@ struct Sprite {
     u8 flipY{}, flipX{};
     u8 palette{}, used{};
 
+    Sprite() = default;
     Sprite(u16 at, Memory* mem);
 };
 
@@ -32,12 +33,13 @@ struct Fetcher {
 
     u32 queue_sp{}, sp_data{};
     u16 queue_bg{}, bg_data{};
-    u16 bg_tile_no{}, sp_tile_no{}, bg_count{}, sp_count{};
+    u16 bg_tile_no{}, bg_count{}, sp_count{};
 
-    vector<Sprite> sprite_buffer; int x_pos{};
-    u16 tile_index{}, window_line_counter{};
-    bool wy_cond{}, delay{}, flipx{}, flipy{};
+    Sprite curr_sp{}; int x_pos{};
+    vector<Sprite> sprite_buffer;
+    bool wy_cond{}, delay{}, sp_fetch{};
     bool fetch_window{}, increment_window{};
+    u16 tile_index{}, window_line_counter{};
 
     Fetcher(Memory* mem);
 
