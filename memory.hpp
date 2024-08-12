@@ -21,12 +21,17 @@ struct Memory {
     u8 input_buffer{};
 
     u8 ie_reg{};
-    u16 sys_clock{};
-    bool oam_lock{}, execute_boot{}; 
-    bool tima_watch{}, tima_write{};
+    bool execute_boot{}, tima_write{};
+
+    // Timer stuff
+    u16 sys_clock{ 0 }, last_edge{ 0 };
+    int cycles_til_tima_irq{ 0 };
+    bool tima_reload_cycle{ false };
 
     void reset();
     u8 read(u16 at) const;
     void write(u16 at, u8 data);
+    void sys_clock_change(u16 new_value);
+    void detect_edge(u16 before, u16 after);
     static void update_read_only(u8& original, u8 data, u8 mask);
 };

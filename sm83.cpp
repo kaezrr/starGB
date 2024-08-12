@@ -5,14 +5,15 @@ CPU::CPU(Memory* memory_ptr, Timer* timer_ptr, PPU* ppu_ptr)
     : memory{ memory_ptr }, timer{ timer_ptr }, ppu{ ppu_ptr } {};
 
 void CPU::tick_others() {
+    debug_cycles += 4;
     elapsed_cycles++;
     timer->tick();
     ppu->tick();
 }
 
 u8 CPU::read_mem(u16 at) {
-    auto data = memory->read(at);
     tick_others();
+    auto data = memory->read(at);
     return data;
 }
 
@@ -110,7 +111,7 @@ u16 CPU::get_nextu16() {
     return (msb << 8) | lsb;
 }
 
-bool CPU::get_flag(Flag flag) {
+bool CPU::get_flag(Flag flag) const {
     return AF.lo & flag;
 }
 

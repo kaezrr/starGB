@@ -1,4 +1,5 @@
 #include "memory.hpp"
+#include <iostream>
 
 u8 Memory::read(u16 at) const {
     if (at == SB)
@@ -23,7 +24,7 @@ u8 Memory::read(u16 at) const {
         return oam[at - OAM_S];
 
     if (at >= FORBID_S && at <= FORBID_E)
-        return (oam_lock) ? 0xFF : 0x00;
+        return 0x00;
 
     if (at >= IO_S && at <= IO_E) {
         if (at == DIV) 
@@ -44,7 +45,6 @@ u8 Memory::read(u16 at) const {
                 return reg | 0xF;
             }
         }
-
         return io_reg[at - IO_S];
     }
 
@@ -57,6 +57,7 @@ u8 Memory::read(u16 at) const {
 void Memory::write(u16 at, u8 data) {
     if (at == DMA) {
         u16 src = data << 8;
+        if (src >= 0xE000) src -= 0x2000;
         for (u16 i = 0; i < 0xA0; ++i) {
             oam[i] = read(src + i);
         }
@@ -65,10 +66,7 @@ void Memory::write(u16 at, u8 data) {
     if (execute_boot && at == 0xFF50)
         execute_boot = false;
 
-    if (tima_watch && !tima_write) 
-        tima_write = (at == TIMA);
-
-    else if (at >= VRAM_S && at <= VRAM_E) 	
+    if (at >= VRAM_S && at <= VRAM_E) 	
         vram[at - VRAM_S] = data;
 
     else if (at >= EXRAM_S && at <= EXRAM_E) 
@@ -88,7 +86,25 @@ void Memory::write(u16 at, u8 data) {
 
     else if (at >= IO_S && at <= IO_E) {
         if (at == DIV) {
-            sys_clock = 0; // writing to system clock resets it
+            sys_clock_change(0);
+            std::cout << "DIV WRITE\n";
+
+        } else if (at == TIMA) {
+            if (!tima_reload_cycle) io_reg[at - IO_S] = data;
+            if (cycles_til_tima_irq == 1) cycles_til_tima_irq = 0;
+            std::cout << "TIMA WRITE\n";
+
+        } else if (at == TMA) {
+            if (tima_reload_cycle) io_reg[TIMA - IO_S] = data;
+            io_reg[at - IO_S] = data;
+            std::cout << "TMA WRITE\n";
+
+        } else if(at == TAC) {
+            u16 old_edge = last_edge;
+            last_edge &= (data & 4) >> 2;
+            detect_edge(old_edge, last_edge);
+            io_reg[at - IO_S] = data;
+            std::cout << "TAC WRITE\n";
 
         } else if (at == STAT) {
             update_read_only(io_reg[at - IO_S], data | 0x80, 0x07);
@@ -105,6 +121,37 @@ void Memory::write(u16 at, u8 data) {
         ie_reg = data;
 }
 
+void Memory::detect_edge(u16 before, u16 after) {
+    if (before == 1 && after == 0) {
+        io_reg[TIMA - IO_S]++;
+        if (io_reg[TIMA - IO_S] == 0) {
+            cycles_til_tima_irq = 1;
+        }
+    }
+}
+
+void Memory::sys_clock_change(u16 new_value) {
+    sys_clock = new_value;
+    u16 new_edge{ 0 };
+    switch (io_reg[TAC - IO_S] & 3) {
+    case 0:
+        new_edge = (sys_clock >> 9) & 1;
+        break;
+    case 3:
+        new_edge = (sys_clock >> 7) & 1;
+        break;
+    case 2:
+        new_edge = (sys_clock >> 5) & 1;
+        break;
+    case 1:
+        new_edge = (sys_clock >> 3) & 1;
+        break;
+    }
+    new_edge &= (io_reg[TAC - IO_S] >> 2);
+    detect_edge(last_edge, new_edge);
+    last_edge = new_edge;
+}
+
 void Memory::reset() {
 #define reset(arr) std::fill(arr.begin(), arr.end(), static_cast<u8>(0));
     reset(rom_banks);
@@ -115,8 +162,6 @@ void Memory::reset() {
     reset(io_reg);
     reset(hram);
     ie_reg = 0;
-    oam_lock = 0;
-    tima_watch = 0;
     tima_write = 0;
     execute_boot = 0;
 }

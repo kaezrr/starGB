@@ -1,5 +1,6 @@
 #include "sm83.hpp"
 #include <iostream>
+#include <format>
 
 // Instructions
 void CPU::nop() {
@@ -323,7 +324,7 @@ void CPU::ldh_a_c(){
     AF.hi = read_mem(0xFF00 + BC.lo);
 }
 
-void CPU::ldh_a_imm8(){
+void CPU::ldh_a_imm8() {
     auto imm8 = get_nextu8();
     AF.hi = read_mem(0xFF00 + imm8);
 }

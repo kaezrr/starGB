@@ -14,6 +14,7 @@ struct CPU {
     Registers AF{}, BC{}, DE{}, HL{}, SP{}, PC{};
 
     int elapsed_cycles{ 0 };
+    long long int debug_cycles{ 0 };
 
     CPU(Memory* memory_ptr, Timer* timer_ptr, PPU* ppu_ptr);
 
@@ -43,7 +44,7 @@ struct CPU {
     void write_r16(u8 r, u16 data, bool stk);
 
     bool check_cond(u8 r);
-    bool get_flag(Flag flag);
+    bool get_flag(Flag flag) const;
     void set_flag(Flag flag, bool on);
 
     // Opcode decoding blocks 

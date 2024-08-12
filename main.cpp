@@ -6,6 +6,9 @@
 #include "gameboy.hpp"
 
 int main(int, char*[]) {
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(NULL);
+
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
 
     SDL_Window* window = SDL_CreateWindow("StarGB", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
@@ -14,14 +17,14 @@ int main(int, char*[]) {
     SDL_Texture* texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB888,
         SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-    //SDL_SetWindowAlwaysOnTop(window, SDL_TRUE);
+    SDL_SetWindowAlwaysOnTop(window, SDL_TRUE);
 
     static GameBoy GB{ renderer, texture };
 
     //GB.load_boot("roms/dmg_boot.bin");
-    GB.load_game("roms/mario.gb");
-    //GB.load_game("roms/dmg-acid2.gb");
-    //GB.load_game("roms/mooneye/manual-only/sprite_priority.gb");
+    //GB.load_game("roms/mario.gb");
+    //GB.load_game("roms/blargg/instr_timing.gb");
+    GB.load_game("roms/mooneye/acceptance/timer/rapid_toggle.gb");
     GB.start();
 
     SDL_DestroyTexture(texture);

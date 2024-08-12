@@ -12,6 +12,7 @@ void GameBoy::no_boot_rom() {
 	sm83.HL.full = 0x014D;
 	sm83.PC.full = 0x0100;
 	sm83.SP.full = 0xFFFE;
+	memory.write(LY, 0x90);
 }
 
 void GameBoy::run_instruction() {
@@ -44,9 +45,11 @@ void GameBoy::start() {
 		}
 		
 		while (sm83.elapsed_cycles < 17556) {   // 17556 cycles per frame ~ 4.19MHz
+#ifdef LOG
+            debugger.write_match_log(sm83, memory);
+#endif // LOG
 			run_instruction();
         }
-        std::cout << std::hex << (int)memory.read(LCDC) << '\n';
 
 		auto delay = 16 - since(start).count(); 		
 		if (delay <= 0) continue;
