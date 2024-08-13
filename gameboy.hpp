@@ -28,7 +28,7 @@ struct GameBoy {
     PPU      ppu;
     Memory   memory{};
     Timer    timer{ &memory };
-    CPU      sm83{ &memory };
+    CPU      sm83{ &memory, &ppu, &timer };
     bool enabled{};
 
 
@@ -37,11 +37,13 @@ struct GameBoy {
 #endif // DEBUG
     GameBoy(SDL_Renderer* renderer, SDL_Texture* texture);
 
-    int run_instruction();
     void start();
+    void run_instruction();
+
     void no_boot_rom();
     void load_game(const string& path);
     void load_boot(const string& path);
+
     void set_button_on(const SDL_Scancode& sym);
     void set_button_off(const SDL_Scancode& sym);
 };

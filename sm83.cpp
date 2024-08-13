@@ -1,21 +1,32 @@
 #include "sm83.hpp"
 #include <iostream>
 
-CPU::CPU(Memory* memory_ptr)
-    : memory{ memory_ptr } {};
+CPU::CPU(Memory* memory_ptr, PPU* ppu_ptr, Timer* timer_ptr)
+    : memory{ memory_ptr }, ppu{ ppu_ptr }, timer{ timer_ptr } {};
 
 void CPU::tick() {
     elapsed_cycles++;
+    m_cycles++;
+}
+
+void CPU::cycle_parts(int cycles) {
+    for (int _ = 0; _ < cycles; ++_) {
+        timer->tick();
+        ppu->tick();
+    }
+    m_cycles = 0;
 }
 
 u8 CPU::read_mem(u16 at) {
     tick();
+    cycle_parts(m_cycles);
     auto data = memory->read(at);
     return data;
 }
 
 void CPU::write_mem(u16 at, u8 data) {
     tick();
+    cycle_parts(m_cycles);
     memory->write(at, data);
 }
 

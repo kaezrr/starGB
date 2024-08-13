@@ -17,7 +17,7 @@ struct PPU {
     Memory* memory{};
     Fetcher fetcher{ nullptr };
 
-    bool scx_discard{};
+    bool scx_discard{}, disabled{};
     u16 curr_sprite_location{ OAM_S }, dots{ 0 };
 
     PPU_State mode{ PPU_State::OAM_SCAN };
@@ -48,6 +48,7 @@ struct PPU {
     size_t pixel_pos(int y, int x) { return (y * SCREEN_WIDTH) + x; }
     
     void tick();
+    void disable_lcd();
     void add_sprite();
     void update_stat();
     void increment_ly();

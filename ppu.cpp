@@ -1,4 +1,6 @@
 #include "ppu.hpp"
+#include <iostream>
+#include <format>
 
 PPU::PPU(Memory* mem_ptr, SDL_Renderer* rend, SDL_Texture* text) 
     : memory{ mem_ptr }, renderer{ rend }, texture{ text }, fetcher{ mem_ptr } {
@@ -9,6 +11,7 @@ void PPU::increment_ly() {
     fetcher.inc_windowline();
     if (ly() == wy()) fetcher.wy_cond = true;
     if (stat() & 0x40 && ly() == lyc()) req_interrupt(LCD);
+    //std::cout << std::format("LY:{:03d} LCDC:{:08b} STAT:{:08b}\n", ly(), lcdc(), stat());
 }
 
 void PPU::update_stat() {
@@ -26,12 +29,22 @@ void PPU::load_texture() {
     SDL_RenderPresent(renderer);
 }
 
+void PPU::disable_lcd() {
+    memory->io_reg[LY - IO_S] = 0;
+    memory->io_reg[STAT - IO_S] = 0;
+    display.fill(GB_DISABLED);
+    load_texture(); fetcher.new_frame();
+    dots = 0; mode = PPU_State::DRAWING;
+    disabled = true;
+}
+
 void PPU::tick() { // tick for 4 t-cycles
     if (!(lcdc() & 0x80)) {
-        memory->io_reg[LY - IO_S] = 0;
-        memory->io_reg[STAT - IO_S] = 0;
-        return;
-    }
+        if (disabled) return;
+        return disable_lcd();
+    } 
+
+    disabled = false;
 
     switch (mode) {
     case PPU_State::HBLANK: hblank();

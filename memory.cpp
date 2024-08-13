@@ -2,9 +2,6 @@
 #include <iostream>
 
 u8 Memory::read(u16 at) const {
-    if (at == SB || at == SC)
-        return 0xFF;
-
     if (at < 0x100 && execute_boot)
         return boot_rom[at];
 
@@ -72,8 +69,12 @@ void Memory::write(u16 at, u8 data) {
 
 u8 Memory::read_IO(u16 at) const {
     switch (at) {
+    case SB:
+        return 0xFF;
+        
     case DIV:
         return (sys_clock >> 8); // DIV register is the upper 8 bits of the system clock
+
     case JOYP: {
         u8 reg = io_reg[at - IO_S] & 0xF0;
         u8 select = (~(input_buffer >> 4)) & 0xF;
@@ -90,6 +91,7 @@ u8 Memory::read_IO(u16 at) const {
         }
     }
     }
+
     return io_reg[at - IO_S];
 }
 
@@ -119,7 +121,14 @@ void Memory::write_IO(u16 at, u8 data) {
     case STAT:
         update_read_only(io_reg[at - IO_S], data | 0x80, 0x07);
         return;
+    
+    case SC:
+        if (data == 0x81) {
+            data = 0x01;
+            io_reg[IF - IO_S] |= SERIAL;
+        }
     }
+  
     io_reg[at - IO_S] = data;
 }
 

@@ -21,11 +21,9 @@ int main(int, char*[]) {
 
     static GameBoy GB{ renderer, texture };
 
-    //GB.load_boot("roms/dmg_boot.bin");
-    //GB.load_game("roms/mario.gb");
-    GB.load_game("roms/dmg-acid2.gb");
-    //GB.load_game("roms/blargg/read_timing.gb");
-    //GB.load_game("roms/mooneye/acceptance/timer/tima_reload.gb");
+    GB.load_boot("roms/dmg_boot.bin");
+    GB.load_game("roms/alleyway.gb");
+    //GB.load_game("roms/blargg/interrupt_time.gb");
     GB.start();
 
     SDL_DestroyTexture(texture);

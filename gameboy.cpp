@@ -5,11 +5,10 @@
 GameBoy::GameBoy(SDL_Renderer* renderer, SDL_Texture* texture)
 	: ppu{ &memory, renderer, texture } { }
 
-int GameBoy::run_instruction() {
+void GameBoy::run_instruction() {
 	sm83.fetch_opcode();
 	sm83.decode_opcode();
 	sm83.handle_interrupts();
-	return sm83.elapsed_cycles;
 }
 
 void GameBoy::start() {
@@ -19,6 +18,7 @@ void GameBoy::start() {
 	if(!memory.execute_boot) no_boot_rom();
 
 	while (enabled) { // Loop runs at 59.7 Hz
+		sm83.elapsed_cycles = 0;
 		auto start = std::chrono::steady_clock::now(); 
 		while (SDL_PollEvent(&event)) {
 			switch (event.type) {
@@ -34,16 +34,9 @@ void GameBoy::start() {
 			}
 		}
 
-		int total_cycles = 0;
-		while (total_cycles < 17556) {   // 17556 cycles per frame ~ 4.19MHz
-			int cycles = run_instruction();
-			sm83.elapsed_cycles = 0;
-
-			for (int _ = 0; _ < cycles; ++_) {
-				timer.tick(); ppu.tick();
-			}
-
-			total_cycles += cycles;
+		while (sm83.elapsed_cycles < 17556) {   // 17556 cycles per frame ~ 4.19MHz
+			run_instruction();
+			sm83.cycle_parts(sm83.m_cycles);
         }
 
 		auto delay = 16 - since(start).count(); 		
@@ -150,5 +143,6 @@ void GameBoy::no_boot_rom() {
     sm83.HL.full = 0x014D;
     sm83.PC.full = 0x0100;
     sm83.SP.full = 0xFFFE;
+	memory.write(LCDC, 0x91);
 }
 

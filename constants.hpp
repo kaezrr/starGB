@@ -78,6 +78,7 @@ constexpr u16 SC = 0xFF02;
 constexpr u16 JOYP = 0xFF00;
 
 // Emulator color palette
+constexpr u32 GB_DISABLED  = 0xBEE6B3;
 constexpr u32 GB_PALETTE_0 = 0xA1EF8C;
 constexpr u32 GB_PALETTE_1 = 0x3FAC95;
 constexpr u32 GB_PALETTE_2 = 0x446176;
