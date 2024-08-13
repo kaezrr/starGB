@@ -1,6 +1,4 @@
 #include "timer.hpp"
-#include<iostream>
-#include<format>
 
 Timer::Timer(Memory* mem) : memory{ mem } {
     memory->io_reg[TIMA - IO_S] = 0;
@@ -18,8 +16,8 @@ void Timer::req_timer_intr() {
 }
 
 void Timer::tick() {
-    std::cout << std::format("SCLK:{:016b} TIMA:{:02x} TMA:{:02x} TAC:{:02x}\n",
-        memory->sys_clock, memory->io_reg[TIMA - IO_S], memory->io_reg[TMA - IO_S], memory->io_reg[TAC - IO_S]);
+   // std::cout << std::format("SCLK:{:016b} TIMA:{:02x} TMA:{:02x} TAC:{:02x}\n",
+     //  memory->sys_clock, memory->io_reg[TIMA - IO_S], memory->io_reg[TMA - IO_S], memory->io_reg[TAC - IO_S]);
 
     memory->tima_reload_cycle = false;
     if (memory->cycles_til_tima_irq > 0) {

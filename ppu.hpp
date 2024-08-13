@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SDL.h>
+#include <iostream>
 #include "memory.hpp"
 #include "constants.hpp"
 #include "fetcher.hpp"

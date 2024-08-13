@@ -10,7 +10,7 @@ using std::vector;
 using std::array;
 
 struct Memory {
-    vector<u8> boot_rom     = vector<u8>(0x100);
+    vector<u8> boot_rom     = vector<u8>(0x0100);
     vector<u8> rom_banks    = vector<u8>(0x8000);
     vector<u8> vram         = vector<u8>(0x2000);
     vector<u8> exram        = vector<u8>(0x2000);
@@ -28,9 +28,12 @@ struct Memory {
     int cycles_til_tima_irq{ 0 };
     bool tima_reload_cycle{ false };
 
-    void reset();
     u8 read(u16 at) const;
+    u8 read_IO(u16 at) const;
     void write(u16 at, u8 data);
+    void write_IO(u16 at, u8 data);
+    void initiate_dma_transfer(u8 data);
+
     void sys_clock_change(u16 new_value);
     void detect_edge(u16 before, u16 after);
     static void update_read_only(u8& original, u8 data, u8 mask);

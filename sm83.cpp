@@ -1,24 +1,21 @@
 #include "sm83.hpp"
 #include <iostream>
 
-CPU::CPU(Memory* memory_ptr, Timer* timer_ptr, PPU* ppu_ptr)
-    : memory{ memory_ptr }, timer{ timer_ptr }, ppu{ ppu_ptr } {};
+CPU::CPU(Memory* memory_ptr)
+    : memory{ memory_ptr } {};
 
-void CPU::tick_others() {
-    debug_cycles += 4;
+void CPU::tick() {
     elapsed_cycles++;
-    timer->tick();
-    ppu->tick();
 }
 
 u8 CPU::read_mem(u16 at) {
-    tick_others();
+    tick();
     auto data = memory->read(at);
     return data;
 }
 
 void CPU::write_mem(u16 at, u8 data) {
-    tick_others();
+    tick();
     memory->write(at, data);
 }
 
@@ -92,7 +89,7 @@ void CPU::write_r16mem(u8 r, u8 data) {
 }
 
 void CPU::fetch_opcode() {
-    if (halt_mode) return tick_others();
+    if (halt_mode) return tick();
     if (IME == false) { 
         IME = pending_ime; 
         pending_ime = false;
@@ -132,7 +129,7 @@ bool CPU::check_cond(u8 r) {
     case 3: cond =  get_flag(C); 
         break;
     }
-    if (cond) tick_others();
+    if (cond) tick();
 
     return cond;
 }
@@ -152,14 +149,14 @@ void CPU::handle_interrupts() {
     IME = false;
     memory->write(IF, flag & ~priority_bit);
 
-    tick_others();
-    tick_others();
+    tick();
+    tick();
 
     // push PC onto stack
     write_mem(--SP.full, PC.hi);
     write_mem(--SP.full, PC.lo);
 
-    tick_others();
+    tick();
     switch (priority_bit) {
     case VBLANK:
         //std::cout << "VBLANK\n";

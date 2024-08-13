@@ -23,8 +23,9 @@ int main(int, char*[]) {
 
     //GB.load_boot("roms/dmg_boot.bin");
     //GB.load_game("roms/mario.gb");
-    //GB.load_game("roms/blargg/instr_timing.gb");
-    GB.load_game("roms/mooneye/acceptance/timer/rapid_toggle.gb");
+    GB.load_game("roms/dmg-acid2.gb");
+    //GB.load_game("roms/blargg/read_timing.gb");
+    //GB.load_game("roms/mooneye/acceptance/timer/tima_reload.gb");
     GB.start();
 
     SDL_DestroyTexture(texture);

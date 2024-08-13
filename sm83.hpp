@@ -9,14 +9,12 @@
 struct CPU {
     Opcode op{};
     Memory* memory{};
-    Timer* timer{};
-    PPU* ppu{};
     Registers AF{}, BC{}, DE{}, HL{}, SP{}, PC{};
 
     int elapsed_cycles{ 0 };
     long long int debug_cycles{ 0 };
 
-    CPU(Memory* memory_ptr, Timer* timer_ptr, PPU* ppu_ptr);
+    CPU(Memory* memory_ptr);
 
     // Flags
     bool IME{};
@@ -24,10 +22,10 @@ struct CPU {
     bool hard_lock{};
     bool pending_ime{};
 
+    void tick();
     void fetch_opcode();
     void decode_opcode();
     void handle_interrupts();
-    void tick_others();
 
     u8 read_mem(u16 at);
     void write_mem(u16 at, u8 data);
