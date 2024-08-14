@@ -1,17 +1,13 @@
 #include "ppu.hpp"
-#include <iostream>
-#include <format>
 
-PPU::PPU(Memory* mem_ptr, SDL_Renderer* rend, SDL_Texture* text) 
-    : memory{ mem_ptr }, renderer{ rend }, texture{ text }, fetcher{ mem_ptr } {
-}
+PPU::PPU(Memory* mem_ptr, void* instance, fn_type func) 
+    : memory{ mem_ptr }, fetcher{ mem_ptr }, renderer{ instance, func } {}
 
 void PPU::increment_ly() { 
     ++memory->io_reg[LY - IO_S]; 
     fetcher.inc_windowline();
     if (ly() == wy()) fetcher.wy_cond = true;
     if (stat() & 0x40 && ly() == lyc()) req_interrupt(LCD);
-    //std::cout << std::format("LY:{:03d} LCDC:{:08b} STAT:{:08b}\n", ly(), lcdc(), stat());
 }
 
 void PPU::update_stat() {
@@ -19,21 +15,11 @@ void PPU::update_stat() {
     Memory::update_read_only(memory->io_reg[STAT - IO_S], data, 0xF8);
 }
 
-void PPU::load_texture() {
-    int pitch = SCREEN_WIDTH * 4;
-    u32* pixels{ nullptr };
-    SDL_LockTexture(texture, nullptr, reinterpret_cast<void**>(&pixels), &pitch);
-    std::memcpy(pixels, display.data(), pitch * SCREEN_HEIGHT);
-    SDL_UnlockTexture(texture);
-    SDL_RenderCopy(renderer, texture, nullptr, nullptr);
-    SDL_RenderPresent(renderer);
-}
-
 void PPU::disable_lcd() {
     memory->io_reg[LY - IO_S] = 0;
     memory->io_reg[STAT - IO_S] = 0;
-    display.fill(GB_DISABLED);
-    load_texture(); fetcher.new_frame();
+    std::fill(display.begin(), display.end(), (u8)0);
+    fetcher.new_frame(); renderer.call(display.data());
     dots = 0; mode = PPU_State::DRAWING;
     disabled = true;
 }
@@ -88,7 +74,6 @@ void PPU::hblank() {
     dots = 0; 
     increment_ly();
     if (ly() == 144) {
-        load_texture();
         mode = PPU_State::VBLANK;
         req_interrupt(VBLANK);
         if (stat() & 0x10) req_interrupt(LCD);
@@ -108,6 +93,7 @@ void PPU::vblank() {
     increment_ly();
     if (ly() == 153) { // Next frame
         reset_ly(); fetcher.new_frame();
+        renderer.call(display.data());
         mode = PPU_State::OAM_SCAN;
         curr_sprite_location = OAM_S;
         if (stat() & 0x20) req_interrupt(LCD);
@@ -133,7 +119,7 @@ bool PPU::push_to_display() {
         }
     }
 
-    u32 col = colors[(palette >> (select * 2)) & 0x3];
+    u8 col = (palette >> (select * 2)) & 0x3;
     if (fetcher.x_pos >= 0 && fetcher.x_pos < 160) 
         display[pixel_pos(ly(), fetcher.x_pos)] = col;
     ++fetcher.x_pos; fetcher.check_window();

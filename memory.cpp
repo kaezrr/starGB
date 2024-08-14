@@ -1,5 +1,4 @@
 #include "memory.hpp"
-#include <iostream>
 
 u8 Memory::read(u16 at) const {
     if (at < 0x100 && execute_boot)

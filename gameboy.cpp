@@ -1,9 +1,5 @@
 #include "gameboy.hpp"
 #include <iostream>
-#include <format>
-
-GameBoy::GameBoy(SDL_Renderer* renderer, SDL_Texture* texture)
-	: ppu{ &memory, renderer, texture } { }
 
 void GameBoy::run_instruction() {
 	sm83.fetch_opcode();
@@ -18,7 +14,6 @@ void GameBoy::start() {
 	if(!memory.execute_boot) no_boot_rom();
 
 	while (enabled) { // Loop runs at 59.7 Hz
-		sm83.elapsed_cycles = 0;
 		auto start = std::chrono::steady_clock::now(); 
 		while (SDL_PollEvent(&event)) {
 			switch (event.type) {
@@ -39,6 +34,7 @@ void GameBoy::start() {
 			sm83.cycle_parts(sm83.m_cycles);
         }
 
+		sm83.elapsed_cycles = 0;
 		auto delay = 16 - since(start).count(); 		
 		if (delay <= 0) continue;
 		SDL_Delay(static_cast<u32>(delay)); // Wait until 16ms has passed

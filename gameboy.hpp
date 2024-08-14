@@ -2,14 +2,13 @@
 
 #include <SDL.h>
 #include <chrono>
-#include <fstream>
-#include <iostream>
 
 #include "ppu.hpp"
 #include "sm83.hpp"
 #include "debug.hpp"
 #include "timer.hpp"
 #include "memory.hpp"
+#include "window_handler.hpp"
 
 //#define LOG
 
@@ -25,17 +24,22 @@ enum Button {
 };
 
 struct GameBoy {
-    PPU      ppu;
-    Memory   memory{};
-    Timer    timer{ &memory };
-    CPU      sm83{ &memory, &ppu, &timer };
     bool enabled{};
 
+    Window_Handler handler{ 
+        SCREEN_HEIGHT, SCREEN_WIDTH, 3,
+        0xA1EF8C, 0x3FAC95,
+        0x446176, 0x2C2137 };
+    
+    Memory   memory{};
+    PPU      ppu{ &memory, &handler, handler_wrapper };
+    Timer    timer{ &memory };
+    CPU      sm83{ &memory, &ppu, &timer };
 
 #ifdef LOG
-    Debugger debugger{};
+    Debugger debugger{ &memory };
+    debugger.log_path("C:/Users/Anjishnu/Documents/Projects/misc/log_dump.txt");
 #endif // DEBUG
-    GameBoy(SDL_Renderer* renderer, SDL_Texture* texture);
 
     void start();
     void run_instruction();

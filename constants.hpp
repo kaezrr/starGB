@@ -12,8 +12,8 @@ using s32   = int32_t;
 using size_t = std::size_t;
 
 constexpr auto PIXEL_SIZE       = 3;
-constexpr auto SCREEN_WIDTH     = 160;
 constexpr auto SCREEN_HEIGHT    = 144;
+constexpr auto SCREEN_WIDTH     = 160;
 
 // Memory components addresses 
 constexpr u16 ROM_S     = 0x0000;
@@ -76,10 +76,3 @@ constexpr u16 SC = 0xFF02;
 
 // Joypad
 constexpr u16 JOYP = 0xFF00;
-
-// Emulator color palette
-constexpr u32 GB_DISABLED  = 0xBEE6B3;
-constexpr u32 GB_PALETTE_0 = 0xA1EF8C;
-constexpr u32 GB_PALETTE_1 = 0x3FAC95;
-constexpr u32 GB_PALETTE_2 = 0x446176;
-constexpr u32 GB_PALETTE_3 = 0x2C2137;

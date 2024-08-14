@@ -145,6 +145,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="callback.hpp" />
     <ClInclude Include="constants.hpp" />
     <ClInclude Include="cpu_utils.hpp" />
     <ClInclude Include="debug.hpp" />
@@ -155,6 +156,7 @@
     <ClInclude Include="ppu.hpp" />
     <ClInclude Include="sm83.hpp" />
     <ClInclude Include="timer.hpp" />
+    <ClInclude Include="window_handler.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="debug.cpp" />
@@ -167,6 +169,7 @@
     <ClCompile Include="ppu.cpp" />
     <ClCompile Include="sm83.cpp" />
     <ClCompile Include="timer.cpp" />
+    <ClCompile Include="window_handler.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

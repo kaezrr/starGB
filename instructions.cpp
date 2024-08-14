@@ -1,6 +1,4 @@
 #include "sm83.hpp"
-#include <iostream>
-#include <format>
 
 // Instructions
 void CPU::nop() {

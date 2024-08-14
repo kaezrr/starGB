@@ -60,6 +60,12 @@
     <ClInclude Include="ppu.hpp">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
+    <ClInclude Include="window_handler.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="callback.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="memory.cpp">
@@ -91,6 +97,9 @@
     </ClCompile>
     <ClCompile Include="fetcher.cpp">
       <Filter>Source Files\ppu_src</Filter>
+    </ClCompile>
+    <ClCompile Include="window_handler.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

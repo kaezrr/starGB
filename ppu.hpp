@@ -1,8 +1,8 @@
 #pragma once
 
 #include <SDL.h>
-#include <iostream>
 #include "memory.hpp"
+#include "callback.hpp"
 #include "constants.hpp"
 #include "fetcher.hpp"
 
@@ -13,6 +13,7 @@ enum class PPU_State {
     DRAWING,
 };
 
+
 struct PPU {
     Memory* memory{};
     Fetcher fetcher{ nullptr };
@@ -21,13 +22,12 @@ struct PPU {
     u16 curr_sprite_location{ OAM_S }, dots{ 0 };
 
     PPU_State mode{ PPU_State::OAM_SCAN };
-    array<u32, SCREEN_HEIGHT * SCREEN_WIDTH> display{};
-    array<u32, 4> colors{ GB_PALETTE_0, GB_PALETTE_1, GB_PALETTE_2, GB_PALETTE_3 };
+    array<u32, 4> colors{};
+    vector<u8> display = vector<u8>(SCREEN_HEIGHT * SCREEN_WIDTH);
 
-	SDL_Renderer* renderer{};
-    SDL_Texture* texture{};
+    CallBack renderer;
 
-    PPU(Memory* mem_ptr, SDL_Renderer* rend, SDL_Texture* text);
+    PPU(Memory* mem_ptr, void* instance, fn_type func);
 
     void reset_ly() { memory->io_reg[LY - IO_S] = 0; }
     u8 ly() { return memory->io_reg[LY - IO_S]; }
@@ -58,6 +58,5 @@ struct PPU {
     void hblank();
     void vblank();
 
-    void load_texture();
     bool push_to_display();
 };
