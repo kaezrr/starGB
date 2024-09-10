@@ -7,7 +7,7 @@ int main(int, char*[]) {
 
     GameBoy GB{};
 
-    GB.load_boot("roms/dmg_boot.bin");
+    //GB.load_boot("roms/dmg_boot.bin");
     GB.load_game("roms/tennis.gb");
 
     GB.start();

@@ -3,6 +3,17 @@
 PPU::PPU(Memory* mem_ptr, void* instance, fn_type func) 
     : memory{ mem_ptr }, fetcher{ mem_ptr }, renderer{ instance, func } {}
 
+void PPU::new_frame() {
+    fetcher.new_frame(); reset_ly(); 
+    renderer.call(display.data());
+    curr_sprite_location = OAM_S;
+    dots = 0;
+}
+
+void PPU::new_line() {
+    fetcher.new_line();
+}
+
 void PPU::increment_ly() { 
     ++memory->io_reg[LY - IO_S]; 
     fetcher.inc_windowline();
@@ -16,11 +27,9 @@ void PPU::update_stat() {
 }
 
 void PPU::disable_lcd() {
-    memory->io_reg[LY - IO_S] = 0;
     memory->io_reg[STAT - IO_S] = 0;
     std::fill(display.begin(), display.end(), (u8)0);
-    fetcher.new_frame(); renderer.call(display.data());
-    dots = 0; mode = PPU_State::DRAWING;
+    new_frame(); mode = PPU_State::OAM_SCAN;
     disabled = true;
 }
 
@@ -78,7 +87,7 @@ void PPU::hblank() {
         req_interrupt(VBLANK);
         if (stat() & 0x10) req_interrupt(LCD);
     } else {
-        fetcher.new_line();
+        new_line();
         mode = PPU_State::OAM_SCAN;
         if (stat() & 0x20) req_interrupt(LCD);
         curr_sprite_location = OAM_S;
@@ -92,10 +101,8 @@ void PPU::vblank() {
     dots = 0; 
     increment_ly();
     if (ly() == 153) { // Next frame
-        reset_ly(); fetcher.new_frame();
-        renderer.call(display.data());
+        new_frame();
         mode = PPU_State::OAM_SCAN;
-        curr_sprite_location = OAM_S;
         if (stat() & 0x20) req_interrupt(LCD);
     }
 }

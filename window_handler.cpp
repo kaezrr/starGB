@@ -1,10 +1,10 @@
 #include "window_handler.hpp"
 
 
-Window_Handler::Window_Handler(int height, int width, int pix,
-    u32 color0, u32 color1, u32 color2, u32 color3) {
+Window_Handler::Window_Handler(const char* name, int height, int width, int pix,
+    u32 color0, u32 color1, u32 color2, u32 color3, int start_x, int start_y) {
     s_height = height; s_width = width; pix_size = pix;
-    window = SDL_CreateWindow("StarGB", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+    window = SDL_CreateWindow(name, start_x, start_y,
         pix_size * s_width, pix_size * s_height, SDL_WINDOW_SHOWN | SDL_WINDOW_INPUT_FOCUS);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB888,

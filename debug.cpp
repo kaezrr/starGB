@@ -52,3 +52,25 @@ void Debugger::memory_dump(u16 start, u16 end) {
     }
 }
 
+void Debugger::render_tiles() {
+    for (u16 i = 0; i < 384; i++)
+        fill_tile_data(i);
+
+    return tiles.render_frame(tile_buffer.data());
+}
+
+void Debugger::fill_tile_data(u16 index) {
+    int x = index % 16;
+    int y = (index / 16) * 8;
+    int addr = 0x8000 + (index * 16);
+
+    for (int k = 0; k < 16; k += 2, y++) {
+        u8 lsb = mem->vram[addr - VRAM_S + k];
+        u8 msb = mem->vram[addr - VRAM_S + k + 1];
+
+        for (u8 i = 0; i < 8; ++i) {
+            u8 pixel = (((msb & (1 << i)) >> i) << 1) | ((lsb & (1 << i)) >> i);
+            tile_buffer[(y * 128) + (x * 8) + (7 - i)] = pixel;
+        }
+    }
+}

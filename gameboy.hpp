@@ -10,7 +10,7 @@
 #include "memory.hpp"
 #include "window_handler.hpp"
 
-//#define LOG
+#define LOG
 
 enum Button {
     RIGHT,
@@ -26,10 +26,12 @@ enum Button {
 struct GameBoy {
     bool enabled{};
 
-    Window_Handler handler{ 
+    Window_Handler handler{
+        "StarGB",
         SCREEN_HEIGHT, SCREEN_WIDTH, 3,
         0xA1EF8C, 0x3FAC95,
-        0x446176, 0x2C2137 };
+        0x446176, 0x2C2137
+    };
     
     Memory   memory{};
     PPU      ppu{ &memory, &handler, handler_wrapper };
@@ -37,8 +39,8 @@ struct GameBoy {
     CPU      sm83{ &memory, &ppu, &timer };
 
 #ifdef LOG
-    Debugger debugger{ &memory };
-    debugger.log_path("C:/Users/Anjishnu/Documents/Projects/misc/log_dump.txt");
+    Debugger debugger{ &memory, &sm83 };
+    //debugger.log_path("C:/Users/Anjishnu/Documents/Projects/misc/log_dump.txt");
 #endif // DEBUG
 
     void start();
@@ -48,6 +50,7 @@ struct GameBoy {
     void load_game(const string& path);
     void load_boot(const string& path);
 
+    void handle_events();
     void set_button_on(const SDL_Scancode& sym);
     void set_button_off(const SDL_Scancode& sym);
 };

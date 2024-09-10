@@ -9,25 +9,13 @@ void GameBoy::run_instruction() {
 
 void GameBoy::start() {
 	enabled = true;
-	SDL_Event event{};
-
+	SDL_RaiseWindow(handler.window);
 	if(!memory.execute_boot) no_boot_rom();
 
 	while (enabled) { // Loop runs at 59.7 Hz
 		auto start = std::chrono::steady_clock::now(); 
-		while (SDL_PollEvent(&event)) {
-			switch (event.type) {
-			case SDL_QUIT:
-				enabled = false;
-				break;
-			case SDL_KEYDOWN:
-				set_button_on(event.key.keysym.scancode);
-				break;
-			case SDL_KEYUP:
-				set_button_off(event.key.keysym.scancode);
-				break;
-			}
-		}
+		handle_events();
+		debugger.render_tiles();
 
 		while (sm83.elapsed_cycles < 17556) {   // 17556 cycles per frame ~ 4.19MHz
 			run_instruction();
@@ -72,6 +60,30 @@ void GameBoy::load_boot(const string& path) {
 	}
 	program.read(reinterpret_cast<char*>(&memory.boot_rom[0]), rom_size);
 	memory.execute_boot = true;
+}
+
+void GameBoy::handle_events() {
+    SDL_Event event;
+    while (SDL_PollEvent(&event)) {
+        switch (event.type) {
+        case SDL_QUIT:
+            enabled = false;
+            break;
+        case SDL_WINDOWEVENT:
+            switch (event.window.event) {
+            case SDL_WINDOWEVENT_CLOSE:
+                enabled = false;
+                break;
+            }
+            break;
+        case SDL_KEYDOWN:
+            set_button_on(event.key.keysym.scancode);
+            break;
+        case SDL_KEYUP:
+            set_button_off(event.key.keysym.scancode);
+            break;
+        }
+    }
 }
 
 void GameBoy::set_button_on(const SDL_Scancode& code) {

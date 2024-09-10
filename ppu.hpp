@@ -58,5 +58,8 @@ struct PPU {
     void hblank();
     void vblank();
 
+    void new_frame();
+    void new_line();
+
     bool push_to_display();
 };
