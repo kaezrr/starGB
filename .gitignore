@@ -1,4 +1,4 @@
-roms/
-json_tests/
-log_dump.txt
-vram.txt
+./roms/
+./logs/
+./build/
+./.vscode/
