@@ -1,4 +1,4 @@
-./roms/
-./logs/
-./build/
-./.vscode/
+roms/
+logs/
+build/
+.vscode/
