@@ -2,3 +2,4 @@ roms/
 logs/
 build/
 .vscode/
+.cache/
