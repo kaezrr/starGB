@@ -112,6 +112,7 @@ void GameBoy::set_button_on(const SDL_Scancode& code) {
 	case SDL_SCANCODE_LSHIFT:
 		memory.input_buffer |= (1 << SELECT);
 		break;
+	default: break;
 	}
 }
 
@@ -141,6 +142,7 @@ void GameBoy::set_button_off(const SDL_Scancode& code) {
 	case SDL_SCANCODE_LSHIFT:
 		memory.input_buffer &= ~(1 << SELECT);
 		break;
+	default: break;
 	}
 }
 
