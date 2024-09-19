@@ -1,5 +1,5 @@
-#include "sm83.hpp"
 #include <iostream>
+#include "sm83.hpp"
 
 void CPU::decode_opcode() {
     if (halt_mode) return;

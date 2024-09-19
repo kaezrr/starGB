@@ -10,8 +10,8 @@ find_package(SDL2 REQUIRED)
 set(SOURCE_DIR ${PROJECT_SOURCE_DIR}/src/)
 set(PROJECT_VERSION ${PROJECT_VERSION})
 set(PROJECT_NAME ${PROJECT_NAME})
-
 configure_file(version.h.in ${SOURCE_DIR}/version.h @ONLY)
+
 include_directories(${SOURCE_DIR})
 include_directories(${PROJECT_NAME} ${SDL2_INCLUDE_DIRS})
 link_directories(${SOURCE_DIR})

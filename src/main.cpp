@@ -2,7 +2,7 @@
 #include <iostream>
 #include <SDL.h>
 
-#include"version.h"
+#include "version.h"
 #include "gameboy.hpp"
 
 int main(int argc, char** argv) {
