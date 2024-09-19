@@ -156,6 +156,7 @@ void Fetcher::sp_tick() {
         sp_state = Fetcher_State::SP_READ_TILE_ID;
         bg_state = Fetcher_State::READ_TILE_ID;
         break;
+    default: break;
     }
 }
 
@@ -191,6 +192,8 @@ bool Fetcher::bg_tick() {
     case Fetcher_State::PAUSED:
         sp_tick();
         return false;
+    
+    default: break;
     }
     return true;
 }
