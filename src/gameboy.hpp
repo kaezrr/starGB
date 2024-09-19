@@ -38,10 +38,7 @@ struct GameBoy {
     Timer    timer{ &memory };
     CPU      sm83{ &memory, &ppu, &timer };
 
-#ifdef LOG
     Debugger debugger{ &memory, &sm83 };
-    //debugger.log_path("C:/Users/Anjishnu/Documents/Projects/misc/log_dump.txt");
-#endif // DEBUG
 
     void start();
     void run_instruction();

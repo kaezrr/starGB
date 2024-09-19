@@ -1,6 +1,6 @@
 #pragma once
 #include "constants.hpp"
-#include <bit>
+#include<bit>
 
 namespace Masks {
     enum Mask {
