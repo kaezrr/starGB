@@ -7,10 +7,10 @@
 
 int main(int argc, char** argv) {
     if(argc < 2 || argc > 3) {
-        std::cout << "Usage: " << argv[0] << "[path/to/rom] " << "[path/to/boot-rom](optional)\n";
+        std::cout << "Usage: " << argv[0] << " [path/to/rom] " << "[path/to/boot-rom](optional)\n";
         return 1;
     }
-    std::cout << PROJECT_NAME << " version: " << PROJECT_VERSION << '\n';
+    std::cout << PROJECT_NAME << " Version " << PROJECT_VERSION << '\n';
     
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
     GameBoy GB{};

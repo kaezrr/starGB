@@ -9,15 +9,15 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 find_package(SDL2 REQUIRED)
 
 set(SOURCE_DIR ${PROJECT_SOURCE_DIR}/src/)
-set(PROJECT_VERSION ${PROJECT_VERSION})
-set(PROJECT_NAME ${PROJECT_NAME})
 configure_file(version.h.in ${SOURCE_DIR}/version.h @ONLY)
 
 include_directories(${SOURCE_DIR})
-include_directories(${PROJECT_NAME} ${SDL2_INCLUDE_DIRS})
-link_directories(${SOURCE_DIR})
+include_directories(${SOURCE_DIR}/cpu)
+include_directories(${SOURCE_DIR}/utils)
+include_directories(${SOURCE_DIR}/video)
+include_directories(${SDL2_INCLUDE_DIRS})
 
-file(GLOB SOURCE_FILES ${SOURCE_DIR}/*.cpp)
+file(GLOB_RECURSE SOURCE_FILES ${SOURCE_DIR}/*.cpp)
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES})
