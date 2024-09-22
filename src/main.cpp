@@ -17,6 +17,7 @@ int main(int argc, char** argv) {
 
     if(argc == 3) 
         GB.load_boot(argv[2]);
+
     GB.load_game(argv[1]);
 
     GB.start();

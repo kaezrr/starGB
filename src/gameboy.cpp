@@ -1,4 +1,6 @@
 #include "gameboy.hpp"
+#include "debug.hpp"
+#include <SDL_video.h>
 #include <iostream>
 
 void GameBoy::run_instruction() {
@@ -8,6 +10,21 @@ void GameBoy::run_instruction() {
 }
 
 void GameBoy::start() {
+	handler.init(
+        "StarGB",
+        SCREEN_HEIGHT, SCREEN_WIDTH, 3,
+        0xA1EF8C, 0x3FAC95,
+        0x446176, 0x2C2137
+	);
+    debugger.tiles.init(
+    	"VRAM Viewer",
+    	TILE_HEIGHT * TILE_WINDOW_HEIGHT,
+    	TILE_WIDTH * TILE_WINDOW_WIDTH, 2,
+    	0xA1EF8C, 0x3FAC95,
+    	0x446176, 0x2C2137,
+		436, 324
+    );
+
 	enabled = true;
 	SDL_RaiseWindow(handler.window);
 	if(!memory.execute_boot) no_boot_rom();
@@ -32,14 +49,14 @@ void GameBoy::start() {
 void GameBoy::load_game(const string& path) {
 	std::ifstream program{ path, std::ios::binary };
 	if (!program) {
-		std::cerr << "File not found!\n";
+		std::cerr << "error: game rom not found!\n";
 		std::exit(1);
 	}
 	program.seekg(0, std::ios::end);
 	size_t rom_size = program.tellg();
 	program.seekg(0, std::ios::beg);
 	if (rom_size > 0x8000) {
-		std::cerr << "File too big!\n";
+		std::cerr << "error: game rom too big!\n";
 		std::exit(1);
 	}
 	program.read(reinterpret_cast<char*>(&memory.rom_banks[ROM_S]), rom_size);
@@ -48,14 +65,14 @@ void GameBoy::load_game(const string& path) {
 void GameBoy::load_boot(const string& path) {
 	std::ifstream program{ path, std::ios::binary };
 	if (!program) {
-		std::cerr << "File not found!\n";
+		std::cerr << "error: boot rom not found!\n";
 		std::exit(1);
 	}
 	program.seekg(0, std::ios::end);
 	size_t rom_size = program.tellg();
 	program.seekg(0, std::ios::beg);
 	if (rom_size > 0x100) {
-		std::cerr << "File too big!\n";
+		std::cerr << "error: boot rom too big!\n";
 		std::exit(1);
 	}
 	program.read(reinterpret_cast<char*>(&memory.boot_rom[0]), rom_size);

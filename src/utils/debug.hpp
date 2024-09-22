@@ -2,7 +2,6 @@
 #include <iostream>
 #include <ostream>
 #include <string>
-#include <format>
 #include <fstream>
 #include "window_handler.hpp"
 #include "sm83.hpp"
@@ -22,14 +21,7 @@ struct Debugger {
     const CPU* sm83{ nullptr };
 
     vector<u8> tile_buffer = vector<u8>(0x6000);
-    Window_Handler tiles{
-        "VRAM Viewer",
-        TILE_HEIGHT * TILE_WINDOW_HEIGHT,
-        TILE_WIDTH * TILE_WINDOW_WIDTH, 2,
-        0xA1EF8C, 0x3FAC95,
-        0x446176, 0x2C2137,
-        268, 216
-    };
+    Window_Handler tiles{};
 
     Debugger(Memory* mptr, CPU* cptr) : mem{ mptr }, sm83{ cptr } {}
 

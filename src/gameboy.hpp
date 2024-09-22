@@ -25,14 +25,8 @@ enum Button {
 
 struct GameBoy {
     bool enabled{};
-
-    Window_Handler handler{
-        "StarGB",
-        SCREEN_HEIGHT, SCREEN_WIDTH, 3,
-        0xA1EF8C, 0x3FAC95,
-        0x446176, 0x2C2137
-    };
     
+    Window_Handler handler{};
     Memory   memory{};
     PPU      ppu{ &memory, &handler, handler_wrapper };
     Timer    timer{ &memory };

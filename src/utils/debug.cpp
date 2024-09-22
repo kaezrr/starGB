@@ -1,5 +1,6 @@
 #include "debug.hpp"
 #include "mnemonic.hpp"
+#include <format>
 
 void Debugger::log_path(const string& path) {
     file = std::ofstream{ path };

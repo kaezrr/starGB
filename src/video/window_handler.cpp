@@ -1,7 +1,11 @@
 #include "window_handler.hpp"
+Window_Handler::~Window_Handler() {
+    SDL_DestroyTexture(texture);
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+}
 
-
-Window_Handler::Window_Handler(const char* name, int height, int width, int pix,
+void Window_Handler::init(const char* name, int height, int width, int pix,
     u32 color0, u32 color1, u32 color2, u32 color3, int start_x, int start_y) {
     s_height = height; s_width = width; pix_size = pix;
     window = SDL_CreateWindow(name, start_x, start_y,
@@ -9,15 +13,10 @@ Window_Handler::Window_Handler(const char* name, int height, int width, int pix,
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB888,
         SDL_TEXTUREACCESS_STREAMING, s_width, s_height);
+
     SDL_RaiseWindow(window);
 	colors[0] = color0; colors[1] = color1;
 	colors[2] = color2; colors[3] = color3;
-}
-
-Window_Handler::~Window_Handler() {
-    SDL_DestroyTexture(texture);
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
 }
 
 void Window_Handler::render_frame(u8* display) {
