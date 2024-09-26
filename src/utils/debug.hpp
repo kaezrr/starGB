@@ -1,8 +1,6 @@
 #pragma once
 #include <string>
 #include <spdlog/spdlog.h>
-#include <spdlog/async.h>
-#include <spdlog/sinks/rotating_file_sink.h>
 
 #include "window_handler.hpp"
 #include "sm83.hpp"
@@ -18,15 +16,14 @@ constexpr auto TILE_WINDOW_HEIGHT = 24;
 
 struct Debugger {
     std::shared_ptr<spdlog::logger> logger{nullptr}; 
+    std::shared_ptr<spdlog::logger> memory_logger{nullptr}; 
     const Memory* mem{ nullptr };
     const CPU* sm83{ nullptr };
-    string log_path{""};
 
     vector<u8> tile_buffer = vector<u8>(0x6000);
     Window_Handler tiles{};
 
     Debugger(Memory* mptr, CPU* cptr) : mem{ mptr }, sm83{ cptr } {
-        spdlog::flush_every(std::chrono::seconds(3));
     }
 
     void set_log_path(const string& path);

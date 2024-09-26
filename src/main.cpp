@@ -11,7 +11,6 @@
 void parse_args(int argc, char** argv, string& boot, string& log) {
     std::vector<string> args{argv, argv + argc};
     for (int i = 2; i < argc; i += 2) {
-        spdlog::info(args[i]);
         if (args[i] == "-b")
             boot = args[i + 1];
         else if (args[i] == "-l")
