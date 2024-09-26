@@ -1,8 +1,6 @@
 #pragma once
-#include <iostream>
-#include <ostream>
 #include <string>
-#include <fstream>
+
 #include "window_handler.hpp"
 #include "sm83.hpp"
 #include "memory.hpp"
@@ -16,7 +14,6 @@ constexpr auto TILE_WINDOW_WIDTH = 16;
 constexpr auto TILE_WINDOW_HEIGHT = 24;
 
 struct Debugger {
-    std::ofstream file;
     const Memory* mem{ nullptr };
     const CPU* sm83{ nullptr };
 

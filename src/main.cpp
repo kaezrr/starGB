@@ -1,17 +1,17 @@
 #define SDL_MAIN_HANDLED
-#include <iostream>
 #include <SDL.h>
+#include <SDL_version.h>
+#include<spdlog/spdlog.h>
 
 #include "version.h"
 #include "gameboy.hpp"
 
 int main(int argc, char** argv) {
+    spdlog::set_pattern("%v");
     if(argc < 2 || argc > 3) {
-        std::cout << "Usage: " << argv[0] << " [path/to/rom] " << "[path/to/boot-rom](optional)\n";
+        spdlog::error("Usage: {} [path/to/rom] [path/to/boot-rom](optional)", argv[0]);
         return 1;
     }
-    std::cout << PROJECT_NAME << " Version " << PROJECT_VERSION << '\n';
-    
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
     GameBoy GB{};
 
@@ -20,6 +20,7 @@ int main(int argc, char** argv) {
 
     GB.load_game(argv[1]);
 
+    spdlog::info("{} Version {}", PROJECT_NAME, PROJECT_VERSION);
     GB.start();
     SDL_Quit();
 

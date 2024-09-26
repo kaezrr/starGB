@@ -1,9 +1,12 @@
+#include <spdlog/spdlog.h>
+#include <spdlog/sinks/basic_file_sink.h>
+
 #include "debug.hpp"
 #include "mnemonic.hpp"
-#include <format>
 
 void Debugger::log_path(const string& path) {
-    file = std::ofstream{ path };
+    auto logger = spdlog::basic_logger_mt("disassembly-log",  path);
+    
 }
 
 // Print disassembly

@@ -1,6 +1,5 @@
-#include <iostream>
-#include <bit>
 #include "sm83.hpp"
+#include "cpu_utils.hpp"
 
 CPU::CPU(Memory* memory_ptr, PPU* ppu_ptr, Timer* timer_ptr)
     : memory{ memory_ptr }, ppu{ ppu_ptr }, timer{ timer_ptr } {};
@@ -155,7 +154,7 @@ void CPU::handle_interrupts() {
     if (interrupts) halt_mode = false;
     if (!interrupts || !IME) return;
 
-    u8 priority_bit = (1 << std::countr_zero(interrupts));
+    u8 priority_bit = (1 << countr_zero(interrupts));
 
     // disable further interrupt handling
     IME = false;

@@ -1,6 +1,5 @@
 #pragma once
 #include "constants.hpp"
-#include<bit>
 
 namespace Masks {
     enum Mask {
@@ -32,10 +31,19 @@ union Registers {
     struct { u8 lo, hi; };
 };
 
+inline int countr_zero(u8 byte) {
+    int number_of_zeros = 0;
+    for(int i = 0; i < 8; ++i) {
+        if(byte & (1 << i)) break;
+        ++number_of_zeros;
+    }
+    return number_of_zeros;
+}
+
 struct Opcode {
     u8 byte{};
     inline u8 bits(u8 mask) const {
-        return (byte & mask) >> std::countr_zero(mask);
+        return (byte & mask) >> countr_zero(mask);
     }
 };
 
