@@ -1,13 +1,13 @@
 #define SDL_MAIN_HANDLED
 #include <SDL.h>
 #include <SDL_version.h>
-#include<spdlog/spdlog.h>
+#include <spdlog/spdlog.h>
 
 #include "version.h"
 #include "gameboy.hpp"
 
 int main(int argc, char** argv) {
-    spdlog::set_pattern("%^[%l]%$ %v");
+    spdlog::set_pattern("%v");
     if(argc < 2 || argc > 3) {
         spdlog::error("Usage: {} [path/to/rom] [path/to/boot-rom](optional)", argv[0]);
         return 1;

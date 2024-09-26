@@ -1,49 +1,35 @@
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/basic_file_sink.h>
-#include <spdlog/sinks/rotating_file_sink.h>
 
 #include "debug.hpp"
+#include "memory.hpp"
 #include "mnemonic.hpp"
 
 // Print disassembly
 void Debugger::write_text_log() {
-  file << std::format("[{:05d}] [{:04x}] [{:02x} {:02x} {:02x}] ",
-                      sm83->elapsed_cycles, sm83->PC.full,
-                      mem->read(sm83->PC.full), mem->read(sm83->PC.full + 1),
-                      mem->read(sm83->PC.full + 2));
-  file << get_op(mem->read(sm83->PC.full)) << '\n';
+  logger->debug(fmt::format(
+      "[{:05d}] [{:04x}] [{:02x} {:02x} {:02x}] {}", sm83->elapsed_cycles,
+      sm83->PC.full, mem->read(sm83->PC.full), mem->read(sm83->PC.full + 1),
+      mem->read(sm83->PC.full + 2), get_op(mem->read(sm83->PC.full))));
 
   if (sm83->PC.full == 0xCB) {
-    file << std::format(
-        "[{:05d}] [{:04x}] [{:02x} {:02x} {:02x}] ", sm83->elapsed_cycles,
+    logger->debug(fmt::format(
+        "[{:05d}] [{:04x}] [{:02x} {:02x} {:02x}] {}", sm83->elapsed_cycles,
         sm83->PC.full + 1, mem->read(sm83->PC.full + 1),
-        mem->read(sm83->PC.full + 2), mem->read(sm83->PC.full + 3));
-    file << get_cb(mem->read(sm83->PC.full + 1)) << '\n';
+        mem->read(sm83->PC.full + 2), mem->read(sm83->PC.full + 3),
+        get_cb(mem->read(sm83->PC.full + 1))));
     }
 
-    out << std::format( "[AF: ${:04x} BC: ${:04x} DE: ${:04x} ",
-        sm83->AF.full, sm83->BC.full, sm83->DE.full);
-    out << std::format("HL: ${:04x} SP: ${:04x} PC: ${:04x}\nLY: ${:02x} STAT: ${:02x} ",
-        sm83->HL.full, sm83->SP.full, sm83->PC.full, mem->read(LY),  mem->read(STAT));
-    out << std::format("IE: ${:02x} IF: ${:02x}]\n\n", mem->read(IE), mem->read(IF));
-}
-
-void Debugger::write_match_log() {
-    auto match_logger = spdlog::basic_logger_mt("match-log", "logs/match.txt");
-    string str = fmt::format("a:{:02x} ", sm83->AF.hi) + "f:";
-    str += (sm83->get_flag(Z) ? 'z' : '-');
-    str += (sm83->get_flag(N) ? 'n' : '-');
-    str += (sm83->get_flag(H) ? 'h' : '-');
-    str += (sm83->get_flag(C) ? 'c' : '-');
-
-    str += fmt::format(" bc:{:04x} de:{:04x} hl:{:04x} sp:{:04x} pc:{:04x} (cy: {:d})\n",
-        sm83->BC.full, sm83->DE.full, sm83->HL.full, sm83->SP.full, sm83->PC.full, sm83->debug_cycles);
-    match_logger->debug(str);
+    logger->debug(fmt::format(
+        "[AF: ${:04x} BC: ${:04x} DE: ${:04x} HL: ${:04x} SP: ${:04x} PC: ${:04x}\nLY: ${:02x} STAT: ${:02x} IE: ${:02x} IF: ${:02x}]\n",
+        sm83->AF.full, sm83->BC.full, sm83->DE.full, sm83->HL.full,
+        sm83->SP.full, sm83->PC.full, mem->read(LY), mem->read(STAT),
+        mem->read(IE), mem->read(IF)));
 }
 
 // Dump memory to a text file
 void Debugger::memory_dump(u16 start, u16 end) {
-    auto memory_dump = spdlog::basic_logger_mt("memory-dump", "logs/dump.txt");
+    auto memory_dump = spdlog::basic_logger_mt("memory-dump", "../logs/dump.txt");
     string str = "";
     for (u16 i = start; i <= end; i += 0x10) {
         str += fmt::format("{:04x}:", i);
@@ -52,6 +38,7 @@ void Debugger::memory_dump(u16 start, u16 end) {
         }
         memory_dump->debug(str);
     }
+    memory_dump->flush();
 }
 
 void Debugger::render_tiles() {
