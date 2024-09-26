@@ -5,6 +5,12 @@
 #include "gameboy.hpp"
 #include "debug.hpp"
 
+GameBoy::GameBoy(const string &game, const string &boot, const string &log) {
+	load_game(game);
+	if(boot != "") load_boot(boot);
+	if(log != "") load_logs(log);
+}
+
 void GameBoy::run_instruction() {
 	sm83.fetch_opcode();
 	sm83.decode_opcode();
@@ -37,6 +43,7 @@ void GameBoy::start() {
 		debugger.render_tiles();
 
 		while (sm83.elapsed_cycles < 17556) {   // 17556 cycles per frame ~ 4.19MHz
+			if(debugger_enabled) debugger.write_text_log();
 			run_instruction();
 			sm83.cycle_parts(sm83.m_cycles);
         }
@@ -79,6 +86,11 @@ void GameBoy::load_boot(const string& path) {
 	}
 	program.read(reinterpret_cast<char*>(&memory.boot_rom[0]), rom_size);
 	memory.execute_boot = true;
+}
+
+void GameBoy::load_logs(const string& path) {
+	debugger_enabled = true;
+	debugger.set_log_path(path);
 }
 
 void GameBoy::handle_events() {

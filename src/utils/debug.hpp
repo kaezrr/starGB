@@ -17,14 +17,10 @@ constexpr auto TILE_WINDOW_WIDTH = 16;
 constexpr auto TILE_WINDOW_HEIGHT = 24;
 
 struct Debugger {
-    std::shared_ptr<spdlog::logger> logger = spdlog::rotating_logger_mt<spdlog::async_factory>(
-        "logger",
-        "logfile.txt", 
-        1048576 * 5,
-        3
-    );
+    std::shared_ptr<spdlog::logger> logger{nullptr}; 
     const Memory* mem{ nullptr };
     const CPU* sm83{ nullptr };
+    string log_path{""};
 
     vector<u8> tile_buffer = vector<u8>(0x6000);
     Window_Handler tiles{};
@@ -33,7 +29,7 @@ struct Debugger {
         spdlog::flush_every(std::chrono::seconds(3));
     }
 
-    void log_path(const string& path);
+    void set_log_path(const string& path);
     void write_text_log();
     void write_match_log();
     void print_cpu_mem(std::ostream& out);

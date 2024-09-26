@@ -33,6 +33,9 @@ struct GameBoy {
     CPU      sm83{ &memory, &ppu, &timer };
 
     Debugger debugger{ &memory, &sm83 };
+    bool debugger_enabled = false;
+
+    GameBoy(const string& game, const string& boot, const string& log);
 
     void start();
     void run_instruction();
@@ -40,6 +43,7 @@ struct GameBoy {
     void no_boot_rom();
     void load_game(const string& path);
     void load_boot(const string& path);
+    void load_logs(const string& path);
 
     void handle_events();
     void set_button_on(const SDL_Scancode& sym);
