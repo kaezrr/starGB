@@ -1,3 +1,4 @@
+#include<spdlog/spdlog.h>
 #include "sm83.hpp"
 #include "cpu_utils.hpp"
 
@@ -170,19 +171,19 @@ void CPU::handle_interrupts() {
     tick();
     switch (priority_bit) {
     case VBLANK:
-        //std::cout << "VBLANK\n";
+        //spdlog::info("VBLANK");
         PC.full = 0x40; return;
     case LCD:
-        //std::cout << "LCD\n";
+        //spdlog::info("LCD");
         PC.full = 0x48; return;
     case TIMER:
-        //std::cout << "TIMER\n";
+        //spdlog::info("TIMER");
         PC.full = 0x50; return;
     case SERIAL:
-        //std::cout << "SERIAL\n";
+        //spdlog::debug("SERIAL");
         PC.full = 0x58; return;
     case JOYPAD:
-        //std::cout << "JOYPAD\n";
+        //spdlog::debug("JOYPAD");
         PC.full = 0x60; return;
     }
 }

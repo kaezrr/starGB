@@ -22,15 +22,15 @@ void parse_args(int argc, char** argv, string& boot, string& log) {
     }
 }
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
     spdlog::set_pattern("%^[%l]%$ %v");
-    if(argc & 1 || argc > 6) {
+    if (argc & 1 || argc > 6) {
         spdlog::error("Usage: {} [path/to/rom] -flags(optional)", argv[0]);
         spdlog::info("flags: -b [path/to/bootrom] -l [path/to/logs]");
         return 1;
     }
 
-    //parsing arguments
+    // parsing arguments
     string boot_path{""}, log_path{""}, game_path{argv[1]};
     parse_args(argc, argv, boot_path, log_path);
 

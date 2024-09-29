@@ -1,10 +1,13 @@
 #include "ppu.hpp"
+#include<spdlog/spdlog.h>
 
 PPU::PPU(Memory* mem_ptr, void* instance, fn_type func) 
-    : memory{ mem_ptr }, fetcher{ mem_ptr }, renderer{ instance, func } {}
+    : memory{ mem_ptr }, fetcher{ mem_ptr }, renderer{ instance, func } {
+        new_frame();
+    }
 
 void PPU::new_frame() {
-    fetcher.new_frame(); reset_ly(); 
+    fetcher.new_frame(); increment_ly(); 
     renderer.call(display.data());
     curr_sprite_location = OAM_S;
     dots = 0;
@@ -14,8 +17,8 @@ void PPU::new_line() {
     fetcher.new_line();
 }
 
-void PPU::increment_ly() { 
-    ++memory->io_reg[LY - IO_S]; 
+void PPU::increment_ly() {
+    memory->io_reg[LY - IO_S] = ly() >= 153 ? 0 : memory->io_reg[LY - IO_S] + 1;
     fetcher.inc_windowline();
     if (ly() == wy()) fetcher.wy_cond = true;
     if (stat() & 0x40 && ly() == lyc()) req_interrupt(LCD);
