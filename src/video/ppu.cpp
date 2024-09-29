@@ -41,9 +41,7 @@ void PPU::tick() { // tick for 4 t-cycles
         if (disabled) return;
         return disable_lcd();
     } 
-
     disabled = false;
-
     switch (mode) {
     case PPU_State::HBLANK: hblank();
         break;
@@ -114,7 +112,8 @@ bool PPU::push_to_display() {
     if (!fetcher.bg_count) return false;
     if (scx_discard) {
         fetcher.queue_bg <<= 2 * (scx() % 8);
-        scx_discard = false; dots += scx() % 8;
+        fetcher.bg_count -= (scx() % 8);
+        scx_discard = false; 
     }
     u16 bg_pixel = (lcdc() & 1) ? (fetcher.queue_bg >> 14) : 0; // pop 2 bits from the fifo
     fetcher.queue_bg <<= 2; --fetcher.bg_count;

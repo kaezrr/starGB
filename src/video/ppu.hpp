@@ -29,7 +29,6 @@ struct PPU {
 
     PPU(Memory* mem_ptr, void* instance, fn_type func);
 
-    void reset_ly() { memory->io_reg[LY - IO_S] = 0; }
     u8 ly() { return memory->io_reg[LY - IO_S]; }
     u8 wy() { return memory->io_reg[WY - IO_S]; }
     u8 wx() { return memory->io_reg[WX - IO_S]; }
