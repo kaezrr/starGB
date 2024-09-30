@@ -1,6 +1,5 @@
 #include "fetcher.hpp"
 #include <cmath>
-#include<spdlog/spdlog.h>
 
 Sprite::Sprite(u16 at, Memory* mem) {
     if (at < OAM_S || at > OAM_E) return;
