@@ -14,6 +14,8 @@ void PPU::new_frame() {
 }
 
 void PPU::new_line() {
+    //spdlog::info("SCX: {:03d} LY: {:03d}", scx(), ly());
+    scx_discard = true;
     fetcher.new_line();
 }
 
@@ -73,7 +75,6 @@ void PPU::oam_scan() {
     dots += 2;
     if (dots < 80) return;
 
-    scx_discard = true;
     mode = PPU_State::DRAWING;
 }
 

@@ -61,18 +61,20 @@ void Fetcher::sp_fetch_tile_no() {
     }
 }
 
-void Fetcher::sp_fetch_tile_data(bool state) {
+void Fetcher::sp_fetch_tile_data(bool state) { // state = HIGH/LOW
+    // if state is LOW, clear sprite fifo
+    if(!state) sp_data = 0;
     u16 sp_tile_no = curr_sp.tile_id;
+    // check for sprite size (8 or 16)
     if (lcdc() & 4) {
         sp_tile_no &= ~1;
         sp_tile_no += (ly() + 16 - curr_sp.posY >= 8);
         sp_tile_no ^= curr_sp.flipY;
     }
-
     u16 addr = 0x8000 + (sp_tile_no * 16);
-    u16 tile_line = (ly() + 16 - curr_sp.posY + scy()) % 8;
+    u16 tile_line = (ly() + 16 - curr_sp.posY) % 8;
     if (curr_sp.flipY) tile_line = 7 - tile_line;
-
+    // fill sprite fifo with data
     u8 data = vram(addr + (tile_line * 2) + state);
     for (u8 i = 0; i < 8; ++i) {
         int shift = curr_sp.flipX ? 7 - i : i;
