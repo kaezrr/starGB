@@ -23,8 +23,6 @@ void PPU::increment_ly() {
     fetcher.inc_windowline();
     if (ly() == wy()) fetcher.wy_cond = true;
     if (stat() & 0x40 && ly() == lyc()) req_interrupt(LCD);
-    if(ly() == 75)
-        int i = 0;
 }
 
 void PPU::update_stat() {

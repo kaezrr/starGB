@@ -107,11 +107,11 @@ void Fetcher::bg_fetch_tile_no() {
     if (fetch_window && (lcdc() & 0x20)) {
         increment_window = true;
         tile_y = window_line_counter / 8;
-        tile_x = (std::max(tile_index, 0) + 7 & 0xFF) / 8;
+        tile_x = (std::max(tile_index + 7, 0) & 0xFF) / 8;
         tile_map = (lcdc() & 0x40) ? 0x9C00 : 0x9800;
     } else {
         tile_y = ((scy() + ly()) & 0xFF) / 8;
-        tile_x = ((scx() + std::max(tile_index, 0) + 7) & 0xFF) / 8;
+        tile_x = ((scx() + std::max(tile_index + 7, 0)) & 0xFF) / 8;
         tile_map = (lcdc() & 0x08) ? 0x9C00 : 0x9800;
     }
     bg_tile_no = vram(tile_map + (32 * tile_y) + tile_x);
