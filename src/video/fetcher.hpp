@@ -31,15 +31,16 @@ struct Fetcher {
     Fetcher_State sp_state{ Fetcher_State::SP_READ_TILE_ID };
     Memory* memory{};
 
+    int x_pos{}, tile_index{};
     u32 queue_sp{}, sp_data{};
     u16 queue_bg{}, bg_data{};
+    u16 window_line_counter{};
     u16 bg_tile_no{}, bg_count{}, sp_count{};
 
-    Sprite curr_sp{}; int x_pos{};
+    Sprite curr_sp{}; 
     vector<Sprite> sprite_buffer;
     bool wy_cond{}, delay{}, sp_fetch{};
     bool fetch_window{}, increment_window{};
-    u16 tile_index{}, window_line_counter{};
 
     Fetcher(Memory* mem);
 

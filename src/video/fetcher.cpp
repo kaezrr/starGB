@@ -1,4 +1,6 @@
 #include "fetcher.hpp"
+#include <cmath>
+#include<spdlog/spdlog.h>
 
 Sprite::Sprite(u16 at, Memory* mem) {
     if (at < OAM_S || at > OAM_E) return;
@@ -19,17 +21,18 @@ Fetcher::Fetcher(Memory* mem) : memory{ mem } {
 
 void Fetcher::new_line() {
     sprite_buffer.clear();
-    tile_index = 0; x_pos = -8;
-    queue_bg = 0; bg_data = 0; bg_count = 0;
-    queue_sp = 0; sp_data = 0; sp_count = 0;
+    tile_index = x_pos = -8;
+    queue_bg = bg_data = bg_count = 0;
+    queue_sp = sp_data = sp_count = 0;
     fetch_window = false; delay = true;
 }
 
 void Fetcher::check_window() {
     if ((x_pos >= wx() - 7) && wy_cond && (lcdc() & 0x20)) {
+        tile_index = 0;
         fetch_window = true;
+        queue_bg = bg_count = 0; 
         bg_state = Fetcher_State::READ_TILE_ID;
-        queue_bg = 0; bg_count = 0; tile_index = 0;
     }
 }
 
@@ -62,8 +65,6 @@ void Fetcher::sp_fetch_tile_no() {
 }
 
 void Fetcher::sp_fetch_tile_data(bool state) { // state = HIGH/LOW
-    // if state is LOW, clear sprite fifo
-    if(!state) sp_data = 0;
     u16 sp_tile_no = curr_sp.tile_id;
     // check for sprite size (8 or 16)
     if (lcdc() & 4) {
@@ -106,11 +107,11 @@ void Fetcher::bg_fetch_tile_no() {
     if (fetch_window && (lcdc() & 0x20)) {
         increment_window = true;
         tile_y = window_line_counter / 8;
-        tile_x = (tile_index & 0xFF) / 8;
+        tile_x = (std::max(tile_index, 0) + 7 & 0xFF) / 8;
         tile_map = (lcdc() & 0x40) ? 0x9C00 : 0x9800;
     } else {
         tile_y = ((scy() + ly()) & 0xFF) / 8;
-        tile_x = ((scx() + tile_index) & 0xFF) / 8;
+        tile_x = ((scx() + std::max(tile_index, 0) + 7) & 0xFF) / 8;
         tile_map = (lcdc() & 0x08) ? 0x9C00 : 0x9800;
     }
     bg_tile_no = vram(tile_map + (32 * tile_y) + tile_x);
@@ -183,10 +184,8 @@ bool Fetcher::bg_tick() {
         break;
 
     case Fetcher_State::PUSH_TO_FIFO:
-        if (bg_push_to_fifo()) {
+        if (bg_push_to_fifo()) 
             bg_state = Fetcher_State::READ_TILE_ID;
-            tile_index += (x_pos < 0 && !fetch_window) ? 0 : 8;
-        }
         break;
 
     case Fetcher_State::PAUSED:

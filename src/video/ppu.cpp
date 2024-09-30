@@ -10,11 +10,10 @@ void PPU::new_frame() {
     fetcher.new_frame(); increment_ly(); 
     renderer.call(display.data());
     curr_sprite_location = OAM_S;
-    dots = 0;
+    new_line(); dots = 0;
 }
 
 void PPU::new_line() {
-    //spdlog::info("SCX: {:03d} LY: {:03d}", scx(), ly());
     scx_discard = true;
     fetcher.new_line();
 }
@@ -24,6 +23,8 @@ void PPU::increment_ly() {
     fetcher.inc_windowline();
     if (ly() == wy()) fetcher.wy_cond = true;
     if (stat() & 0x40 && ly() == lyc()) req_interrupt(LCD);
+    if(ly() == 75)
+        int i = 0;
 }
 
 void PPU::update_stat() {
@@ -132,7 +133,7 @@ bool PPU::push_to_display() {
     u8 col = (palette >> (select * 2)) & 0x3;
     if (fetcher.x_pos >= 0 && fetcher.x_pos < 160) 
         display[pixel_pos(ly(), fetcher.x_pos)] = col;
-    ++fetcher.x_pos;
+    ++fetcher.x_pos; ++fetcher.tile_index;
     if(!fetcher.fetch_window) fetcher.check_window();
     return fetcher.check_sprite();
 }
