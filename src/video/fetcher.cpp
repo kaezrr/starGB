@@ -27,9 +27,6 @@ void Fetcher::new_line() {
 
 void Fetcher::check_window() {
     if ((x_pos >= wx() - 7) && wy_cond && (lcdc() & 0x20)) {
-        if (ly() == 40) {
-            int ab = 3;
-        }
         fetch_window = true;
         bg_state = Fetcher_State::READ_TILE_ID;
         queue_bg = 0; bg_count = 0; tile_index = 0;
@@ -186,7 +183,7 @@ bool Fetcher::bg_tick() {
     case Fetcher_State::PUSH_TO_FIFO:
         if (bg_push_to_fifo()) {
             bg_state = Fetcher_State::READ_TILE_ID;
-            tile_index += (x_pos < 0) ? 0 : 8;
+            tile_index += (x_pos < 0 && !fetch_window) ? 0 : 8;
         }
         break;
 
