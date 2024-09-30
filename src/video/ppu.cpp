@@ -131,7 +131,8 @@ bool PPU::push_to_display() {
     u8 col = (palette >> (select * 2)) & 0x3;
     if (fetcher.x_pos >= 0 && fetcher.x_pos < 160) 
         display[pixel_pos(ly(), fetcher.x_pos)] = col;
-    ++fetcher.x_pos; fetcher.check_window();
+    ++fetcher.x_pos;
+    if(!fetcher.fetch_window) fetcher.check_window();
     return fetcher.check_sprite();
 }
 

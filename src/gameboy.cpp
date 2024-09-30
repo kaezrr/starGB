@@ -3,6 +3,7 @@
 #include <fstream>
 
 #include "gameboy.hpp"
+#include "constants.hpp"
 #include "debug.hpp"
 
 GameBoy::GameBoy(const string &game, const string &boot, const string &log) {
@@ -185,5 +186,6 @@ void GameBoy::no_boot_rom() {
     sm83.PC.full = 0x0100;
     sm83.SP.full = 0xFFFE;
 	memory.write(LCDC, 0x91);
+	memory.write(BGP, 0xFC);
 }
 

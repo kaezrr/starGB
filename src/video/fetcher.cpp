@@ -22,17 +22,17 @@ void Fetcher::new_line() {
     tile_index = 0; x_pos = -8;
     queue_bg = 0; bg_data = 0; bg_count = 0;
     queue_sp = 0; sp_data = 0; sp_count = 0;
-    delay = true; fetch_window = false;
+    fetch_window = false; delay = true;
 }
 
 void Fetcher::check_window() {
     if ((x_pos >= wx() - 7) && wy_cond && (lcdc() & 0x20)) {
-        if (fetch_window) return;
+        if (ly() == 40) {
+            int ab = 3;
+        }
         fetch_window = true;
         bg_state = Fetcher_State::READ_TILE_ID;
-        queue_bg = 0; tile_index = 0;
-    } else {
-        fetch_window = false;
+        queue_bg = 0; bg_count = 0; tile_index = 0;
     }
 }
 
@@ -126,6 +126,7 @@ void Fetcher::bg_fetch_tile_data(bool state) {
     else offs = ((ly() + scy()) % 8) * 2;
 
     u8 data = vram(addr + offs + state);
+    if(!state) bg_data = 0;
     for (u8 i = 0; i < 8; ++i)
         bg_data |= ((data & (1 << i)) >> i) << (i * 2 + state);
 }
@@ -133,7 +134,7 @@ void Fetcher::bg_fetch_tile_data(bool state) {
 bool Fetcher::bg_push_to_fifo() {
     if (bg_count) return false;
     queue_bg = bg_data;
-    bg_count = 8; bg_data = 0;
+    bg_count = 8;
     return true;
 }
 
