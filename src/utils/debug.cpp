@@ -24,24 +24,21 @@ void Debugger::set_log_path(const string& path) {
 
 // Print disassembly
 void Debugger::write_text_log() {
-    logger->debug(fmt::format(
-        "[{:05d}] [{:04x}] [{:02x} {:02x} {:02x}] {}", sm83->elapsed_cycles,
+    logger->debug("[{:05d}] [{:04x}] [{:02x} {:02x} {:02x}] {}", sm83->elapsed_cycles,
         sm83->PC.full, mem->read(sm83->PC.full), mem->read(sm83->PC.full + 1),
-        mem->read(sm83->PC.full + 2), get_op(mem->read(sm83->PC.full))));
+        mem->read(sm83->PC.full + 2), get_op(mem->read(sm83->PC.full)));
 
     if (sm83->PC.full == 0xCB) {
-        logger->debug(fmt::format(
-            "[{:05d}] [{:04x}] [{:02x} {:02x} {:02x}] {}", sm83->elapsed_cycles,
+        logger->debug("[{:05d}] [{:04x}] [{:02x} {:02x} {:02x}] {}", sm83->elapsed_cycles,
             sm83->PC.full + 1, mem->read(sm83->PC.full + 1),
             mem->read(sm83->PC.full + 2), mem->read(sm83->PC.full + 3),
-            get_cb(mem->read(sm83->PC.full + 1))));
+            get_cb(mem->read(sm83->PC.full + 1)));
     }
 
-    logger->debug(fmt::format(
-        "[AF: ${:04x} BC: ${:04x} DE: ${:04x} HL: ${:04x} SP: ${:04x} PC: "
-        "${:04x}\nLY: ${:02x} STAT: ${:02x} IE: ${:02x} IF: ${:02x}]\n",
+    logger->debug("[AF: ${:04x} BC: ${:04x} DE: ${:04x} HL: ${:04x} SP: ${:04x} PC: "
+        "${:04x} LY: ${:02x} STAT: ${:02x} IE: ${:02x} IF: ${:02x}]\n",
         sm83->AF.full, sm83->BC.full, sm83->DE.full, sm83->HL.full, sm83->SP.full,
-        sm83->PC.full, mem->read(LY), mem->read(STAT), mem->read(IE), mem->read(IF)));
+        sm83->PC.full, mem->read(LY), mem->read(STAT), mem->read(IE), mem->read(IF));
 }
 
 // Dump memory to a text file

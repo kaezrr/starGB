@@ -1,5 +1,4 @@
 #include <SDL_video.h>
-#include <spdlog/spdlog.h>
 
 #include "gameboy.hpp"
 #include "constants.hpp"
