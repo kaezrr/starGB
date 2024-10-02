@@ -1,12 +1,13 @@
 #pragma once
 
-#include<array>
 #include<vector>
+#include<string>
 
 #include "constants.hpp"
 
 using std::vector;
 using std::array;
+using std::string;
 
 struct Memory {
     vector<u8> boot_rom     = vector<u8>(0x0100);
@@ -36,4 +37,7 @@ struct Memory {
     void sys_clock_change(u16 new_value);
     void detect_edge(u16 before, u16 after);
     static void update_read_only(u8& original, u8 data, u8 mask);
+
+    void load_game(const string& path);
+    void load_boot(const string& path);
 };

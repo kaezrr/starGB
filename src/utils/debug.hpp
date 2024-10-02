@@ -21,6 +21,7 @@ struct Debugger {
     const CPU* sm83{ nullptr };
 
     vector<u8> tile_buffer = vector<u8>(0x6000);
+    bool enabled{ false };
     Window_Handler tiles{};
 
     Debugger(Memory* mptr, CPU* cptr) : mem{ mptr }, sm83{ cptr } {

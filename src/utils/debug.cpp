@@ -9,6 +9,7 @@
 #include "mnemonic.hpp"
 
 void Debugger::set_log_path(const string& path) {
+    enabled = true;
     logger = spdlog::rotating_logger_mt<spdlog::async_factory>(
         "logger", path + "/logs.txt", 1048576 * 5, 3);
     memory_logger = spdlog::basic_logger_mt<spdlog::async_factory>(

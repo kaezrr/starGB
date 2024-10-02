@@ -5,6 +5,9 @@
 #include "callback.hpp"
 #include "constants.hpp"
 #include "fetcher.hpp"
+#include <array>
+
+using std::array;
 
 enum class PPU_State {
     HBLANK,

@@ -1,15 +1,14 @@
 #include <SDL_video.h>
 #include <spdlog/spdlog.h>
-#include <fstream>
 
 #include "gameboy.hpp"
 #include "constants.hpp"
 #include "debug.hpp"
 
 GameBoy::GameBoy(const string &game, const string &boot, const string &log) {
-	load_game(game);
-	if(boot != "") load_boot(boot);
-	if(log != "") load_logs(log);
+	memory.load_game(game);
+	if(boot != "") memory.load_boot(boot);
+	if(log != "") debugger.set_log_path(log);
 }
 
 void GameBoy::run_instruction() {
@@ -44,7 +43,7 @@ void GameBoy::start() {
 		debugger.render_tiles();
 
 		while (sm83.elapsed_cycles < 17556) {   // 17556 cycles per frame ~ 4.19MHz
-			if(debugger_enabled) debugger.write_text_log();
+			if(debugger.enabled) debugger.write_text_log();
 			run_instruction();
 			sm83.cycle_parts(sm83.m_cycles);
         }
@@ -54,44 +53,6 @@ void GameBoy::start() {
 		if (delay <= 0) continue;
 		SDL_Delay(static_cast<u32>(delay)); // Wait until 16ms has passed
 	}
-}
-
-void GameBoy::load_game(const string& path) {
-	std::ifstream program{ path, std::ios::binary };
-	if (!program) {
-		spdlog::error("game rom not found!");
-		std::exit(1);
-	}
-	program.seekg(0, std::ios::end);
-	size_t rom_size = program.tellg();
-	program.seekg(0, std::ios::beg);
-	if (rom_size > 0x8000) {
-		spdlog::error("game rom too big!");
-		std::exit(1);
-	}
-	program.read(reinterpret_cast<char*>(&memory.rom_banks[ROM_S]), rom_size);
-}
-
-void GameBoy::load_boot(const string& path) {
-	std::ifstream program{ path, std::ios::binary };
-	if (!program) {
-		spdlog::error("boot rom not found!");
-		std::exit(1);
-	}
-	program.seekg(0, std::ios::end);
-	size_t rom_size = program.tellg();
-	program.seekg(0, std::ios::beg);
-	if (rom_size > 0x100) {
-		spdlog::error("boot rom too big!");
-		std::exit(1);
-	}
-	program.read(reinterpret_cast<char*>(&memory.boot_rom[0]), rom_size);
-	memory.execute_boot = true;
-}
-
-void GameBoy::load_logs(const string& path) {
-	debugger_enabled = true;
-	debugger.set_log_path(path);
 }
 
 void GameBoy::handle_events() {

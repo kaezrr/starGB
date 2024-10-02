@@ -1,4 +1,6 @@
 #include "memory.hpp"
+#include <fstream>
+#include<spdlog/spdlog.h>
 
 u8 Memory::read(u16 at) const {
     if (at < 0x100 && execute_boot)
@@ -174,3 +176,35 @@ void Memory::update_read_only(u8& original, u8 data, u8 mask) {
     original = (original & mask) | (data & ~mask);
 }
 
+void Memory::load_boot(const string& path) {
+	std::ifstream program{ path, std::ios::binary };
+	if (!program) {
+		spdlog::error("boot rom not found!");
+		std::exit(1);
+	}
+	program.seekg(0, std::ios::end);
+	size_t rom_size = program.tellg();
+	program.seekg(0, std::ios::beg);
+	if (rom_size > 0x100) {
+		spdlog::error("boot rom too big!");
+		std::exit(1);
+	}
+	program.read(reinterpret_cast<char*>(&boot_rom[0]), rom_size);
+	execute_boot = true;
+}
+
+void Memory::load_game(const string& path) {
+	std::ifstream program{ path, std::ios::binary };
+	if (!program) {
+		spdlog::error("game rom not found!");
+		std::exit(1);
+	}
+	program.seekg(0, std::ios::end);
+	size_t rom_size = program.tellg();
+	program.seekg(0, std::ios::beg);
+	if (rom_size > 0x8000) {
+		spdlog::error("game rom too big!");
+		std::exit(1);
+	}
+	program.read(reinterpret_cast<char*>(&rom_banks[ROM_S]), rom_size);
+}
