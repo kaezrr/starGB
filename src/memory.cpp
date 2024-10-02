@@ -1,7 +1,7 @@
-#include "memory.hpp"
 #include <fstream>
 #include<spdlog/spdlog.h>
 
+#include "memory.hpp"
 u8 Memory::read(u16 at) const {
     if (at < 0x100 && execute_boot)
         return boot_rom[at];
@@ -201,10 +201,9 @@ void Memory::load_game(const string& path) {
 	}
 	program.seekg(0, std::ios::end);
 	size_t rom_size = program.tellg();
-	program.seekg(0, std::ios::beg);
-	if (rom_size > 0x8000) {
-		spdlog::error("game rom too big!");
-		std::exit(1);
-	}
-	program.read(reinterpret_cast<char*>(&rom_banks[ROM_S]), rom_size);
+	program.seekg(0x147, std::ios::beg);
+    u8 a, b, c; program >> a >> b >> c;
+    spdlog::info("$147: 0x{:02x} $148: 0x{:02x} $149: 0x{:02x}", a, b, c);
+    program.close();
+    std::exit(1);
 }

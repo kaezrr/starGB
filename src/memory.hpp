@@ -4,6 +4,7 @@
 #include<string>
 
 #include "constants.hpp"
+#include "mbc1.hpp"
 
 using std::vector;
 using std::array;
