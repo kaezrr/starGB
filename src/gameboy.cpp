@@ -35,6 +35,7 @@ void GameBoy::start() {
 	enabled = true;
 	SDL_RaiseWindow(handler.window);
 
+	int frames_elapsed = 0;
 	while (enabled) { // Loop runs at 59.7 Hz
 		auto start = std::chrono::steady_clock::now(); 
 		handle_events();
@@ -45,6 +46,12 @@ void GameBoy::start() {
 			run_instruction();
 			sm83.cycle_parts(sm83.m_cycles);
         }
+
+		frames_elapsed++;
+		if(frames_elapsed >= 60) { // Save the game every 60 frames ~ 1 second
+			memory.save_game();
+			frames_elapsed = 0;
+		}
 
 		sm83.elapsed_cycles = 0;
 		auto delay = 16 - since(start).count(); 		

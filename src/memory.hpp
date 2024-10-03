@@ -53,6 +53,7 @@ struct Memory {
     void detect_edge(u16 before, u16 after);
     static void update_read_only(u8& original, u8 data, u8 mask);
 
+    void save_game();
     void load_game(const string& path);
     void load_boot(const string& path);
 };

@@ -269,3 +269,14 @@ void Memory::load_game(const string& path) {
             exit(1);
     }
 }
+
+void Memory::save_game() {
+    switch(curr_controller) {
+        case MemBC0:
+            return mbc0.save_ram();
+        case MemBC1:
+        case MemBC3:
+        case MemBC5:
+            return mbc5.save_ram();
+    }
+}

@@ -37,6 +37,7 @@ void MBC0::write_ram(u16 at, u8 data) {
 }
 
 void MBC0::save_ram() {
+    if(!save_flag) return;
     std::ofstream save_file{save_path};
     save_file.write(reinterpret_cast<char *>(&ram_bank[0]), ram_bank.size());
     save_file.close();
