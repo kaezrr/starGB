@@ -14,6 +14,7 @@ configure_file(version.h.in ${SOURCE_DIR}/version.h @ONLY)
 
 include_directories(${SOURCE_DIR})
 include_directories(${SOURCE_DIR}/cpu)
+include_directories(${SOURCE_DIR}/mbcs)
 include_directories(${SOURCE_DIR}/utils)
 include_directories(${SOURCE_DIR}/video)
 include_directories(${SDL2_INCLUDE_DIRS})
