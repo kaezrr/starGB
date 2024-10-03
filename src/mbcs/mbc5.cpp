@@ -29,37 +29,36 @@ MBC5::MBC5(const string& path) {
             ram_banks = vector<u8>(0x2000 * 8);
             break;
     }
+    if(!save_flag)  return;
     save_path = path.substr(0, path.find_last_of('.')) + ".sav";
-    if(save_flag) {
-        std::ifstream save_file{ save_path };
-        if(!save_file) return;
-        save_file.read(reinterpret_cast<char *>(&ram_banks[0]), ram_banks.size());
-        save_file.close();
-    }
+    std::ifstream save_file{save_path};
+    if (!save_file) return;
+    save_file.read(reinterpret_cast<char *>(&ram_banks[0]), ram_banks.size());
+    save_file.close();
 }
 
 u8 MBC5::read_rom(u16 at) const {
-    if(at <= 0x3FFF)
+    if(at <= 0x3FFF) // rom bank 0
         return rom_banks[at];
-    if(at <= 0x7FFF)
+    if(at <= 0x7FFF) // rom bank ...
         return rom_banks[0x4000 * rom_num + (at - 0x4000)];
     return 0xFF;
+}
+
+void MBC5::write_rom(u16 at, u8 data) {
+    if(at <= 0x1FFF) // exram is enabled if lower nibble is 0xA
+        exram_enable = ((data & 0xF) == 0xA);
+    else if(at <= 0x2FFF) // set first 8 bits of rom bank number
+        rom_num = (rom_num & 0x100) | data;
+    else if(at <= 0x3FFF) // set the 9th bit of rom bank number
+        rom_num = (rom_num & 0xFF) | ((u16)(data & 1) << 8); 
+    else if(at <= 0x5FFF) // set ram bank number
+        ram_num = data;
 }
 
 u8 MBC5::read_ram(u16 at) const {
     if (!exram_enable) return 0xFF;
     return ram_banks[0x2000 * ram_num + (at - 0xA000)];
-}
-
-void MBC5::write_rom(u16 at, u8 data) {
-    if(at <= 0x1FFF && (data & 0xF) == 0xA)
-        exram_enable = true;
-    else if(at <= 0x2FFF)
-        rom_num = (rom_num & 0xFF) | data;
-    else if(at <= 0x3FFF)
-        rom_num = rom_num & (((u16)data & 1) << 8); 
-    else if(at <= 0x5FFF)
-        ram_num = data;
 }
 
 void MBC5::write_ram(u16 at, u8 data) {
@@ -68,6 +67,7 @@ void MBC5::write_ram(u16 at, u8 data) {
 }
 
 void MBC5::save_ram() {
+    if(!save_flag) return;
     std::ofstream save_file{ save_path };
     save_file.write(reinterpret_cast<char *>(&ram_banks[0]), ram_banks.size());
     save_file.close();

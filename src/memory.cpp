@@ -34,22 +34,31 @@ void Memory::write(u16 at, u8 data) {
 
     if(at <= ROM_E)
         write_rom(at, data);
+
     else if (at <= VRAM_E)
         vram[at - VRAM_S] = data;
+
     else if (at <= EXRAM_E)
         write_ram(at, data);
+
     else if (at <= WRAM_E)
         wram[at - WRAM_S] = data;
+
     else if (at <= ECHO_E)
         wram[at - ECHO_S] = data;
+
     else if (at <= OAM_E)
         oam[at - OAM_S] = data;
+
     else if (at <= FORBID_E)
         return;
+
     else if (at <= IO_E)
         write_IO(at, data);
+
     else if (at <= HRAM_E)
         hram[at - HRAM_S] = data;
+
     else if (at == IE_REG)
         ie_reg = data;
 }
