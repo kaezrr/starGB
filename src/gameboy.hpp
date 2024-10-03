@@ -38,10 +38,6 @@ struct GameBoy {
     void start();
     void run_instruction();
 
-    void no_boot_rom();
-    void load_game(const string& path);
-    void load_boot(const string& path);
-
     void handle_events();
     void set_button_on(const SDL_Scancode& sym);
     void set_button_off(const SDL_Scancode& sym);

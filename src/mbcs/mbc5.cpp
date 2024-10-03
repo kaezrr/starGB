@@ -9,7 +9,7 @@ MBC5::MBC5(const string& path) {
     game >> type >> romsz >> ramsz;
 	game.seekg(0, std::ios::beg);
 
-    save_flag = (type == 0x3);
+    save_flag = (type == 0x1B || type == 0x1E);
     rom_banks = vector<u8>(0x4000 * (1 << (romsz + 1)));
 	game.read(reinterpret_cast<char*>(&rom_banks[0]), rom_banks.size());
     game.close();

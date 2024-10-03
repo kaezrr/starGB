@@ -6,7 +6,7 @@
 
 GameBoy::GameBoy(const string &game, const string &boot, const string &log) {
 	memory.load_game(game);
-	if(boot != "") memory.load_boot(boot);
+	memory.load_boot(boot);
 	if(log != "") debugger.set_log_path(log);
 }
 
@@ -34,7 +34,6 @@ void GameBoy::start() {
 
 	enabled = true;
 	SDL_RaiseWindow(handler.window);
-	if(!memory.execute_boot) no_boot_rom();
 
 	while (enabled) { // Loop runs at 59.7 Hz
 		auto start = std::chrono::steady_clock::now(); 
@@ -137,15 +136,3 @@ void GameBoy::set_button_off(const SDL_Scancode& code) {
 	default: break;
 	}
 }
-
-void GameBoy::no_boot_rom() {
-    sm83.AF.full = 0x01B0;
-    sm83.BC.full = 0x0013;
-    sm83.DE.full = 0x00D8;
-    sm83.HL.full = 0x014D;
-    sm83.PC.full = 0x0100;
-    sm83.SP.full = 0xFFFE;
-	memory.write(LCDC, 0x91);
-	memory.write(BGP, 0xFC);
-}
-

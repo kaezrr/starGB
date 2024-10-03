@@ -212,15 +212,7 @@ void Memory::load_boot(const string& path) {
         program.close();
 		std::exit(1);
 	}
-	program.seekg(0, std::ios::end);
-	size_t rom_size = program.tellg();
-	program.seekg(0, std::ios::beg);
-	if (rom_size > 0x100) {
-		spdlog::error("boot rom too big!");
-        program.close();
-		std::exit(1);
-	}
-	program.read(reinterpret_cast<char*>(&boot_rom[0]), rom_size);
+	program.read(reinterpret_cast<char*>(&boot_rom[0]), 0x100);
 	execute_boot = true;
 }
 
@@ -236,25 +228,25 @@ void Memory::load_game(const string& path) {
     program.close();
 
     switch(mbc_type) {
-        case 0x00: // None
+        case 0x00: 
         case 0x08:
         case 0x09:
             curr_controller = MemBC0;
             mbc0 = MBC0{path};
             return;
-        case 0x01: // MBC1
+        case 0x01: 
         case 0x02:
         case 0x03:
-            spdlog::error("Unsupported MBC type! Emulator currently only supports MBC1, MBC3 and MC5");
+            spdlog::error("MBC1 not yet supported!");
             exit(1);
-        case 0x0F: // MBC3
+        case 0x0F: 
         case 0x10:
         case 0x11:
         case 0x12:
         case 0x13:
-            spdlog::error("Unsupported MBC type! Emulator currently only supports MBC1, MBC3 and MC5");
+            spdlog::error("MBC3 not yet supported!");
             exit(1);
-        case 0x19: // MBC5
+        case 0x19: 
         case 0x1A:
         case 0x1B:
         case 0x1C:
