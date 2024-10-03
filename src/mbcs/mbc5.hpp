@@ -10,8 +10,8 @@ using std::array;
 using std::string;
 
 struct MBC5 {
-    bool save_flag{}, exram_enable{};
-    u16 rom_num{}, ram_num{};
+    u16 rom_num{1}, ram_num{};
+    bool save_flag{}, exram_enable{}, rumble{};
 
     MBC5() = default;
     MBC5(const string& path); 
