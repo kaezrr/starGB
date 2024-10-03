@@ -7,12 +7,12 @@
 using std::vector;
 using std::string;
 
-struct MBC5 {
-    u16 rom_num{1}, ram_num{};
-    bool save_flag{}, exram_enable{}, rumble{};
+struct MBC3 {
+    u8 rom_num{1}, ram_num{};
+    bool save_flag{}, exram_enable{};
 
-    MBC5() = default;
-    MBC5(const string& path); 
+    MBC3() = default;
+    MBC3(const string& path); 
 
     string save_path{};
     vector<u8> rom_banks;

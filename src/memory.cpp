@@ -174,6 +174,7 @@ u8 Memory::read_rom(u16 at) const {
             return mbc0.read_rom(at);
         case MemBC1:
         case MemBC3:
+            return mbc3.read_rom(at);
         case MemBC5:
             return mbc5.read_rom(at);
     }
@@ -186,6 +187,7 @@ u8 Memory::read_ram(u16 at) const {
             return mbc0.read_ram(at);
         case MemBC1:
         case MemBC3:
+            return mbc3.read_ram(at);
         case MemBC5:
             return mbc5.read_ram(at);
     }
@@ -195,22 +197,24 @@ u8 Memory::read_ram(u16 at) const {
 void Memory::write_rom(u16 at, u8 data) {
     switch (curr_controller) {
         case MemBC0:
-            mbc0.write_rom(at, data);
+            return mbc0.write_rom(at, data);
         case MemBC1:
         case MemBC3:
+            return mbc3.write_rom(at, data);
         case MemBC5:
-            mbc5.write_rom(at, data);
+            return mbc5.write_rom(at, data);
     }
 }
 
 void Memory::write_ram(u16 at, u8 data) {
     switch (curr_controller) {
         case MemBC0:
-            mbc0.write_ram(at, data);
+            return mbc0.write_ram(at, data);
         case MemBC1:
         case MemBC3:
+            return mbc3.write_ram(at, data);
         case MemBC5:
-            mbc5.write_ram(at, data);
+            return mbc5.write_ram(at, data);
     }
 }
 
@@ -246,15 +250,18 @@ void Memory::load_game(const string& path) {
         case 0x01: 
         case 0x02:
         case 0x03:
-            spdlog::error("MBC1 not yet supported!");
+            curr_controller = MemBC1;
+            spdlog::error("Unsupported MBC type! Emulator currently only supports MBC1, MBC3 and MC5");
             exit(1);
+            return;
         case 0x0F: 
         case 0x10:
         case 0x11:
         case 0x12:
         case 0x13:
-            spdlog::error("MBC3 not yet supported!");
-            exit(1);
+            curr_controller = MemBC3;
+            mbc3 = MBC3{path};
+            return;
         case 0x19: 
         case 0x1A:
         case 0x1B:
@@ -276,6 +283,7 @@ void Memory::save_game() {
             return mbc0.save_ram();
         case MemBC1:
         case MemBC3:
+            return mbc3.save_ram();
         case MemBC5:
             return mbc5.save_ram();
     }

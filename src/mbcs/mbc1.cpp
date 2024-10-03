@@ -1,7 +1,7 @@
-#include "mbc5.hpp"
+#include "mbc1.hpp"
 #include <fstream>
 
-MBC5::MBC5(const string& path) {
+MBC1::MBC1(const string& path) {
     std::ifstream game{path};
     game.seekg(0x147, std::ios::beg);
 
@@ -39,7 +39,7 @@ MBC5::MBC5(const string& path) {
     save_file.close();
 }
 
-u8 MBC5::read_rom(u16 at) const {
+u8 MBC1::read_rom(u16 at) const {
     if(at <= 0x3FFF) // rom bank 0
         return rom_banks[at];
     if(at <= 0x7FFF) {// rom bank ...
@@ -49,7 +49,7 @@ u8 MBC5::read_rom(u16 at) const {
     return 0xFF;
 }
 
-void MBC5::write_rom(u16 at, u8 data) {
+void MBC1::write_rom(u16 at, u8 data) {
     if(at <= 0x1FFF) // exram is enabled if lower nibble is 0xA
         exram_enable = ((data & 0xF) == 0xA);
     else if(at <= 0x2FFF) // set first 8 bits of rom bank number
@@ -62,19 +62,19 @@ void MBC5::write_rom(u16 at, u8 data) {
     } 
 }
 
-u8 MBC5::read_ram(u16 at) const {
+u8 MBC1::read_ram(u16 at) const {
     if (!exram_enable) return 0xFF;
     size_t addr = 0x2000 * ram_num + (at - 0xA000);
     return ram_banks[addr % ram_banks.size()];
 }
 
-void MBC5::write_ram(u16 at, u8 data) {
+void MBC1::write_ram(u16 at, u8 data) {
     if(!exram_enable) return;
     size_t addr = 0x2000 * ram_num + (at - 0xA000);
     ram_banks[addr % ram_banks.size()] = data;
 }
 
-void MBC5::save_ram() {
+void MBC1::save_ram() {
     if(!save_flag) return;
     std::ofstream save_file{ save_path };
     save_file.write(reinterpret_cast<char *>(&ram_banks[0]), ram_banks.size());

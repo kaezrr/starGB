@@ -2,6 +2,7 @@
 
 #include "constants.hpp"
 #include "mbc0.hpp"
+#include "mbc3.hpp"
 #include "mbc5.hpp"
 #include <string>
 #include <vector>
@@ -26,9 +27,10 @@ struct Memory {
     vector<u8> hram         = vector<u8>(0x007F);
     u8 input_buffer{};
 
-    MemoryController curr_controller{ MemBC0 };
     MBC0 mbc0;
+    MBC3 mbc3;
     MBC5 mbc5;
+    MemoryController curr_controller{ MemBC0 };
 
     u8 ie_reg{};
     bool execute_boot{}, tima_write{};
