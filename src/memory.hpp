@@ -11,7 +11,7 @@ using std::array;
 using std::string;
 
 struct Memory {
-    std::shared_ptr<MBC> mbc{nullptr};
+    std::unique_ptr<MBC> mbc{nullptr};
 
     vector<u8> boot_rom     = vector<u8>(0x0100);
     vector<u8> vram         = vector<u8>(0x2000);
