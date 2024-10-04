@@ -49,7 +49,7 @@ void GameBoy::start() {
 
 		frames_elapsed++;
 		if(frames_elapsed >= 60) { // Save the game every 60 frames ~ 1 second
-			memory.save_game();
+			memory.mbc->save_ram();
 			frames_elapsed = 0;
 		}
 

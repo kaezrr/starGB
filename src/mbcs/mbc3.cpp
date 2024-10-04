@@ -1,4 +1,4 @@
-#include "mbc3.hpp"
+#include "mbc.hpp"
 #include <fstream>
 
 MBC3::MBC3(const string& path) {

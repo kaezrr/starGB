@@ -1,17 +1,18 @@
 #include "memory.hpp"
 #include "constants.hpp"
 #include <fstream>
+#include <memory>
 #include <spdlog/spdlog.h>
 
 u8 Memory::read(u16 at) const {
     if (at < 0x100 && execute_boot)
         return boot_rom[at];
     if (at <= ROM_E) 	    
-        return read_rom(at);
+        return mbc->read_rom(at);
     if (at <= VRAM_E) 	
         return vram[at - VRAM_S];
     if (at <= EXRAM_E) 
-        return read_ram(at);
+        return mbc->read_ram(at);
     if (at <= ECHO_E) 	
         return wram[at & 0x1FFF];
     if (at <= OAM_E) 	
@@ -33,13 +34,13 @@ void Memory::write(u16 at, u8 data) {
         execute_boot = false;
 
     if(at <= ROM_E)
-        write_rom(at, data);
+        mbc->write_rom(at, data);
 
     else if (at <= VRAM_E)
         vram[at - VRAM_S] = data;
 
     else if (at <= EXRAM_E)
-        write_ram(at, data);
+        mbc->write_ram(at, data);
 
     else if (at <= WRAM_E)
         wram[at - WRAM_S] = data;
@@ -168,60 +169,6 @@ void Memory::update_read_only(u8& original, u8 data, u8 mask) {
     original = (original & mask) | (data & ~mask);
 }
 
-u8 Memory::read_rom(u16 at) const {
-    switch (curr_controller) {
-        case MemBC0:
-            return mbc0.read_rom(at);
-        case MemBC1:
-            return mbc1.read_rom(at);
-        case MemBC3:
-            return mbc3.read_rom(at);
-        case MemBC5:
-            return mbc5.read_rom(at);
-    }
-    return 0xFF;
-}
-
-u8 Memory::read_ram(u16 at) const {
-    switch (curr_controller) {
-        case MemBC0:
-            return mbc0.read_ram(at);
-        case MemBC1:
-            return mbc1.read_ram(at);
-        case MemBC3:
-            return mbc3.read_ram(at);
-        case MemBC5:
-            return mbc5.read_ram(at);
-    }
-    return 0xFF;
-}
-
-void Memory::write_rom(u16 at, u8 data) {
-    switch (curr_controller) {
-        case MemBC0:
-            return mbc0.write_rom(at, data);
-        case MemBC1:
-            return mbc1.write_rom(at, data);
-        case MemBC3:
-            return mbc3.write_rom(at, data);
-        case MemBC5:
-            return mbc5.write_rom(at, data);
-    }
-}
-
-void Memory::write_ram(u16 at, u8 data) {
-    switch (curr_controller) {
-        case MemBC0:
-            return mbc0.write_ram(at, data);
-        case MemBC1:
-            return mbc1.write_ram(at, data);
-        case MemBC3:
-            return mbc3.write_ram(at, data);
-        case MemBC5:
-            return mbc5.write_ram(at, data);
-    }
-}
-
 void Memory::load_boot(const string& path) {
 	std::ifstream program{ path, std::ios::binary };
 	if (!program) {
@@ -248,22 +195,19 @@ void Memory::load_game(const string& path) {
         case 0x00: 
         case 0x08:
         case 0x09:
-            curr_controller = MemBC0;
-            mbc0 = MBC0{path};
+            mbc = std::make_unique<MBC0>(path);
             return;
         case 0x01: 
         case 0x02:
         case 0x03:
-            curr_controller = MemBC1;
-            mbc1 = MBC1{path};
+            mbc = std::make_unique<MBC1>(path);
             return;
         case 0x0F: 
         case 0x10:
         case 0x11:
         case 0x12:
         case 0x13:
-            curr_controller = MemBC3;
-            mbc3 = MBC3{path};
+            mbc = std::make_unique<MBC3>(path);
             return;
         case 0x19: 
         case 0x1A:
@@ -271,24 +215,10 @@ void Memory::load_game(const string& path) {
         case 0x1C:
         case 0x1D:
         case 0x1E:
-            curr_controller = MemBC5;
-            mbc5 = MBC5{path};
+            mbc = std::make_unique<MBC5>(path);
             return;
         default:
             spdlog::error("Unsupported MBC type! Emulator currently only supports MBC1, MBC3 and MC5");
             exit(1);
-    }
-}
-
-void Memory::save_game() {
-    switch(curr_controller) {
-        case MemBC0:
-            return mbc0.save_ram();
-        case MemBC1:
-            return mbc1.save_ram();
-        case MemBC3:
-            return mbc3.save_ram();
-        case MemBC5:
-            return mbc5.save_ram();
     }
 }
