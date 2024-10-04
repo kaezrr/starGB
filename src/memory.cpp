@@ -173,6 +173,7 @@ u8 Memory::read_rom(u16 at) const {
         case MemBC0:
             return mbc0.read_rom(at);
         case MemBC1:
+            return mbc1.read_rom(at);
         case MemBC3:
             return mbc3.read_rom(at);
         case MemBC5:
@@ -186,6 +187,7 @@ u8 Memory::read_ram(u16 at) const {
         case MemBC0:
             return mbc0.read_ram(at);
         case MemBC1:
+            return mbc1.read_ram(at);
         case MemBC3:
             return mbc3.read_ram(at);
         case MemBC5:
@@ -199,6 +201,7 @@ void Memory::write_rom(u16 at, u8 data) {
         case MemBC0:
             return mbc0.write_rom(at, data);
         case MemBC1:
+            return mbc1.write_rom(at, data);
         case MemBC3:
             return mbc3.write_rom(at, data);
         case MemBC5:
@@ -211,6 +214,7 @@ void Memory::write_ram(u16 at, u8 data) {
         case MemBC0:
             return mbc0.write_ram(at, data);
         case MemBC1:
+            return mbc1.write_ram(at, data);
         case MemBC3:
             return mbc3.write_ram(at, data);
         case MemBC5:
@@ -251,8 +255,7 @@ void Memory::load_game(const string& path) {
         case 0x02:
         case 0x03:
             curr_controller = MemBC1;
-            spdlog::error("Unsupported MBC type! Emulator currently only supports MBC1, MBC3 and MC5");
-            exit(1);
+            mbc1 = MBC1{path};
             return;
         case 0x0F: 
         case 0x10:
@@ -282,6 +285,7 @@ void Memory::save_game() {
         case MemBC0:
             return mbc0.save_ram();
         case MemBC1:
+            return mbc1.save_ram();
         case MemBC3:
             return mbc3.save_ram();
         case MemBC5:

@@ -2,6 +2,7 @@
 
 #include "constants.hpp"
 #include "mbc0.hpp"
+#include "mbc1.hpp"
 #include "mbc3.hpp"
 #include "mbc5.hpp"
 #include <string>
@@ -28,6 +29,7 @@ struct Memory {
     u8 input_buffer{};
 
     MBC0 mbc0;
+    MBC1 mbc1;
     MBC3 mbc3;
     MBC5 mbc5;
     MemoryController curr_controller{ MemBC0 };

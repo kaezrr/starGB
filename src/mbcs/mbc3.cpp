@@ -16,6 +16,8 @@ MBC3::MBC3(const string& path) {
     switch(ramsz) {
         case 0:
         case 1:
+            ram_banks = vector<u8>(0x0800 * 1);
+            break;
         case 2:
             ram_banks = vector<u8>(0x2000 * 1);
             break;
@@ -64,7 +66,7 @@ u8 MBC3::read_ram(u16 at) const {
 }
 
 void MBC3::write_ram(u16 at, u8 data) {
-    if(!exram_enable) return;
+    if(!exram_enable || ram_num > 3) return;
     size_t addr = 0x2000 * ram_num + (at - 0xA000);
     ram_banks[addr % ram_banks.size()] = data;
 }

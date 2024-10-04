@@ -9,7 +9,7 @@ using std::string;
 
 struct MBC1 {
     u16 rom_num{1}, ram_num{};
-    bool save_flag{}, exram_enable{}, rumble{};
+    bool save_flag{}, exram_enable{}, mode_flag{};
 
     MBC1() = default;
     MBC1(const string& path); 
@@ -23,4 +23,7 @@ struct MBC1 {
     u8 read_ram(u16 at) const;
     void write_rom(u16 at, u8 data);
     void write_ram(u16 at, u8 data);
+
+    u16 zero_bank_number() const;
+    u16 high_bank_number() const;
 };

@@ -9,7 +9,7 @@
             "request": "launch",
             "name": "Debug",
             "program": "${workspaceFolder}/build/starGB",
-            "args": ["../mooneye/emulator-only/mbc5/rom_512kb.gb"],
+            "args": ["../mooneye/emulator-only/mbc1/rom_512kb.gb"],
             "cwd": "${workspaceFolder}/build",
         }
     ]

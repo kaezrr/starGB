@@ -18,6 +18,8 @@ MBC5::MBC5(const string& path) {
     switch(ramsz) {
         case 0:
         case 1:
+            ram_banks = vector<u8>(0x0800 * 1);
+            break;
         case 2:
             ram_banks = vector<u8>(0x2000 * 1);
             break;
@@ -57,7 +59,7 @@ void MBC5::write_rom(u16 at, u8 data) {
     else if(at <= 0x3FFF) // set the 9th bit of rom bank number
         rom_num = (rom_num & 0xFF) | ((u16)(data & 1) << 8); 
     else if(at <= 0x5FFF) { // set ram bank number
-        ram_num = data;
+        ram_num = data & 0xF;
         if(rumble) ram_num &= ~(0x08);
     } 
 }
