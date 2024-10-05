@@ -9,7 +9,7 @@
             "request": "launch",
             "name": "Debug",
             "program": "${workspaceFolder}/build/starGB",
-            "args": ["../mooneye/emulator-only/mbc1/rom_512kb.gb"],
+            "args": ["../roms/zelda.gb"],
             "cwd": "${workspaceFolder}/build",
         }
     ]

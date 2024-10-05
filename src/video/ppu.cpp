@@ -22,7 +22,16 @@ void PPU::increment_ly() {
     memory->io_reg[LY - IO_S] = ly() >= 153 ? 0 : memory->io_reg[LY - IO_S] + 1;
     fetcher.inc_windowline();
     if (ly() == wy()) fetcher.wy_cond = true;
-    if (stat() & 0x40 && ly() == lyc()) req_interrupt(LCD);
+    eval_lyc_intr();
+}
+
+void PPU::eval_lyc_intr() {
+    if(!(stat() & 0x40)) return;
+    auto line = ly();
+    if (line == 153 && lyc() != 153)
+        line = 0;
+    if (line == lyc()) 
+        req_interrupt(LCD);
 }
 
 void PPU::update_stat() {
@@ -31,7 +40,7 @@ void PPU::update_stat() {
 }
 
 void PPU::disable_lcd() {
-    memory->io_reg[STAT - IO_S] = 0;
+    Memory::update_read_only(memory->io_reg[STAT - IO_S], 0, 0xFC);
     std::fill(display.begin(), display.end(), (u8)0);
     new_frame(); mode = PPU_State::OAM_SCAN;
     disabled = true;

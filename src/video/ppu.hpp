@@ -54,6 +54,7 @@ struct PPU {
     void add_sprite();
     void update_stat();
     void increment_ly();
+    void eval_lyc_intr();
 
     void oam_scan();
     void drawing();

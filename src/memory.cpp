@@ -30,7 +30,7 @@ void Memory::write(u16 at, u8 data) {
     if (at == DMA) 
         initiate_dma_transfer(data);
 
-    if (execute_boot && at == 0xFF50)
+    if (execute_boot && at == 0xFF50) 
         execute_boot = false;
 
     if(at <= ROM_E)
@@ -165,6 +165,7 @@ void Memory::sys_clock_change(u16 new_value) {
     last_edge = new_edge;
 }
 
+// Update original with data, while retaining the masked bits of the original
 void Memory::update_read_only(u8& original, u8 data, u8 mask) {
     original = (original & mask) | (data & ~mask);
 }
