@@ -198,24 +198,13 @@ void Memory::load_game(const string& path) {
         case 0x09:
             mbc = std::make_unique<MBC0>(path);
             return;
-        case 0x01: 
-        case 0x02:
-        case 0x03:
+        case 0x01 ... 0x03: 
             mbc = std::make_unique<MBC1>(path);
             return;
-        case 0x0F: 
-        case 0x10:
-        case 0x11:
-        case 0x12:
-        case 0x13:
+        case 0x0F ... 0x13: 
             mbc = std::make_unique<MBC3>(path);
             return;
-        case 0x19: 
-        case 0x1A:
-        case 0x1B:
-        case 0x1C:
-        case 0x1D:
-        case 0x1E:
+        case 0x19 ... 0x1E: 
             mbc = std::make_unique<MBC5>(path);
             return;
         default:
