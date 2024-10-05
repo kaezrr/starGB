@@ -92,7 +92,7 @@ void Fetcher::sp_push_to_fifo() {
         u8 dpr = (data_px & 1);
         u8 fpr = (fifo_px & 1);
 
-        if ((dcol && !fcol) || (dpr > fpr)) {
+        if ((dcol && !fcol) || ((dpr > fpr) && dcol)) {
             queue_sp &= ~mask;
             queue_sp |= sp_data & mask;
         }

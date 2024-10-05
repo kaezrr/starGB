@@ -157,5 +157,3 @@ void PPU::add_sprite() {
         fetcher.sprite_buffer.emplace_back(curr_sprite_location, memory);
     curr_sprite_location += 4;
 }
-
-
