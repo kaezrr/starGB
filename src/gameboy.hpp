@@ -8,7 +8,6 @@
 #include "debug.hpp"
 #include "timer.hpp"
 #include "memory.hpp"
-#include "window_handler.hpp"
 
 #define LOG
 
@@ -26,9 +25,8 @@ enum Button {
 struct GameBoy {
     bool enabled{};
     
-    Window_Handler handler{};
     Memory   memory{};
-    PPU      ppu{ &memory, &handler, handler_wrapper };
+    PPU      ppu{ &memory };
     Timer    timer{ &memory };
     CPU      sm83{ &memory, &ppu, &timer };
 

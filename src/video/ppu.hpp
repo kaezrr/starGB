@@ -5,6 +5,7 @@
 #include "callback.hpp"
 #include "constants.hpp"
 #include "fetcher.hpp"
+#include "window_handler.hpp"
 #include <array>
 
 using std::array;
@@ -19,7 +20,7 @@ enum class PPU_State {
 
 struct PPU {
     Memory* memory{};
-    Fetcher fetcher{ nullptr };
+    Fetcher fetcher{ memory };
 
     bool scx_discard{}, disabled{};
     u16 curr_sprite_location{ OAM_S }, dots{ 0 };
@@ -28,9 +29,10 @@ struct PPU {
     array<u32, 4> colors{};
     vector<u8> display = vector<u8>(SCREEN_HEIGHT * SCREEN_WIDTH);
 
-    CallBack renderer;
+    Window_Handler screen{};
+    CallBack renderer{&screen, handler_wrapper};
 
-    PPU(Memory* mem_ptr, void* instance, fn_type func);
+    PPU(Memory* mem_ptr);
 
     u8 ly() { return memory->io_reg[LY - IO_S]; }
     u8 wy() { return memory->io_reg[WY - IO_S]; }

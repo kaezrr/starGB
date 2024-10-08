@@ -1,6 +1,7 @@
 #include <SDL_video.h>
 
 #include "gameboy.hpp"
+#include "window_handler.hpp"
 #include "constants.hpp"
 #include "debug.hpp"
 
@@ -17,7 +18,7 @@ void GameBoy::run_instruction() {
 }
 
 void GameBoy::start() {
-	handler.init(
+	ppu.screen.init(
         "StarGB",
         SCREEN_HEIGHT, SCREEN_WIDTH, 3,
         0xA1EF8C, 0x3FAC95,
@@ -33,7 +34,7 @@ void GameBoy::start() {
     );
 
 	enabled = true;
-	SDL_RaiseWindow(handler.window);
+	SDL_RaiseWindow(ppu.screen.window);
 
 	int frames_elapsed = 0;
 	while (enabled) { // Loop runs at 59.7 Hz

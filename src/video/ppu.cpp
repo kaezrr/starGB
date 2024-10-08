@@ -1,8 +1,9 @@
 #include "ppu.hpp"
+#include "window_handler.hpp"
 #include<spdlog/spdlog.h>
 
-PPU::PPU(Memory* mem_ptr, void* instance, fn_type func) 
-    : memory{ mem_ptr }, fetcher{ mem_ptr }, renderer{ instance, func } {
+PPU::PPU(Memory* mem_ptr) 
+    : memory{ mem_ptr }, renderer{ &screen, handler_wrapper } {
         new_frame();
     }
 
