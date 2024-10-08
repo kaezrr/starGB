@@ -24,11 +24,11 @@ enum Button {
 
 struct GameBoy {
     bool enabled{};
-    
-    Memory   memory{};
-    PPU      ppu{ &memory };
-    Timer    timer{ &memory };
-    CPU      sm83{ &memory, &ppu, &timer };
+
+    Timer timer{};
+    Memory memory{&timer};
+    PPU ppu{&memory};
+    CPU sm83{&memory, &ppu, &timer};
 
     Debugger debugger{ &memory, &sm83 };
     GameBoy(const string& game, const string& boot, const string& log);

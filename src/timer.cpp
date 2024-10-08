@@ -1,32 +1,71 @@
 #include "timer.hpp"
 
-Timer::Timer(Memory* mem) : memory{ mem } {
-    memory->io_reg[TIMA - IO_S] = 0;
-    memory->io_reg[TMA - IO_S] = 0;
-    memory->io_reg[TAC - IO_S] = 0;
-    memory->sys_clock = 0;
-    memory->cycles_til_tima_irq = 0;
-    memory->tima_reload_cycle = false;
-    memory->last_edge = false;
-    memory->tima_reload_cycle = false;
-}
-
 void Timer::req_timer_intr() {
-    memory->io_reg[IF - IO_S] |= TIMER;
+    interrupt_flag |= TIMER;
 }
 
 void Timer::tick() {
-    memory->tima_reload_cycle = false;
-    if (memory->cycles_til_tima_irq > 0) {
-        memory->cycles_til_tima_irq--;
-        if (memory->cycles_til_tima_irq == 0) {
+    tima_reload_cycle = false;
+    if (cycles_til_tima_irq > 0) {
+        cycles_til_tima_irq--;
+        if (cycles_til_tima_irq == 0) {
             req_timer_intr();
-            memory->io_reg[TIMA - IO_S] = memory->io_reg[TMA - IO_S];
-            memory->tima_reload_cycle = true;
+            tima = tma;
+            tima_reload_cycle = true;
         }
     }
-    memory->sys_clock_change(memory->sys_clock + 4);
+    sys_clock_change(sys_clock + 4);
 }
 
+void Timer::set_div(u8 data) { sys_clock_change(0); }
 
+void Timer::set_tima(u8 data) {
+    if (!tima_reload_cycle)
+        tima = data;
+    if (cycles_til_tima_irq == 1)
+        cycles_til_tima_irq = 0;
+}
 
+void Timer::set_tma(u8 data) {
+    if (tima_reload_cycle)
+        tima = data;
+    tma = data;
+}
+
+void Timer::set_tac(u8 data) {
+    u16 old_edge = last_edge;
+    last_edge &= (data & 4) >> 2;
+    detect_edge(old_edge, last_edge);
+    tac = data;
+}
+
+void Timer::detect_edge(u16 before, u16 after) {
+    if (before == 1 && after == 0) {
+        tima++;
+        if (tima == 0) {
+            cycles_til_tima_irq = 1;
+        }
+    }
+}
+
+void Timer::sys_clock_change(u16 new_value) {
+    sys_clock = new_value;
+    u16 new_edge{ 0 };
+    switch (tac & 3) {
+    case 0:
+        new_edge = (sys_clock >> 9) & 1;
+        break;
+    case 3:
+        new_edge = (sys_clock >> 7) & 1;
+        break;
+    case 2:
+        new_edge = (sys_clock >> 5) & 1;
+        break;
+    case 1:
+        new_edge = (sys_clock >> 3) & 1;
+        break;
+    }
+    new_edge &= (tac >> 2);
+    detect_edge(last_edge, new_edge);
+    last_edge = new_edge;
+}

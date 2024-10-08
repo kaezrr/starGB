@@ -69,7 +69,13 @@ u8 Memory::read_IO(u16 at) const {
     case SB:
         return 0xFF;
     case DIV:
-        return (sys_clock >> 8); // DIV register is the upper 8 bits of the system clock
+        return (timer->sys_clock) << 8;
+    case TIMA:
+        return timer->tima;
+    case TMA:
+        return timer->tma;
+    case TAC:
+        return timer->tac;
     case JOYP: {
         u8 reg = io_reg[at - IO_S] & 0xF0;
         u8 select = (~(input_buffer >> 4)) & 0xF;
@@ -85,6 +91,8 @@ u8 Memory::read_IO(u16 at) const {
             return reg | 0xF;
         }
     }
+    case IF:
+        return (io_reg[IF - IO_S] & ~TIMER) | (timer->interrupt_flag);
     }
     return io_reg[at - IO_S];
 }
@@ -92,26 +100,14 @@ u8 Memory::read_IO(u16 at) const {
 void Memory::write_IO(u16 at, u8 data) {
     switch (at) {
     case DIV:
-        sys_clock_change(0);
-        return;
-
+        return timer->set_div(data);
     case TIMA:
-        if (!tima_reload_cycle) io_reg[at - IO_S] = data;
-        if (cycles_til_tima_irq == 1) cycles_til_tima_irq = 0;
-        return;
-
+        return timer->set_tima(data);
     case TMA:
-        if (tima_reload_cycle) io_reg[TIMA - IO_S] = data;
-        io_reg[at - IO_S] = data;
-        return;
+        return timer->set_tma(data);
+    case TAC: 
+        return timer->set_tac(data);
 
-    case TAC: {
-        u16 old_edge = last_edge;
-        last_edge &= (data & 4) >> 2;
-        detect_edge(old_edge, last_edge);
-        io_reg[at - IO_S] = data;
-        return;
-    }
     case STAT:
         update_read_only(io_reg[at - IO_S], data | 0x80, 0x07);
         return;
@@ -121,6 +117,9 @@ void Memory::write_IO(u16 at, u8 data) {
             data = 0x01;
             io_reg[IF - IO_S] |= SERIAL;
         }
+    
+    case IF:
+        timer->interrupt_flag = data & TIMER;
     }
   
     io_reg[at - IO_S] = data;
@@ -132,37 +131,6 @@ void Memory::initiate_dma_transfer(u8 data) {
     for (u16 i = 0; i < 0xA0; ++i) {
         oam[i] = read(src + i);
     }
-}
-
-void Memory::detect_edge(u16 before, u16 after) {
-    if (before == 1 && after == 0) {
-        io_reg[TIMA - IO_S]++;
-        if (io_reg[TIMA - IO_S] == 0) {
-            cycles_til_tima_irq = 1;
-        }
-    }
-}
-
-void Memory::sys_clock_change(u16 new_value) {
-    sys_clock = new_value;
-    u16 new_edge{ 0 };
-    switch (io_reg[TAC - IO_S] & 3) {
-    case 0:
-        new_edge = (sys_clock >> 9) & 1;
-        break;
-    case 3:
-        new_edge = (sys_clock >> 7) & 1;
-        break;
-    case 2:
-        new_edge = (sys_clock >> 5) & 1;
-        break;
-    case 1:
-        new_edge = (sys_clock >> 3) & 1;
-        break;
-    }
-    new_edge &= (io_reg[TAC - IO_S] >> 2);
-    detect_edge(last_edge, new_edge);
-    last_edge = new_edge;
 }
 
 // Update original with data, while retaining the masked bits of the original
