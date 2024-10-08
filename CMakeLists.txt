@@ -17,6 +17,7 @@ include_directories(${SOURCE_DIR}/cpu)
 include_directories(${SOURCE_DIR}/mbcs)
 include_directories(${SOURCE_DIR}/utils)
 include_directories(${SOURCE_DIR}/video)
+include_directories(${SOURCE_DIR}/audio)
 include_directories(${SDL2_INCLUDE_DIRS})
 
 file(GLOB_RECURSE SOURCE_FILES ${SOURCE_DIR}/*.cpp)

@@ -22,7 +22,6 @@ struct MBC0 : public MBC {
     string save_path{};
     u16 rom_num{}, ram_num{};
 
-    MBC0() = default;
     MBC0(const string& path); 
 
     array<u8, 0x8000> rom_bank;
@@ -39,7 +38,6 @@ struct MBC1 : public MBC {
     u16 rom_num{1}, ram_num{};
     bool save_flag{}, exram_enable{}, mode_flag{};
 
-    MBC1() = default;
     MBC1(const string& path); 
 
     string save_path{};
@@ -57,7 +55,6 @@ struct MBC3 : public MBC {
     u8 rom_num{1}, ram_num{};
     bool save_flag{}, exram_enable{};
 
-    MBC3() = default;
     MBC3(const string& path); 
 
     string save_path{};
@@ -75,7 +72,6 @@ struct MBC5 : public MBC {
     u16 rom_num{1}, ram_num{};
     bool save_flag{}, exram_enable{}, rumble{};
 
-    MBC5() = default;
     MBC5(const string& path); 
 
     string save_path{};

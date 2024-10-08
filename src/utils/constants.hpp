@@ -76,3 +76,21 @@ constexpr u16 SC = 0xFF02;
 
 // Joypad
 constexpr u16 JOYP = 0xFF00;
+
+// Audio Registers
+constexpr u16 NR52 = 0xFF26;
+constexpr u16 NR51 = 0xFF25;
+constexpr u16 NR50 = 0xFF24;
+
+// Audio Channel 1
+constexpr u16 NR10 = 0xFF10;
+constexpr u16 NR11 = 0xFF11;
+constexpr u16 NR12 = 0xFF12;
+constexpr u16 NR13 = 0xFF13;
+constexpr u16 NR14 = 0xFF14;
+
+// Audio Channel 2
+constexpr u16 NR21 = 0xFF16;
+constexpr u16 NR22 = 0xFF17;
+constexpr u16 NR23 = 0xFF18;
+constexpr u16 NR24 = 0xFF19;
