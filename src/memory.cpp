@@ -68,14 +68,8 @@ u8 Memory::read_IO(u16 at) const {
     switch (at) {
     case SB:
         return 0xFF;
-    case DIV:
-        return (timer->sys_clock) << 8;
-    case TIMA:
-        return timer->tima;
-    case TMA:
-        return timer->tma;
-    case TAC:
-        return timer->tac;
+    case DIV ... TAC:
+        return timer->read(at);
     case JOYP: {
         u8 reg = io_reg[at - IO_S] & 0xF0;
         u8 select = (~(input_buffer >> 4)) & 0xF;
@@ -99,14 +93,8 @@ u8 Memory::read_IO(u16 at) const {
 
 void Memory::write_IO(u16 at, u8 data) {
     switch (at) {
-    case DIV:
-        return timer->set_div(data);
-    case TIMA:
-        return timer->set_tima(data);
-    case TMA:
-        return timer->set_tma(data);
-    case TAC: 
-        return timer->set_tac(data);
+    case DIV ... TAC:
+        return timer->write(at, data);
 
     case STAT:
         update_read_only(io_reg[at - IO_S], data | 0x80, 0x07);

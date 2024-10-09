@@ -17,28 +17,6 @@ void Timer::tick() {
     sys_clock_change(sys_clock + 4);
 }
 
-void Timer::set_div(u8 data) { sys_clock_change(0); }
-
-void Timer::set_tima(u8 data) {
-    if (!tima_reload_cycle)
-        tima = data;
-    if (cycles_til_tima_irq == 1)
-        cycles_til_tima_irq = 0;
-}
-
-void Timer::set_tma(u8 data) {
-    if (tima_reload_cycle)
-        tima = data;
-    tma = data;
-}
-
-void Timer::set_tac(u8 data) {
-    u16 old_edge = last_edge;
-    last_edge &= (data & 4) >> 2;
-    detect_edge(old_edge, last_edge);
-    tac = data;
-}
-
 void Timer::detect_edge(u16 before, u16 after) {
     if (before == 1 && after == 0) {
         tima++;
@@ -68,4 +46,45 @@ void Timer::sys_clock_change(u16 new_value) {
     new_edge &= (tac >> 2);
     detect_edge(last_edge, new_edge);
     last_edge = new_edge;
+}
+
+u8 Timer::read(u16 at) {
+    switch(at) {
+    case DIV:
+        return sys_clock << 8;
+    case TIMA:
+        return tima;
+    case TMA:
+        return tma;
+    case TAC:
+        return tac;
+    default:
+        return 0xFF;
+    }
+}
+
+void Timer::write(u16 at, u8 data) {
+    switch(at) {
+    case DIV:
+        sys_clock_change(0);
+        return;
+    case TIMA:
+        if (!tima_reload_cycle)
+            tima = data;
+        if (cycles_til_tima_irq == 1)
+            cycles_til_tima_irq = 0;
+        return;
+    case TMA:
+        if (tima_reload_cycle)
+            tima = data;
+        tma = data;
+        return;
+    case TAC: {
+        last_edge &= (data & 4) >> 2;
+        u16 old_edge = last_edge;
+        detect_edge(old_edge, last_edge);
+        tac = data;
+        return;
+    }
+    }
 }

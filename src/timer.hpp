@@ -2,7 +2,8 @@
 #include "constants.hpp"
 
 class Timer {
-    u16 last_edge{0};
+    u16 last_edge{0}, sys_clock{0};
+    u8 tima{}, tma{}, tac{};
     int cycles_til_tima_irq{0};
     bool tima_reload_cycle{false};
 
@@ -11,13 +12,9 @@ class Timer {
     void detect_edge(u16 before, u16 after);
 
   public:
-    u16 sys_clock{0};
-    u8 tima{}, tma{}, tac{};
     u8 interrupt_flag = 0;
 
     void tick();
-    void set_div(u8 data);
-    void set_tima(u8 data);
-    void set_tma(u8 data);
-    void set_tac(u8 data);
+    u8 read(u16 at);
+    void write(u16 at, u8 data);
 };
