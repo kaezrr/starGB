@@ -23,7 +23,7 @@ struct Sprite {
     u8 palette{}, used{};
 
     Sprite() = default;
-    Sprite(u16 at, Memory* mem);
+    Sprite(u16 at, vector<u8>& oam);
 };
 
 struct Fetcher {

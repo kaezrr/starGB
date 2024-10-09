@@ -155,6 +155,6 @@ void PPU::add_sprite() {
 
     // Add sprite if the below conditions apply
     if (posx > 0 && ly_check >= posy && ly_check < posy + s_height)
-        fetcher.sprite_buffer.emplace_back(curr_sprite_location, memory);
+        fetcher.sprite_buffer.emplace_back(curr_sprite_location, memory->oam);
     curr_sprite_location += 4;
 }

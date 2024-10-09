@@ -2,12 +2,12 @@
 #include "constants.hpp"
 #include <cmath>
 
-Sprite::Sprite(u16 at, Memory* mem) {
+Sprite::Sprite(u16 at, vector<u8>& oam) {
     if (at < OAM_S || at > OAM_E) return;
-    posY            = mem->oam[at + 0 - OAM_S];
-    posX            = mem->oam[at + 1 - OAM_S];
-    tile_id         = mem->oam[at + 2 - OAM_S];
-    u8 flag         = mem->oam[at + 3 - OAM_S];
+    posY            = oam[at + 0 - OAM_S];
+    posX            = oam[at + 1 - OAM_S];
+    tile_id         = oam[at + 2 - OAM_S];
+    u8 flag         = oam[at + 3 - OAM_S];
     obj_priority    = (flag & 0x80) >> 7;
     flipY           = (flag & 0x40) >> 6;
     flipX           = (flag & 0x20) >> 5;
