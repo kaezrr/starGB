@@ -31,10 +31,13 @@ struct Memory {
     u8 read_IO(u16 at) const;
     void write(u16 at, u8 data);
     void write_IO(u16 at, u8 data);
-    
     void initiate_dma_transfer(u8 data);
-    static void update_read_only(u8& original, u8 data, u8 mask);
 
     void load_game(const string& path);
     void load_boot(const string& path);
 };
+
+// Update original with data, while retaining the masked bits of the original
+inline void update_read_only(u8& original, u8 data, u8 mask) {
+    original = (original & mask) | (data & ~mask);
+}

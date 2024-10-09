@@ -37,11 +37,11 @@ void PPU::eval_lyc_intr() {
 
 void PPU::update_stat() {
     u8 data = ((ly() == lyc()) << 2) | static_cast<u8>(mode);
-    Memory::update_read_only(memory->io_reg[STAT - IO_S], data, 0xF8);
+    update_read_only(memory->io_reg[STAT - IO_S], data, 0xF8);
 }
 
 void PPU::disable_lcd() {
-    Memory::update_read_only(memory->io_reg[STAT - IO_S], 0, 0xFC);
+    update_read_only(memory->io_reg[STAT - IO_S], 0, 0xFC);
     std::fill(display.begin(), display.end(), (u8)0);
     new_frame(); mode = PPU_State::OAM_SCAN;
     disabled = true;

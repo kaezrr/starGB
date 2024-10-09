@@ -133,11 +133,6 @@ void Memory::initiate_dma_transfer(u8 data) {
     }
 }
 
-// Update original with data, while retaining the masked bits of the original
-void Memory::update_read_only(u8& original, u8 data, u8 mask) {
-    original = (original & mask) | (data & ~mask);
-}
-
 void Memory::load_boot(const string& path) {
 	std::ifstream program{ path, std::ios::binary };
 	if (!program) {
