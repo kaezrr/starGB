@@ -25,7 +25,7 @@ void Fetcher::new_line() {
 }
 
 void Fetcher::check_window() {
-    if ((x_pos >= wx() - 7) && wy_cond && (lcdc() & 0x20)) {
+    if ((x_pos >= wx - 7) && wy_cond && (lcdc & 0x20)) {
         tile_index = 0;
         fetch_window = true;
         queue_bg = bg_count = 0; 
@@ -44,7 +44,7 @@ void Fetcher::inc_windowline() {
 }
 
 bool Fetcher::check_sprite() {
-    if (!(lcdc() & 2)) return false;
+    if (!(lcdc & 2)) return false;
     for (auto& e : sprite_buffer) {
         if (e.posX > x_pos + 8) continue;
         return true;
@@ -64,13 +64,13 @@ void Fetcher::sp_fetch_tile_no() {
 void Fetcher::sp_fetch_tile_data(bool state) { // state = HIGH/LOW
     u16 sp_tile_no = curr_sp.tile_id;
     // check for sprite size (8 or 16)
-    if (lcdc() & 4) {
+    if (lcdc & 4) {
         sp_tile_no &= ~1;
-        sp_tile_no += (ly() + 16 - curr_sp.posY >= 8);
+        sp_tile_no += (ly + 16 - curr_sp.posY >= 8);
         sp_tile_no ^= curr_sp.flipY;
     }
     u16 addr = 0x8000 + (sp_tile_no * 16);
-    u16 tile_line = (ly() + 16 - curr_sp.posY) % 8;
+    u16 tile_line = (ly + 16 - curr_sp.posY) % 8;
     if (curr_sp.flipY) tile_line = 7 - tile_line;
     // fill sprite fifo with data
     u8 data = vram[addr + (tile_line * 2) + state - VRAM_S];
@@ -101,26 +101,26 @@ void Fetcher::sp_push_to_fifo() {
 
 void Fetcher::bg_fetch_tile_no() {
     u16 tile_x{}, tile_y{}, tile_map{};
-    if (fetch_window && (lcdc() & 0x20)) {
+    if (fetch_window && (lcdc & 0x20)) {
         increment_window = true;
         tile_y = window_line_counter / 8;
         tile_x = (std::max(tile_index + 7, 0) & 0xFF) / 8;
-        tile_map = (lcdc() & 0x40) ? 0x9C00 : 0x9800;
+        tile_map = (lcdc & 0x40) ? 0x9C00 : 0x9800;
     } else {
-        tile_y = ((scy() + ly()) & 0xFF) / 8;
-        tile_x = ((scx() + std::max(tile_index + 7, 0)) & 0xFF) / 8;
-        tile_map = (lcdc() & 0x08) ? 0x9C00 : 0x9800;
+        tile_y = ((scy + ly) & 0xFF) / 8;
+        tile_x = ((scx + std::max(tile_index + 7, 0)) & 0xFF) / 8;
+        tile_map = (lcdc & 0x08) ? 0x9C00 : 0x9800;
     }
     bg_tile_no = vram[tile_map + (32 * tile_y) + tile_x - VRAM_S];
 }
 
 void Fetcher::bg_fetch_tile_data(bool state) {
     u16 addr{}, offs{};
-    if(lcdc() & 0x10) addr = 0x8000 + (bg_tile_no * 16);
+    if(lcdc & 0x10) addr = 0x8000 + (bg_tile_no * 16);
     else addr = 0x9000 + (static_cast<s8>(bg_tile_no) * 16);
 
-    if (fetch_window && (lcdc() & 0x20)) offs = (window_line_counter % 8) * 2;
-    else offs = ((ly() + scy()) % 8) * 2;
+    if (fetch_window && (lcdc & 0x20)) offs = (window_line_counter % 8) * 2;
+    else offs = ((ly + scy) % 8) * 2;
 
     u8 data = vram[addr + offs + state - VRAM_S];
     if(!state) bg_data = 0;

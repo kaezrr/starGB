@@ -43,22 +43,17 @@ struct Fetcher {
     bool wy_cond{}, delay{}, sp_fetch{};
     bool fetch_window{}, increment_window{};
 
+    u8 lcdc{}, stat{}, scy{}, scx{}, ly{},
+     lyc{}, dma{}, bgp{}, obp1{}, obp0{}, wy{}, wx{};
+
     vector<u8>& io_reg;
     vector<u8> vram = vector<u8>(0x2000);
     vector<u8> oam = vector<u8>(0x00A0);
 
+
     Fetcher(vector<u8> &io_ptr) : io_reg{io_ptr} {
         sprite_buffer.reserve(10); new_frame();
     }
-
-    u8 ly() { return io_reg[LY - IO_S]; }
-    u8 wy() { return io_reg[WY - IO_S]; }
-    u8 wx() { return io_reg[WX - IO_S]; }
-    u8 scy() { return io_reg[SCY - IO_S]; }
-    u8 scx() { return io_reg[SCX - IO_S]; }
-    u8 lyc() { return io_reg[LYC - IO_S]; }
-    u8 dma() { return io_reg[DMA - IO_S]; }
-    u8 lcdc() { return io_reg[LCDC - IO_S]; }
 
     void bg_fetch_tile_no();
     void bg_fetch_tile_data(bool state);

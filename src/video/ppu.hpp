@@ -36,19 +36,6 @@ struct PPU {
         new_frame();
     }
 
-    u8 ly() { return io_reg[LY - IO_S]; }
-    u8 wy() { return io_reg[WY - IO_S]; }
-    u8 wx() { return io_reg[WX - IO_S]; }
-    u8 scy() { return io_reg[SCY - IO_S]; }
-    u8 scx() { return io_reg[SCX - IO_S]; }
-    u8 lyc() { return io_reg[LYC - IO_S]; }
-    u8 bgp() { return io_reg[BGP - IO_S]; }
-    u8 dma() { return io_reg[DMA - IO_S]; }
-    u8 obp0() { return io_reg[OBP0 - IO_S]; }
-    u8 obp1() { return io_reg[OBP1 - IO_S]; }
-    u8 lcdc() { return io_reg[LCDC - IO_S]; }
-    u8 stat() { return io_reg[STAT - IO_S]; }
-
     void req_interrupt(u8 intr) { io_reg[IF - IO_S] |= intr; }
     size_t pixel_pos(int y, int x) { return (y * SCREEN_WIDTH) + x; }
     
@@ -68,4 +55,7 @@ struct PPU {
     void new_line();
 
     bool push_to_display();
+
+    u8 read(u16 at);
+    void write(u16 at, u8 data);
 };

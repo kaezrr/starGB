@@ -70,6 +70,8 @@ u8 Memory::read_IO(u16 at) const {
         return 0xFF;
     case DIV ... TAC:
         return timer->read(at);
+    case LCDC ... WX:
+        return ppu->read(at);
     case JOYP: {
         u8 reg = io_reg[at - IO_S] & 0xF0;
         u8 select = (~(input_buffer >> 4)) & 0xF;
@@ -95,11 +97,8 @@ void Memory::write_IO(u16 at, u8 data) {
     switch (at) {
     case DIV ... TAC:
         return timer->write(at, data);
-
-    case STAT:
-        update_read_only(io_reg[at - IO_S], data | 0x80, 0x07);
-        return;
-    
+    case LCDC ... WX:
+        return ppu->write(at, data);
     case SC:
         if (data == 0x81) {
             data = 0x01;
