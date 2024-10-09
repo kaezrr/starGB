@@ -52,7 +52,6 @@ struct Fetcher {
     u8 lyc() { return memory->io_reg[LYC - IO_S]; }
     u8 dma() { return memory->io_reg[DMA - IO_S]; }
     u8 lcdc() { return memory->io_reg[LCDC - IO_S]; }
-    u8 vram(u16 addr) { return memory->vram[addr - VRAM_S]; }
 
     void bg_fetch_tile_no();
     void bg_fetch_tile_data(bool state);

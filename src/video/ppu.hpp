@@ -46,7 +46,6 @@ struct PPU {
     u8 obp1() { return memory->io_reg[OBP1 - IO_S]; }
     u8 lcdc() { return memory->io_reg[LCDC - IO_S]; }
     u8 stat() { return memory->io_reg[STAT - IO_S]; }
-    u8 oam(u16 addr) { return memory->oam[addr - OAM_S]; }
 
     void req_interrupt(u8 intr) { memory->io_reg[IF - IO_S] |= intr; }
     size_t pixel_pos(int y, int x) { return (y * SCREEN_WIDTH) + x; }

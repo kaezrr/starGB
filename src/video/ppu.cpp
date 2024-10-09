@@ -150,8 +150,8 @@ void PPU::add_sprite() {
     if (fetcher.sprite_buffer.size() >= 10) return;
     int ly_check = ly() + 16;
     int s_height = (lcdc() & 0x04) ? 16 : 8;
-    int posy = oam(curr_sprite_location + 0);
-    int posx = oam(curr_sprite_location + 1);
+    int posy = memory->oam[curr_sprite_location + 0 - OAM_S];
+    int posx = memory->oam[curr_sprite_location + 1 - OAM_S];
 
     // Add sprite if the below conditions apply
     if (posx > 0 && ly_check >= posy && ly_check < posy + s_height)
