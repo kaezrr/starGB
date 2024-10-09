@@ -6,6 +6,7 @@
 #include "debug.hpp"
 
 GameBoy::GameBoy(const string &game, const string &boot, const string &log) {
+	memory.ppu = &ppu;
 	memory.load_game(game);
 	memory.load_boot(boot);
 	if(log != "") debugger.set_log_path(log);

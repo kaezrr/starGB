@@ -10,13 +10,13 @@ u8 Memory::read(u16 at) const {
     if (at <= ROM_E) 	    
         return mbc->read_rom(at);
     if (at <= VRAM_E) 	
-        return vram[at - VRAM_S];
+        return ppu->fetcher.vram[at - VRAM_S];
     if (at <= EXRAM_E) 
         return mbc->read_ram(at);
     if (at <= ECHO_E) 	
         return wram[at & 0x1FFF];
     if (at <= OAM_E) 	
-        return oam[at - OAM_S];
+        return ppu->fetcher.oam[at - OAM_S];
     if (at <= FORBID_E)
         return 0x00;
     if (at <= IO_E) 
@@ -37,7 +37,7 @@ void Memory::write(u16 at, u8 data) {
         mbc->write_rom(at, data);
 
     else if (at <= VRAM_E)
-        vram[at - VRAM_S] = data;
+        ppu->fetcher.vram[at - VRAM_S] = data;
 
     else if (at <= EXRAM_E)
         mbc->write_ram(at, data);
@@ -49,7 +49,7 @@ void Memory::write(u16 at, u8 data) {
         wram[at - ECHO_S] = data;
 
     else if (at <= OAM_E)
-        oam[at - OAM_S] = data;
+        ppu->fetcher.oam[at - OAM_S] = data;
 
     else if (at <= FORBID_E)
         return;
@@ -117,7 +117,7 @@ void Memory::initiate_dma_transfer(u8 data) {
     u16 src = data << 8;
     if (src >= 0xE000) src -= 0x2000;
     for (u16 i = 0; i < 0xA0; ++i) {
-        oam[i] = read(src + i);
+        ppu->fetcher.oam[i] = read(src + i);
     }
 }
 

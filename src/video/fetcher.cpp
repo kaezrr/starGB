@@ -15,9 +15,6 @@ Sprite::Sprite(u16 at, vector<u8>& oam) {
     used = false;
 }
 
-Fetcher::Fetcher(Memory* mem) : memory{ mem } {
-    sprite_buffer.reserve(10); new_frame();
-}
 
 void Fetcher::new_line() {
     sprite_buffer.clear();
@@ -76,7 +73,7 @@ void Fetcher::sp_fetch_tile_data(bool state) { // state = HIGH/LOW
     u16 tile_line = (ly() + 16 - curr_sp.posY) % 8;
     if (curr_sp.flipY) tile_line = 7 - tile_line;
     // fill sprite fifo with data
-    u8 data = memory->vram[addr + (tile_line * 2) + state - VRAM_S];
+    u8 data = vram[addr + (tile_line * 2) + state - VRAM_S];
     for (u8 i = 0; i < 8; ++i) {
         int shift = curr_sp.flipX ? 7 - i : i;
         sp_data |= ((data & (1 << shift)) >> shift) << (i * 4 + 2 + state);
@@ -114,7 +111,7 @@ void Fetcher::bg_fetch_tile_no() {
         tile_x = ((scx() + std::max(tile_index + 7, 0)) & 0xFF) / 8;
         tile_map = (lcdc() & 0x08) ? 0x9C00 : 0x9800;
     }
-    bg_tile_no = memory->vram[tile_map + (32 * tile_y) + tile_x - VRAM_S];
+    bg_tile_no = vram[tile_map + (32 * tile_y) + tile_x - VRAM_S];
 }
 
 void Fetcher::bg_fetch_tile_data(bool state) {
@@ -125,7 +122,7 @@ void Fetcher::bg_fetch_tile_data(bool state) {
     if (fetch_window && (lcdc() & 0x20)) offs = (window_line_counter % 8) * 2;
     else offs = ((ly() + scy()) % 8) * 2;
 
-    u8 data = memory->vram[addr + offs + state - VRAM_S];
+    u8 data = vram[addr + offs + state - VRAM_S];
     if(!state) bg_data = 0;
     for (u8 i = 0; i < 8; ++i)
         bg_data |= ((data & (1 << i)) >> i) << (i * 2 + state);

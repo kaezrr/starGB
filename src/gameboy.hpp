@@ -27,10 +27,10 @@ struct GameBoy {
 
     Timer timer{};
     Memory memory{&timer};
-    PPU ppu{&memory};
+    PPU ppu{memory.io_reg};
     CPU sm83{&memory, &ppu, &timer};
 
-    Debugger debugger{ &memory, &sm83 };
+    Debugger debugger{ &memory, &sm83, &ppu };
     GameBoy(const string& game, const string& boot, const string& log);
 
     void start();

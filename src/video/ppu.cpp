@@ -1,11 +1,6 @@
 #include "ppu.hpp"
-#include "window_handler.hpp"
+#include "memory.hpp"
 #include<spdlog/spdlog.h>
-
-PPU::PPU(Memory* mem_ptr) 
-    : memory{ mem_ptr }, renderer{ &screen, handler_wrapper } {
-        new_frame();
-    }
 
 void PPU::new_frame() {
     fetcher.new_frame(); increment_ly(); 
@@ -20,7 +15,7 @@ void PPU::new_line() {
 }
 
 void PPU::increment_ly() {
-    memory->io_reg[LY - IO_S] = ly() >= 153 ? 0 : memory->io_reg[LY - IO_S] + 1;
+    io_reg[LY - IO_S] = ly() >= 153 ? 0 : io_reg[LY - IO_S] + 1;
     fetcher.inc_windowline();
     if (ly() == wy()) fetcher.wy_cond = true;
     eval_lyc_intr();
@@ -37,11 +32,11 @@ void PPU::eval_lyc_intr() {
 
 void PPU::update_stat() {
     u8 data = ((ly() == lyc()) << 2) | static_cast<u8>(mode);
-    update_read_only(memory->io_reg[STAT - IO_S], data, 0xF8);
+    update_read_only(io_reg[STAT - IO_S], data, 0xF8);
 }
 
 void PPU::disable_lcd() {
-    update_read_only(memory->io_reg[STAT - IO_S], 0, 0xFC);
+    update_read_only(io_reg[STAT - IO_S], 0, 0xFC);
     std::fill(display.begin(), display.end(), (u8)0);
     new_frame(); mode = PPU_State::OAM_SCAN;
     disabled = true;
@@ -150,11 +145,11 @@ void PPU::add_sprite() {
     if (fetcher.sprite_buffer.size() >= 10) return;
     int ly_check = ly() + 16;
     int s_height = (lcdc() & 0x04) ? 16 : 8;
-    int posy = memory->oam[curr_sprite_location + 0 - OAM_S];
-    int posx = memory->oam[curr_sprite_location + 1 - OAM_S];
+    int posy = fetcher.oam[curr_sprite_location + 0 - OAM_S];
+    int posx = fetcher.oam[curr_sprite_location + 1 - OAM_S];
 
     // Add sprite if the below conditions apply
     if (posx > 0 && ly_check >= posy && ly_check < posy + s_height)
-        fetcher.sprite_buffer.emplace_back(curr_sprite_location, memory->oam);
+        fetcher.sprite_buffer.emplace_back(curr_sprite_location, fetcher.oam);
     curr_sprite_location += 4;
 }

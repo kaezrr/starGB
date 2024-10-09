@@ -1,14 +1,15 @@
 #pragma once
 
 #include <SDL.h>
-#include "memory.hpp"
 #include "callback.hpp"
 #include "constants.hpp"
 #include "fetcher.hpp"
 #include "window_handler.hpp"
 #include <array>
+#include <vector>
 
 using std::array;
+using std::vector;
 
 enum class PPU_State {
     HBLANK,
@@ -17,11 +18,8 @@ enum class PPU_State {
     DRAWING,
 };
 
-
 struct PPU {
-    Memory* memory{};
-    Fetcher fetcher{ memory };
-
+    Fetcher fetcher;
     bool scx_discard{}, disabled{};
     u16 curr_sprite_location{ OAM_S }, dots{ 0 };
 
@@ -32,22 +30,26 @@ struct PPU {
     Window_Handler screen{};
     CallBack renderer{&screen, handler_wrapper};
 
-    PPU(Memory* mem_ptr);
+    vector<u8>& io_reg;
+    PPU(vector<u8> &io_ptr)
+        : io_reg{io_ptr}, fetcher{io_ptr}, renderer{&screen, handler_wrapper} {
+        new_frame();
+    }
 
-    u8 ly() { return memory->io_reg[LY - IO_S]; }
-    u8 wy() { return memory->io_reg[WY - IO_S]; }
-    u8 wx() { return memory->io_reg[WX - IO_S]; }
-    u8 scy() { return memory->io_reg[SCY - IO_S]; }
-    u8 scx() { return memory->io_reg[SCX - IO_S]; }
-    u8 lyc() { return memory->io_reg[LYC - IO_S]; }
-    u8 bgp() { return memory->io_reg[BGP - IO_S]; }
-    u8 dma() { return memory->io_reg[DMA - IO_S]; }
-    u8 obp0() { return memory->io_reg[OBP0 - IO_S]; }
-    u8 obp1() { return memory->io_reg[OBP1 - IO_S]; }
-    u8 lcdc() { return memory->io_reg[LCDC - IO_S]; }
-    u8 stat() { return memory->io_reg[STAT - IO_S]; }
+    u8 ly() { return io_reg[LY - IO_S]; }
+    u8 wy() { return io_reg[WY - IO_S]; }
+    u8 wx() { return io_reg[WX - IO_S]; }
+    u8 scy() { return io_reg[SCY - IO_S]; }
+    u8 scx() { return io_reg[SCX - IO_S]; }
+    u8 lyc() { return io_reg[LYC - IO_S]; }
+    u8 bgp() { return io_reg[BGP - IO_S]; }
+    u8 dma() { return io_reg[DMA - IO_S]; }
+    u8 obp0() { return io_reg[OBP0 - IO_S]; }
+    u8 obp1() { return io_reg[OBP1 - IO_S]; }
+    u8 lcdc() { return io_reg[LCDC - IO_S]; }
+    u8 stat() { return io_reg[STAT - IO_S]; }
 
-    void req_interrupt(u8 intr) { memory->io_reg[IF - IO_S] |= intr; }
+    void req_interrupt(u8 intr) { io_reg[IF - IO_S] |= intr; }
     size_t pixel_pos(int y, int x) { return (y * SCREEN_WIDTH) + x; }
     
     void tick();

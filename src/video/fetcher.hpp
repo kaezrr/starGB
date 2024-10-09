@@ -1,7 +1,9 @@
 #pragma once
 
-#include "memory.hpp"
 #include "constants.hpp"
+#include <vector>
+
+using std::vector;
 
 enum class Fetcher_State {
     READ_TILE_ID,
@@ -29,7 +31,6 @@ struct Sprite {
 struct Fetcher {
     Fetcher_State bg_state{ Fetcher_State::READ_TILE_ID };
     Fetcher_State sp_state{ Fetcher_State::SP_READ_TILE_ID };
-    Memory* memory{};
 
     int x_pos{}, tile_index{};
     u32 queue_sp{}, sp_data{};
@@ -42,16 +43,22 @@ struct Fetcher {
     bool wy_cond{}, delay{}, sp_fetch{};
     bool fetch_window{}, increment_window{};
 
-    Fetcher(Memory* mem);
+    vector<u8>& io_reg;
+    vector<u8> vram = vector<u8>(0x2000);
+    vector<u8> oam = vector<u8>(0x00A0);
 
-    u8 ly() { return memory->io_reg[LY - IO_S]; }
-    u8 wy() { return memory->io_reg[WY - IO_S]; }
-    u8 wx() { return memory->io_reg[WX - IO_S]; }
-    u8 scy() { return memory->io_reg[SCY - IO_S]; }
-    u8 scx() { return memory->io_reg[SCX - IO_S]; }
-    u8 lyc() { return memory->io_reg[LYC - IO_S]; }
-    u8 dma() { return memory->io_reg[DMA - IO_S]; }
-    u8 lcdc() { return memory->io_reg[LCDC - IO_S]; }
+    Fetcher(vector<u8> &io_ptr) : io_reg{io_ptr} {
+        sprite_buffer.reserve(10); new_frame();
+    }
+
+    u8 ly() { return io_reg[LY - IO_S]; }
+    u8 wy() { return io_reg[WY - IO_S]; }
+    u8 wx() { return io_reg[WX - IO_S]; }
+    u8 scy() { return io_reg[SCY - IO_S]; }
+    u8 scx() { return io_reg[SCX - IO_S]; }
+    u8 lyc() { return io_reg[LYC - IO_S]; }
+    u8 dma() { return io_reg[DMA - IO_S]; }
+    u8 lcdc() { return io_reg[LCDC - IO_S]; }
 
     void bg_fetch_tile_no();
     void bg_fetch_tile_data(bool state);
