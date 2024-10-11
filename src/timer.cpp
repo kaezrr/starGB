@@ -51,7 +51,7 @@ void Timer::sys_clock_change(u16 new_value) {
 u8 Timer::read(u16 at) {
     switch(at) {
     case DIV:
-        return sys_clock << 8;
+        return sys_clock >> 8;
     case TIMA:
         return tima;
     case TMA:
