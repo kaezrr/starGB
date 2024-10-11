@@ -12,7 +12,7 @@ class Timer {
     void detect_edge(u16 before, u16 after);
 
   public:
-    u8 interrupt_flag = 0;
+    u8 intrF = 0;
 
     void tick();
     u8 read(u16 at);

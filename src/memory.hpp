@@ -24,6 +24,7 @@ struct Memory {
 
     bool execute_boot{};
     u8 input_buffer{}, ie_reg{};
+    u8 serial_intrF{}, joypad_intrF{};
 
     Memory(Timer* timer_ptr) : timer{timer_ptr} {}
 
@@ -35,6 +36,9 @@ struct Memory {
 
     void load_game(const string& path);
     void load_boot(const string& path);
+
+    u8 get_intrF() const;
+    void set_intrF(u8 data);
 };
 
 // Update original with data, while retaining the masked bits of the original

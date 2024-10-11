@@ -19,7 +19,7 @@ enum class PPU_State {
 };
 
 struct PPU {
-    Fetcher fetcher;
+    Fetcher fetcher{};
     bool scx_discard{}, disabled{};
     u16 curr_sprite_location{ OAM_S }, dots{ 0 };
 
@@ -30,13 +30,10 @@ struct PPU {
     Window_Handler screen{};
     CallBack renderer{&screen, handler_wrapper};
 
-    vector<u8>& io_reg;
-    PPU(vector<u8> &io_ptr)
-        : io_reg{io_ptr}, fetcher{io_ptr}, renderer{&screen, handler_wrapper} {
-        new_frame();
-    }
+    u8 intrF{};
+    PPU() : renderer{&screen, handler_wrapper} { new_frame(); }
 
-    void req_interrupt(u8 intr) { io_reg[IF - IO_S] |= intr; }
+    void req_interrupt(u8 intr) { intrF |= intr; }
     size_t pixel_pos(int y, int x) { return (y * SCREEN_WIDTH) + x; }
     
     void tick();

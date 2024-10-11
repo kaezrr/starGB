@@ -27,7 +27,7 @@ struct GameBoy {
 
     Timer timer{};
     Memory memory{&timer};
-    PPU ppu{memory.io_reg};
+    PPU ppu{};
     CPU sm83{&memory, &ppu, &timer};
 
     Debugger debugger{ &memory, &sm83, &ppu };

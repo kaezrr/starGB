@@ -72,6 +72,8 @@ u8 Memory::read_IO(u16 at) const {
         return timer->read(at);
     case LCDC ... WX:
         return ppu->read(at);
+    case IF:
+        return get_intrF();
     case JOYP: {
         u8 reg = io_reg[at - IO_S] & 0xF0;
         u8 select = (~(input_buffer >> 4)) & 0xF;
@@ -87,8 +89,6 @@ u8 Memory::read_IO(u16 at) const {
             return reg | 0xF;
         }
     }
-    case IF:
-        return (io_reg[IF - IO_S] & ~TIMER) | (timer->interrupt_flag);
     }
     return io_reg[at - IO_S];
 }
@@ -99,16 +99,14 @@ void Memory::write_IO(u16 at, u8 data) {
         return timer->write(at, data);
     case LCDC ... WX:
         return ppu->write(at, data);
+    case IF:
+        return set_intrF(data);
     case SC:
         if (data == 0x81) {
             data = 0x01;
-            io_reg[IF - IO_S] |= SERIAL;
+            serial_intrF |= SERIAL;
         }
-    
-    case IF:
-        timer->interrupt_flag = data & TIMER;
     }
-  
     io_reg[at - IO_S] = data;
 }
 
@@ -161,4 +159,15 @@ void Memory::load_game(const string& path) {
             spdlog::error("Unsupported MBC type! Emulator currently only supports MBC1, MBC3 and MC5");
             exit(1);
     }
+}
+
+void Memory::set_intrF(u8 data) {
+    joypad_intrF = data & JOYPAD;
+    serial_intrF = data & SERIAL;
+    timer->intrF = data & TIMER;
+    ppu->intrF = data & (LCD | VBLANK);
+}
+
+u8 Memory::get_intrF() const {
+    return serial_intrF | joypad_intrF | ppu->intrF | timer->intrF;
 }

@@ -46,14 +46,10 @@ struct Fetcher {
     u8 lcdc{}, stat{}, scy{}, scx{}, ly{},
      lyc{}, dma{}, bgp{}, obp1{}, obp0{}, wy{}, wx{};
 
-    vector<u8>& io_reg;
     vector<u8> vram = vector<u8>(0x2000);
     vector<u8> oam = vector<u8>(0x00A0);
 
-
-    Fetcher(vector<u8> &io_ptr) : io_reg{io_ptr} {
-        sprite_buffer.reserve(10); new_frame();
-    }
+    Fetcher() { sprite_buffer.reserve(10); new_frame(); }
 
     void bg_fetch_tile_no();
     void bg_fetch_tile_data(bool state);

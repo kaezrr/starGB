@@ -1,7 +1,7 @@
 #include "timer.hpp"
 
 void Timer::req_timer_intr() {
-    interrupt_flag |= TIMER;
+    intrF |= TIMER;
 }
 
 void Timer::tick() {
