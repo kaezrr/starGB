@@ -5,8 +5,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+add_compile_options(-Wall -Wextra -Wno-unused-variable)
 
-find_package(SDL2 REQUIRED)
+find_package(SDL2 REQUIRED)  
 find_package(spdlog REQUIRED)
 
 set(SOURCE_DIR ${PROJECT_SOURCE_DIR}/src/)
@@ -24,3 +25,8 @@ add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} spdlog::spdlog $<$<BOOL:${MINGW}>:ws2_32>)
+
+if(CMAKE_BUILD_TYPE MATCHES "Debug")
+    target_compile_options(${PROJECT_NAME} PRIVATE -fsanitize=undefined -fsanitize=address)
+    target_link_options(${PROJECT_NAME} BEFORE PRIVATE -fsanitize=undefined -fsanitize=address)
+endif()

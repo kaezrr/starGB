@@ -26,7 +26,7 @@ struct Memory {
     u8 input_buffer{}, ie_reg{};
     u8 serial_intrF{}, joypad_intrF{};
 
-    Memory(Timer* timer_ptr) : timer{timer_ptr} {}
+    Memory(Timer* tptr, PPU* pptr) : timer{tptr}, ppu{pptr} {}
 
     u8 read(u16 at) const;
     u8 read_IO(u16 at) const;

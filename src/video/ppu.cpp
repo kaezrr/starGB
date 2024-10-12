@@ -1,4 +1,5 @@
 #include "ppu.hpp"
+#include "constants.hpp"
 #include "memory.hpp"
 #include<spdlog/spdlog.h>
 
@@ -134,7 +135,7 @@ bool PPU::push_to_display() {
     }
 
     u8 col = (palette >> (select * 2)) & 0x3;
-    if (fetcher.x_pos >= 0 && fetcher.x_pos < 160) 
+    if (fetcher.x_pos >= 0 && fetcher.x_pos < SCREEN_WIDTH && fetcher.ly < SCREEN_HEIGHT) 
         display[pixel_pos(fetcher.ly, fetcher.x_pos)] = col;
     ++fetcher.x_pos; ++fetcher.tile_index;
     if(!fetcher.fetch_window) fetcher.check_window();
@@ -197,7 +198,7 @@ void PPU::write(u16 at, u8 data) {
     case SCX:
         fetcher.scx = data; return;
     case LY:
-        fetcher.ly = data; return;
+        return;
     case LYC:
         fetcher.lyc = data; return;
     case DMA:
