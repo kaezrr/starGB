@@ -4,6 +4,7 @@
 #include "mbc.hpp"
 #include "timer.hpp"
 #include "ppu.hpp"
+#include "apu.hpp"
 #include "joypad.hpp"
 #include <string>
 #include <vector>
@@ -16,6 +17,7 @@ using std::string;
 struct Memory {
     std::unique_ptr<MBC> mbc{nullptr};
     PPU* ppu{nullptr};
+    APU* apu{nullptr};
     Timer* timer{nullptr};
     Joypad* joypad{nullptr};
 
@@ -27,8 +29,8 @@ struct Memory {
     bool execute_boot{};
     u8 ie_reg{}, serial_intrF{};
 
-    Memory(Timer *tptr, PPU *pptr, Joypad *jptr)
-        : ppu{pptr}, timer{tptr}, joypad{jptr} {}
+    Memory(Timer *tptr, PPU *pptr, Joypad *jptr, APU* aptr)
+        : ppu{pptr}, apu{aptr}, timer{tptr}, joypad{jptr} {}
 
     u8 read(u16 at) const;
     u8 read_IO(u16 at) const;

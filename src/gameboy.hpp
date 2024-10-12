@@ -7,6 +7,7 @@
 #include "sm83.hpp"
 #include "debug.hpp"
 #include "timer.hpp"
+#include "apu.hpp"
 #include "joypad.hpp"
 #include "memory.hpp"
 
@@ -27,9 +28,10 @@ struct GameBoy {
     bool enabled{};
 
     PPU ppu{};
+    APU apu{};
     Timer timer{};
     Joypad joypad{};
-    Memory memory{&timer, &ppu, &joypad};
+    Memory memory{&timer, &ppu, &joypad, &apu};
     CPU sm83{&memory, &ppu, &timer};
 
     Debugger debugger{ &memory, &sm83, &ppu };
