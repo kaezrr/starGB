@@ -1,13 +1,15 @@
 #pragma once
 
 #include <SDL.h>
-#include "memory.hpp"
 #include "callback.hpp"
 #include "constants.hpp"
 #include "fetcher.hpp"
+#include "window_handler.hpp"
 #include <array>
+#include <vector>
 
 using std::array;
+using std::vector;
 
 enum class PPU_State {
     HBLANK,
@@ -16,11 +18,8 @@ enum class PPU_State {
     DRAWING,
 };
 
-
 struct PPU {
-    Memory* memory{};
-    Fetcher fetcher{ nullptr };
-
+    Fetcher fetcher{};
     bool scx_discard{}, disabled{};
     u16 curr_sprite_location{ OAM_S }, dots{ 0 };
 
@@ -28,25 +27,13 @@ struct PPU {
     array<u32, 4> colors{};
     vector<u8> display = vector<u8>(SCREEN_HEIGHT * SCREEN_WIDTH);
 
-    CallBack renderer;
+    Window_Handler screen{};
+    CallBack renderer{&screen, handler_wrapper};
 
-    PPU(Memory* mem_ptr, void* instance, fn_type func);
+    u8 intrF{};
+    PPU() : renderer{&screen, handler_wrapper} { new_frame(); }
 
-    u8 ly() { return memory->io_reg[LY - IO_S]; }
-    u8 wy() { return memory->io_reg[WY - IO_S]; }
-    u8 wx() { return memory->io_reg[WX - IO_S]; }
-    u8 scy() { return memory->io_reg[SCY - IO_S]; }
-    u8 scx() { return memory->io_reg[SCX - IO_S]; }
-    u8 lyc() { return memory->io_reg[LYC - IO_S]; }
-    u8 bgp() { return memory->io_reg[BGP - IO_S]; }
-    u8 dma() { return memory->io_reg[DMA - IO_S]; }
-    u8 obp0() { return memory->io_reg[OBP0 - IO_S]; }
-    u8 obp1() { return memory->io_reg[OBP1 - IO_S]; }
-    u8 lcdc() { return memory->io_reg[LCDC - IO_S]; }
-    u8 stat() { return memory->io_reg[STAT - IO_S]; }
-    u8 oam(u16 addr) { return memory->oam[addr - OAM_S]; }
-
-    void req_interrupt(u8 intr) { memory->io_reg[IF - IO_S] |= intr; }
+    void req_interrupt(u8 intr) { intrF |= intr; }
     size_t pixel_pos(int y, int x) { return (y * SCREEN_WIDTH) + x; }
     
     void tick();
@@ -65,4 +52,7 @@ struct PPU {
     void new_line();
 
     bool push_to_display();
+
+    u8 read(u16 at);
+    void write(u16 at, u8 data);
 };

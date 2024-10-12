@@ -2,6 +2,9 @@
 
 #include "constants.hpp"
 #include "mbc.hpp"
+#include "timer.hpp"
+#include "ppu.hpp"
+#include "joypad.hpp"
 #include <string>
 #include <vector>
 #include <memory>
@@ -12,22 +15,20 @@ using std::string;
 
 struct Memory {
     std::unique_ptr<MBC> mbc{nullptr};
+    PPU* ppu{nullptr};
+    Timer* timer{nullptr};
+    Joypad* joypad{nullptr};
 
     vector<u8> boot_rom     = vector<u8>(0x0100);
-    vector<u8> vram         = vector<u8>(0x2000);
     vector<u8> wram         = vector<u8>(0x2000);
-    vector<u8> oam          = vector<u8>(0x00A0);
     vector<u8> io_reg       = vector<u8>(0x0080);
     vector<u8> hram         = vector<u8>(0x007F);
-    u8 input_buffer{};
 
-    u8 ie_reg{};
-    bool execute_boot{}, tima_write{};
+    bool execute_boot{};
+    u8 ie_reg{}, serial_intrF{};
 
-    // Timer stuff
-    u16 sys_clock{ 0 }, last_edge{ 0 };
-    int cycles_til_tima_irq{ 0 };
-    bool tima_reload_cycle{ false };
+    Memory(Timer *tptr, PPU *pptr, Joypad *jptr)
+        : ppu{pptr}, timer{tptr}, joypad{jptr} {}
 
     u8 read(u16 at) const;
     u8 read_IO(u16 at) const;
@@ -35,10 +36,14 @@ struct Memory {
     void write_IO(u16 at, u8 data);
     void initiate_dma_transfer(u8 data);
 
-    void sys_clock_change(u16 new_value);
-    void detect_edge(u16 before, u16 after);
-    static void update_read_only(u8& original, u8 data, u8 mask);
-
     void load_game(const string& path);
     void load_boot(const string& path);
+
+    u8 get_intrF() const;
+    void set_intrF(u8 data);
 };
+
+// Update original with data, while retaining the masked bits of the original
+inline void update_read_only(u8& original, u8 data, u8 mask) {
+    original = (original & mask) | (data & ~mask);
+}

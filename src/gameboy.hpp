@@ -7,8 +7,8 @@
 #include "sm83.hpp"
 #include "debug.hpp"
 #include "timer.hpp"
+#include "joypad.hpp"
 #include "memory.hpp"
-#include "window_handler.hpp"
 
 #define LOG
 
@@ -25,14 +25,14 @@ enum Button {
 
 struct GameBoy {
     bool enabled{};
-    
-    Window_Handler handler{};
-    Memory   memory{};
-    PPU      ppu{ &memory, &handler, handler_wrapper };
-    Timer    timer{ &memory };
-    CPU      sm83{ &memory, &ppu, &timer };
 
-    Debugger debugger{ &memory, &sm83 };
+    PPU ppu{};
+    Timer timer{};
+    Joypad joypad{};
+    Memory memory{&timer, &ppu, &joypad};
+    CPU sm83{&memory, &ppu, &timer};
+
+    Debugger debugger{ &memory, &sm83, &ppu };
     GameBoy(const string& game, const string& boot, const string& log);
 
     void start();

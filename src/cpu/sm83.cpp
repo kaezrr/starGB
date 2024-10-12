@@ -3,7 +3,7 @@
 #include "cpu_utils.hpp"
 
 CPU::CPU(Memory* memory_ptr, PPU* ppu_ptr, Timer* timer_ptr)
-    : memory{ memory_ptr }, ppu{ ppu_ptr }, timer{ timer_ptr } {};
+    :  ppu{ ppu_ptr }, memory{ memory_ptr },timer{ timer_ptr } {};
 
 void CPU::tick() {
     elapsed_cycles++;
@@ -87,7 +87,8 @@ void CPU::write_r16(u8 r, u16 data, bool stk) {
     case 2: HL.full = data; break;
     case 3: 
         if (stk) AF.full = data & 0xFFF0;
-        else SP.full = data; break;
+        else SP.full = data;
+        break;
     }
 }
 

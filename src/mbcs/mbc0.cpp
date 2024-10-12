@@ -28,7 +28,7 @@ u8 MBC0::read_ram(u16 at) const {
     return ram_bank[at - EXRAM_S];
 }
 
-void MBC0::write_rom(u16 at, u8 data) {
+void MBC0::write_rom(u16, u8) {
     return;
 }
 

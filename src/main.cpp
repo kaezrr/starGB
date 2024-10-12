@@ -8,7 +8,7 @@
 #include "version.h"
 #include "gameboy.hpp"
 
-void parse_args(int argc, char** argv, string& boot, string& log) {
+void parse_args(int argc, char** argv, string& log) {
     std::vector<string> args{argv, argv + argc};
     for (int i = 2; i < argc; i += 2) {
         if (args[i] == "-l")
@@ -30,7 +30,7 @@ int main(int argc, char **argv) {
 
     // parsing arguments
     string boot_path{"../roms/dmg_boot.bin"}, log_path{""}, game_path{argv[1]};
-    parse_args(argc, argv, boot_path, log_path);
+    parse_args(argc, argv, log_path);
 
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
     GameBoy GB{game_path, boot_path, log_path};

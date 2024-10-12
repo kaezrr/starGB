@@ -19,13 +19,14 @@ struct Debugger {
     std::shared_ptr<spdlog::logger> memory_logger{nullptr}; 
     const Memory* mem{ nullptr };
     const CPU* sm83{ nullptr };
+    const PPU* ppu{ nullptr };
 
     vector<u8> tile_buffer = vector<u8>(0x6000);
     bool enabled{ false };
     Window_Handler tiles{};
 
-    Debugger(Memory* mptr, CPU* cptr) : mem{ mptr }, sm83{ cptr } {
-    }
+    Debugger(Memory *mptr, CPU *cptr, PPU *pptr)
+        : mem{mptr}, sm83{cptr}, ppu{pptr} {}
 
     void set_log_path(const string& path);
     void write_text_log();

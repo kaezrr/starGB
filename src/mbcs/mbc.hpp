@@ -15,6 +15,7 @@ struct MBC {
     virtual u8 read_ram(u16 at) const = 0;
     virtual void write_rom(u16 at, u8 data) = 0;
     virtual void write_ram(u16 at, u8 data) = 0;
+    virtual ~MBC() = default;
 };
 
 struct MBC0 : public MBC {

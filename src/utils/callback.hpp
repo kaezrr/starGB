@@ -8,7 +8,7 @@ struct CallBack {
     void* instance = nullptr;
 
     CallBack(void* ins, fn_type f)
-        : instance{ ins }, fn{ f } {}
+        :  fn{ f }, instance{ ins } {}
 
     void call(u8* buffer) {
         return fn(instance, buffer);

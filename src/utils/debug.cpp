@@ -64,8 +64,8 @@ void Debugger::fill_tile_data(u16 index) {
     int y = (index / 16) * 8;
     int addr = 0x8000 + (index * 16);
     for (int k = 0; k < 16; k += 2, y++) {
-        u8 lsb = mem->vram[addr - VRAM_S + k];
-        u8 msb = mem->vram[addr - VRAM_S + k + 1];
+        u8 lsb = ppu->fetcher.vram[addr - VRAM_S + k];
+        u8 msb = ppu->fetcher.vram[addr - VRAM_S + k + 1];
         for (u8 i = 0; i < 8; ++i) {
             u8 pixel = (((msb & (1 << i)) >> i) << 1) | ((lsb & (1 << i)) >> i);
             tile_buffer[(y * 128) + (x * 8) + (7 - i)] = pixel;
