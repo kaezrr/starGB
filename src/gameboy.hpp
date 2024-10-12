@@ -7,6 +7,7 @@
 #include "sm83.hpp"
 #include "debug.hpp"
 #include "timer.hpp"
+#include "joypad.hpp"
 #include "memory.hpp"
 
 #define LOG
@@ -27,7 +28,8 @@ struct GameBoy {
 
     PPU ppu{};
     Timer timer{};
-    Memory memory{&timer, &ppu};
+    Joypad joypad{};
+    Memory memory{&timer, &ppu, &joypad};
     CPU sm83{&memory, &ppu, &timer};
 
     Debugger debugger{ &memory, &sm83, &ppu };

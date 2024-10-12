@@ -88,28 +88,28 @@ void GameBoy::handle_events() {
 void GameBoy::set_button_on(const SDL_Scancode& code) {
 	switch (code) {
 	case SDL_SCANCODE_UP:
-		memory.input_buffer |= (1 << UP);
+		joypad.input_buffer |= (1 << UP);
 		break;
 	case SDL_SCANCODE_DOWN:
-		memory.input_buffer |= (1 << DOWN);
+		joypad.input_buffer |= (1 << DOWN);
 		break;
 	case SDL_SCANCODE_LEFT:
-		memory.input_buffer |= (1 << LEFT);
+		joypad.input_buffer |= (1 << LEFT);
 		break;
 	case SDL_SCANCODE_RIGHT:
-		memory.input_buffer |= (1 << RIGHT);
+		joypad.input_buffer |= (1 << RIGHT);
 		break;
 	case SDL_SCANCODE_S:
-		memory.input_buffer |= (1 << A);
+		joypad.input_buffer |= (1 << A);
 		break;
 	case SDL_SCANCODE_A:
-		memory.input_buffer |= (1 << B);
+		joypad.input_buffer |= (1 << B);
 		break;
 	case SDL_SCANCODE_RETURN:
-		memory.input_buffer |= (1 << START);
+		joypad.input_buffer |= (1 << START);
 		break;
 	case SDL_SCANCODE_LSHIFT:
-		memory.input_buffer |= (1 << SELECT);
+		joypad.input_buffer |= (1 << SELECT);
 		break;
 	default: break;
 	}
@@ -118,28 +118,28 @@ void GameBoy::set_button_on(const SDL_Scancode& code) {
 void GameBoy::set_button_off(const SDL_Scancode& code) {
 	switch (code) {
 	case SDL_SCANCODE_UP:
-		memory.input_buffer &= ~(1 << UP);
+		joypad.input_buffer &= ~(1 << UP);
 		break;
 	case SDL_SCANCODE_DOWN:
-		memory.input_buffer &= ~(1 << DOWN);
+		joypad.input_buffer &= ~(1 << DOWN);
 		break;
 	case SDL_SCANCODE_LEFT:
-		memory.input_buffer &= ~(1 << LEFT);
+		joypad.input_buffer &= ~(1 << LEFT);
 		break;
 	case SDL_SCANCODE_RIGHT:
-		memory.input_buffer &= ~(1 << RIGHT);
+		joypad.input_buffer &= ~(1 << RIGHT);
 		break;
 	case SDL_SCANCODE_S:
-		memory.input_buffer &= ~(1 << A);
+		joypad.input_buffer &= ~(1 << A);
 		break;
 	case SDL_SCANCODE_A:
-		memory.input_buffer &= ~(1 << B);
+		joypad.input_buffer &= ~(1 << B);
 		break;
 	case SDL_SCANCODE_RETURN:
-		memory.input_buffer &= ~(1 << START);
+		joypad.input_buffer &= ~(1 << START);
 		break;
 	case SDL_SCANCODE_LSHIFT:
-		memory.input_buffer &= ~(1 << SELECT);
+		joypad.input_buffer &= ~(1 << SELECT);
 		break;
 	default: break;
 	}

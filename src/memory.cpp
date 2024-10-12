@@ -74,21 +74,8 @@ u8 Memory::read_IO(u16 at) const {
         return ppu->read(at);
     case IF:
         return get_intrF();
-    case JOYP: {
-        u8 reg = io_reg[at - IO_S] & 0xF0;
-        u8 select = (~(input_buffer >> 4)) & 0xF;
-        u8 dpad = (~input_buffer) & 0xF;
-        switch ((reg >> 4) & 3) {
-        case 0:
-            return reg | (select & dpad);
-        case 1:
-            return reg | (select);
-        case 2:
-            return reg | (dpad);
-        case 3:
-            return reg | 0xF;
-        }
-    }
+    case JOYP: 
+        return joypad->read();
     }
     return io_reg[at - IO_S];
 }
@@ -99,6 +86,8 @@ void Memory::write_IO(u16 at, u8 data) {
         return timer->write(at, data);
     case LCDC ... WX:
         return ppu->write(at, data);
+    case JOYP:
+        return joypad->write(data);
     case IF:
         return set_intrF(data);
     case SC:
@@ -162,12 +151,12 @@ void Memory::load_game(const string& path) {
 }
 
 void Memory::set_intrF(u8 data) {
-    joypad_intrF = data & JOYPAD;
+    joypad->intrF = data & JOYPAD;
     serial_intrF = data & SERIAL;
     timer->intrF = data & TIMER;
     ppu->intrF = data & (LCD | VBLANK);
 }
 
 u8 Memory::get_intrF() const {
-    return serial_intrF | joypad_intrF | ppu->intrF | timer->intrF;
+    return serial_intrF | joypad->intrF | ppu->intrF | timer->intrF;
 }
