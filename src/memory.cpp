@@ -66,37 +66,37 @@ void Memory::write(u16 at, u8 data) {
 
 u8 Memory::read_IO(u16 at) const {
     switch (at) {
-    case SB:
-        return 0xFF;
+    case JOYP: 
+        return joypad->read();
+    case SC:
+        return sc;
     case DIV ... TAC:
         return timer->read(at);
+    case NR10 ... WAVE_RAM_E:
+        return apu->read(at);
     case LCDC ... WX:
         return ppu->read(at);
     case IF:
         return get_intrF();
-    case JOYP: 
-        return joypad->read();
     }
-    return io_reg[at - IO_S];
+    return 0xFF;
 }
 
 void Memory::write_IO(u16 at, u8 data) {
     switch (at) {
-    case DIV ... TAC:
-        return timer->write(at, data);
-    case LCDC ... WX:
-        return ppu->write(at, data);
+    case SC:
+        return set_sc(data);
     case JOYP:
         return joypad->write(data);
+    case DIV ... TAC:
+        return timer->write(at, data);
+    case NR10 ... WAVE_RAM_E:
+        return apu->write(at, data);
+    case LCDC ... WX:
+        return ppu->write(at, data);
     case IF:
         return set_intrF(data);
-    case SC:
-        if (data == 0x81) {
-            data = 0x01;
-            serial_intrF |= SERIAL;
-        }
     }
-    io_reg[at - IO_S] = data;
 }
 
 void Memory::initiate_dma_transfer(u8 data) {
@@ -159,4 +159,9 @@ void Memory::set_intrF(u8 data) {
 
 u8 Memory::get_intrF() const {
     return serial_intrF | joypad->intrF | ppu->intrF | timer->intrF;
+}
+
+void Memory::set_sc(u8 data) {
+    sc = (data == 0x81) ? 0x01 : data;
+    if (data == 0x81) serial_intrF |= SERIAL;
 }

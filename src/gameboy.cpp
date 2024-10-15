@@ -35,6 +35,7 @@ void GameBoy::start() {
 
 	enabled = true;
 	SDL_RaiseWindow(ppu.screen.window);
+	//apu.pause(false);
 
 	int frames_elapsed = 0;
 	while (enabled) { // Loop runs at 59.7 Hz

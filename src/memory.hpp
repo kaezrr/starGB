@@ -23,11 +23,10 @@ struct Memory {
 
     vector<u8> boot_rom     = vector<u8>(0x0100);
     vector<u8> wram         = vector<u8>(0x2000);
-    vector<u8> io_reg       = vector<u8>(0x0080);
     vector<u8> hram         = vector<u8>(0x007F);
 
     bool execute_boot{};
-    u8 ie_reg{}, serial_intrF{};
+    u8 ie_reg{}, serial_intrF{}, sc{};
 
     Memory(Timer *tptr, PPU *pptr, Joypad *jptr, APU* aptr)
         : ppu{pptr}, apu{aptr}, timer{tptr}, joypad{jptr} {}
@@ -43,6 +42,7 @@ struct Memory {
 
     u8 get_intrF() const;
     void set_intrF(u8 data);
+    void set_sc(u8 data);
 };
 
 // Update original with data, while retaining the masked bits of the original

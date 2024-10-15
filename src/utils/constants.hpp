@@ -77,10 +77,10 @@ constexpr u16 SC = 0xFF02;
 // Joypad
 constexpr u16 JOYP = 0xFF00;
 
-// Audio Registers
-constexpr u16 NR52 = 0xFF26;
-constexpr u16 NR51 = 0xFF25;
+// Global Audio Registers
 constexpr u16 NR50 = 0xFF24;
+constexpr u16 NR51 = 0xFF25;
+constexpr u16 NR52 = 0xFF26;
 
 // Audio Channel 1
 constexpr u16 NR10 = 0xFF10;
@@ -94,3 +94,18 @@ constexpr u16 NR21 = 0xFF16;
 constexpr u16 NR22 = 0xFF17;
 constexpr u16 NR23 = 0xFF18;
 constexpr u16 NR24 = 0xFF19;
+
+// Audio Channel 3
+constexpr u16 NR30 = 0xFF1A;
+constexpr u16 NR31 = 0xFF1B;
+constexpr u16 NR32 = 0xFF1C;
+constexpr u16 NR33 = 0xFF1D;
+constexpr u16 NR34 = 0xFF1E;
+constexpr u16 WAVE_RAM_S = 0xFF30;
+constexpr u16 WAVE_RAM_E = 0xFF3F;
+
+// Audio Channel 4
+constexpr u16 NR41 = 0xFF20;
+constexpr u16 NR42 = 0xFF21;
+constexpr u16 NR43 = 0xFF22;
+constexpr u16 NR44 = 0xFF23;
