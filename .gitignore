@@ -1,4 +1,5 @@
 roms/
+!roms/dmg_boot.bin
 logs/
 build/
 mooneye/
