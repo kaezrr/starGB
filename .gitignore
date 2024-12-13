@@ -1,5 +1,5 @@
-roms/
-!roms/dmg_boot.bin
+roms/*.gb
+roms/*.sav
 logs/
 build/
 mooneye/
