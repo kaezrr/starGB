@@ -3,8 +3,8 @@
 #include "constants.hpp"
 #include "cpu_utils.hpp"
 #include "memory.hpp"
-#include "timer.hpp"
 #include "ppu.hpp"
+#include "timer.hpp"
 
 struct CPU {
     Opcode op{};
@@ -13,8 +13,8 @@ struct CPU {
     Timer* timer{};
     Registers AF{}, BC{}, DE{}, HL{}, SP{}, PC{};
 
-    int elapsed_cycles{ 0 }, m_cycles{ 0 };
-    long long int debug_cycles{ 0 };
+    int elapsed_cycles{0}, m_cycles{0};
+    long long int debug_cycles{0};
 
     CPU(Memory* memory_ptr, PPU* ppu_ptr, Timer* timer_ptr);
 
@@ -48,13 +48,13 @@ struct CPU {
     bool get_flag(Flag flag) const;
     void set_flag(Flag flag, bool on);
 
-    // Opcode decoding blocks 
+    // Opcode decoding blocks
     void block00();
     void block01();
     void block02();
     void block03();
     void blockCB();
-    
+
     // Instructions
     void nop();
     void stop();

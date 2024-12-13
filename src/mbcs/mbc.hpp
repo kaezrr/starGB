@@ -1,13 +1,13 @@
 #pragma once
 
-#include <vector>
+#include "constants.hpp"
 #include <array>
 #include <string>
-#include "constants.hpp"
+#include <vector>
 
-using std::vector;
 using std::array;
 using std::string;
+using std::vector;
 
 struct MBC {
     virtual void save_ram() = 0;
@@ -24,7 +24,7 @@ struct MBC0 : public MBC {
     u16 rom_num{}, ram_num{};
 
     MBC0() = default;
-    MBC0(const string& path); 
+    MBC0(const string& path);
 
     array<u8, 0x8000> rom_bank;
     array<u8, 0x2000> ram_bank;
@@ -41,7 +41,7 @@ struct MBC1 : public MBC {
     bool save_flag{}, exram_enable{}, mode_flag{};
 
     MBC1() = default;
-    MBC1(const string& path); 
+    MBC1(const string& path);
 
     string save_path{};
     vector<u8> rom_banks;
@@ -59,7 +59,7 @@ struct MBC3 : public MBC {
     bool save_flag{}, exram_enable{};
 
     MBC3() = default;
-    MBC3(const string& path); 
+    MBC3(const string& path);
 
     string save_path{};
     vector<u8> rom_banks;
@@ -77,7 +77,7 @@ struct MBC5 : public MBC {
     bool save_flag{}, exram_enable{}, rumble{};
 
     MBC5() = default;
-    MBC5(const string& path); 
+    MBC5(const string& path);
 
     string save_path{};
     vector<u8> rom_banks;

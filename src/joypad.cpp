@@ -17,6 +17,4 @@ u8 Joypad::read() {
     return 0xFF;
 }
 
-void Joypad::write(u8 data) {
-    joyp = data;
-}
+void Joypad::write(u8 data) { joyp = data; }

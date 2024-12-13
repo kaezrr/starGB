@@ -1,10 +1,10 @@
 #pragma once
 
-#include <SDL.h>
 #include "callback.hpp"
 #include "constants.hpp"
 #include "fetcher.hpp"
 #include "window_handler.hpp"
+#include <SDL.h>
 #include <array>
 #include <vector>
 
@@ -21,9 +21,9 @@ enum class PPU_State {
 struct PPU {
     Fetcher fetcher{};
     bool scx_discard{}, disabled{};
-    u16 curr_sprite_location{ OAM_S }, dots{ 0 };
+    u16 curr_sprite_location{OAM_S}, dots{0};
 
-    PPU_State mode{ PPU_State::OAM_SCAN };
+    PPU_State mode{PPU_State::OAM_SCAN};
     array<u32, 4> colors{};
     vector<u8> display = vector<u8>(SCREEN_HEIGHT * SCREEN_WIDTH);
 
@@ -35,7 +35,7 @@ struct PPU {
 
     void req_interrupt(u8 intr) { intrF |= intr; }
     size_t pixel_pos(int y, int x) { return (y * SCREEN_WIDTH) + x; }
-    
+
     void tick();
     void disable_lcd();
     void add_sprite();

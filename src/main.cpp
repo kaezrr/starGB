@@ -1,12 +1,12 @@
 #define SDL_MAIN_HANDLED
 #include <SDL.h>
-#include <string>
-#include <vector>
 #include <SDL_version.h>
 #include <spdlog/spdlog.h>
+#include <string>
+#include <vector>
 
-#include "version.h"
 #include "gameboy.hpp"
+#include "version.h"
 
 void parse_args(int argc, char** argv, string& log) {
     std::vector<string> args{argv, argv + argc};
@@ -20,7 +20,7 @@ void parse_args(int argc, char** argv, string& log) {
     }
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
     spdlog::set_pattern("%^[%l]%$ %v");
     if (argc & 1 || argc > 4) {
         spdlog::error("Usage: {} [path/to/rom] -flags(optional)", argv[0]);

@@ -1,10 +1,10 @@
 #pragma once
-#include <string>
 #include <spdlog/spdlog.h>
+#include <string>
 
-#include "window_handler.hpp"
-#include "sm83.hpp"
 #include "memory.hpp"
+#include "sm83.hpp"
+#include "window_handler.hpp"
 
 using std::vector, std::string, std::tuple;
 
@@ -15,17 +15,17 @@ constexpr auto TILE_WINDOW_WIDTH = 16;
 constexpr auto TILE_WINDOW_HEIGHT = 24;
 
 struct Debugger {
-    std::shared_ptr<spdlog::logger> logger{nullptr}; 
-    std::shared_ptr<spdlog::logger> memory_logger{nullptr}; 
-    const Memory* mem{ nullptr };
-    const CPU* sm83{ nullptr };
-    const PPU* ppu{ nullptr };
+    std::shared_ptr<spdlog::logger> logger{nullptr};
+    std::shared_ptr<spdlog::logger> memory_logger{nullptr};
+    const Memory* mem{nullptr};
+    const CPU* sm83{nullptr};
+    const PPU* ppu{nullptr};
 
     vector<u8> tile_buffer = vector<u8>(0x6000);
-    bool enabled{ false };
+    bool enabled{false};
     Window_Handler tiles{};
 
-    Debugger(Memory *mptr, CPU *cptr, PPU *pptr)
+    Debugger(Memory* mptr, CPU* cptr, PPU* pptr)
         : mem{mptr}, sm83{cptr}, ppu{pptr} {}
 
     void set_log_path(const string& path);

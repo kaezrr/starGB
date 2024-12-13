@@ -29,8 +29,8 @@ struct Sprite {
 };
 
 struct Fetcher {
-    Fetcher_State bg_state{ Fetcher_State::READ_TILE_ID };
-    Fetcher_State sp_state{ Fetcher_State::SP_READ_TILE_ID };
+    Fetcher_State bg_state{Fetcher_State::READ_TILE_ID};
+    Fetcher_State sp_state{Fetcher_State::SP_READ_TILE_ID};
 
     int x_pos{}, tile_index{};
     u32 queue_sp{}, sp_data{};
@@ -38,18 +38,21 @@ struct Fetcher {
     u16 window_line_counter{};
     u16 bg_tile_no{}, bg_count{}, sp_count{};
 
-    Sprite curr_sp{}; 
+    Sprite curr_sp{};
     vector<Sprite> sprite_buffer;
     bool wy_cond{}, delay{}, sp_fetch{};
     bool fetch_window{}, increment_window{};
 
-    u8 lcdc{}, stat{}, scy{}, scx{}, ly{},
-     lyc{}, dma{}, bgp{}, obp1{}, obp0{}, wy{}, wx{};
+    u8 lcdc{}, stat{}, scy{}, scx{}, ly{}, lyc{}, dma{}, bgp{}, obp1{}, obp0{},
+        wy{}, wx{};
 
     vector<u8> vram = vector<u8>(0x2000);
     vector<u8> oam = vector<u8>(0x00A0);
 
-    Fetcher() { sprite_buffer.reserve(10); new_frame(); }
+    Fetcher() {
+        sprite_buffer.reserve(10);
+        new_frame();
+    }
 
     void bg_fetch_tile_no();
     void bg_fetch_tile_data(bool state);

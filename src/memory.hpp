@@ -1,17 +1,17 @@
 #pragma once
 
 #include "constants.hpp"
-#include "mbc.hpp"
-#include "timer.hpp"
-#include "ppu.hpp"
 #include "joypad.hpp"
+#include "mbc.hpp"
+#include "ppu.hpp"
+#include "timer.hpp"
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
 
-using std::vector;
 using std::array;
 using std::string;
+using std::vector;
 
 struct Memory {
     std::unique_ptr<MBC> mbc{nullptr};
@@ -19,15 +19,15 @@ struct Memory {
     Timer* timer{nullptr};
     Joypad* joypad{nullptr};
 
-    vector<u8> boot_rom     = vector<u8>(0x0100);
-    vector<u8> wram         = vector<u8>(0x2000);
-    vector<u8> io_reg       = vector<u8>(0x0080);
-    vector<u8> hram         = vector<u8>(0x007F);
+    vector<u8> boot_rom = vector<u8>(0x0100);
+    vector<u8> wram = vector<u8>(0x2000);
+    vector<u8> io_reg = vector<u8>(0x0080);
+    vector<u8> hram = vector<u8>(0x007F);
 
     bool execute_boot{};
     u8 ie_reg{}, serial_intrF{};
 
-    Memory(Timer *tptr, PPU *pptr, Joypad *jptr)
+    Memory(Timer* tptr, PPU* pptr, Joypad* jptr)
         : ppu{pptr}, timer{tptr}, joypad{jptr} {}
 
     u8 read(u16 at) const;

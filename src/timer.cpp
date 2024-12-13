@@ -1,8 +1,6 @@
 #include "timer.hpp"
 
-void Timer::req_timer_intr() {
-    intrF |= TIMER;
-}
+void Timer::req_timer_intr() { intrF |= TIMER; }
 
 void Timer::tick() {
     tima_reload_cycle = false;
@@ -28,7 +26,7 @@ void Timer::detect_edge(u16 before, u16 after) {
 
 void Timer::sys_clock_change(u16 new_value) {
     sys_clock = new_value;
-    u16 new_edge{ 0 };
+    u16 new_edge{0};
     switch (tac & 3) {
     case 0:
         new_edge = (sys_clock >> 9) & 1;
@@ -49,7 +47,7 @@ void Timer::sys_clock_change(u16 new_value) {
 }
 
 u8 Timer::read(u16 at) {
-    switch(at) {
+    switch (at) {
     case DIV:
         return sys_clock >> 8;
     case TIMA:
@@ -64,7 +62,7 @@ u8 Timer::read(u16 at) {
 }
 
 void Timer::write(u16 at, u8 data) {
-    switch(at) {
+    switch (at) {
     case DIV:
         sys_clock_change(0);
         return;

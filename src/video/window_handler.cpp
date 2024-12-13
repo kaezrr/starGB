@@ -6,25 +6,32 @@ Window_Handler::~Window_Handler() {
 }
 
 void Window_Handler::init(const char* name, int height, int width, int pix,
-    u32 color0, u32 color1, u32 color2, u32 color3, int start_x, int start_y) {
-    s_height = height; s_width = width; pix_size = pix;
-    window = SDL_CreateWindow(name, start_x, start_y,
-        pix_size * s_width, pix_size * s_height, SDL_WINDOW_SHOWN | SDL_WINDOW_INPUT_FOCUS);
+                          u32 color0, u32 color1, u32 color2, u32 color3,
+                          int start_x, int start_y) {
+    s_height = height;
+    s_width = width;
+    pix_size = pix;
+    window = SDL_CreateWindow(name, start_x, start_y, pix_size * s_width,
+                              pix_size * s_height,
+                              SDL_WINDOW_SHOWN | SDL_WINDOW_INPUT_FOCUS);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB888,
-        SDL_TEXTUREACCESS_STREAMING, s_width, s_height);
+                                SDL_TEXTUREACCESS_STREAMING, s_width, s_height);
 
     SDL_RaiseWindow(window);
-	colors[0] = color0; colors[1] = color1;
-	colors[2] = color2; colors[3] = color3;
+    colors[0] = color0;
+    colors[1] = color1;
+    colors[2] = color2;
+    colors[3] = color3;
 }
 
 void Window_Handler::render_frame(u8* display) {
     int pitch = s_width * 4;
     int screen_size = s_width * s_height;
-    u32* pixels{ nullptr };
-    SDL_LockTexture(texture, nullptr, reinterpret_cast<void**>(&pixels), &pitch);
-    for (int i = 0; i < screen_size; ++i) 
+    u32* pixels{nullptr};
+    SDL_LockTexture(texture, nullptr, reinterpret_cast<void**>(&pixels),
+                    &pitch);
+    for (int i = 0; i < screen_size; ++i)
         *pixels++ = colors[display[i]];
     pixels -= screen_size;
     SDL_UnlockTexture(texture);
