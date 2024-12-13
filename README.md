@@ -13,6 +13,7 @@ A lightweight and efficient Nintendo Game Boy emulator written in C++ using SDL2
   - MBC5
   - No MBC (simple ROMs)
 - **Keyboard Support**: Play directly using your keyboard.
+  - up/down/left/right = arrow keys, a/b = s/a, start/select = enter/lshift
 - **High-Performance Logging**: Debug seamlessly with `spdlog`.
 
 ---
