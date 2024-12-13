@@ -22,14 +22,10 @@ A lightweight and efficient Nintendo Game Boy emulator written in C++ using SDL2
 ### Screenshots  
 <img src="https://github.com/user-attachments/assets/cb470c34-6ca3-4911-bbb8-06814a40cf6f" width=300px height=auto>
 <img src="https://github.com/user-attachments/assets/a44ec2e0-4578-4f3d-bc5c-ec1efff7824c" width=300px height=auto>
-<img src="https://github.com/user-attachments/assets/3947fe24-500f-486e-8764-501d9a2ba052" width=300px height=auto>
 
 ### Gameplay GIFs  
 <img src="https://github.com/user-attachments/assets/8bf91b3e-e322-4c31-a78e-f1dd295e23c3" width=300px height=auto>
-
 <img src="https://github.com/user-attachments/assets/9d0cd8b2-9926-4d42-98db-44d8e6ccaa27" width=300px height=auto>
-
-<img src="https://github.com/user-attachments/assets/cc4a8e25-04a6-4662-99f3-25e01ae8c385" width=300px height=auto>
 
 ---
 
