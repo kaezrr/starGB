@@ -33,7 +33,7 @@ struct GameBoy {
     CPU sm83{&memory, &ppu, &timer};
 
     Debugger debugger{&memory, &sm83, &ppu};
-    GameBoy(const string& game, const string& boot, const string& log);
+    GameBoy(const string& game, const string& log);
 
     void start();
     void run_instruction();

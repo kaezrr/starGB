@@ -5,9 +5,9 @@
 #include "gameboy.hpp"
 #include "window_handler.hpp"
 
-GameBoy::GameBoy(const string& game, const string& boot, const string& log) {
+GameBoy::GameBoy(const string& game, const string& log) {
     memory.load_game(game);
-    memory.load_boot(boot);
+    memory.load_boot();
     if (log != "")
         debugger.set_log_path(log);
 }

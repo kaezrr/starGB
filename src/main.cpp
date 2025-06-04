@@ -29,11 +29,11 @@ int main(int argc, char** argv) {
     }
 
     // parsing arguments
-    string boot_path{"../roms/dmg_boot.bin"}, log_path{""}, game_path{argv[1]};
+    string log_path{""}, game_path{argv[1]};
     parse_args(argc, argv, log_path);
 
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
-    GameBoy GB{game_path, boot_path, log_path};
+    GameBoy GB{game_path, log_path};
     spdlog::info("{} Version {}", PROJECT_NAME, PROJECT_VERSION);
     GB.start();
 

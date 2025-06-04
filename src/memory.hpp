@@ -37,7 +37,7 @@ struct Memory {
     void initiate_dma_transfer(u8 data);
 
     void load_game(const string& path);
-    void load_boot(const string& path);
+    void load_boot();
 
     u8 get_intrF() const;
     void set_intrF(u8 data);
